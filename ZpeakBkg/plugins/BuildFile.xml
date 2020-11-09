@@ -13,6 +13,6 @@
 <use name="DataFormats/VertexReco"/>
 <use name="CLHEP"/>
 <use name="root"/>
-<library file="MuonExercise2.cc" name="MuonExercise2">
+<library file="ZpeakBkg.cc" name="ZpeakBkg">
   <flags EDM_PLUGIN="1"/>
 </library>
