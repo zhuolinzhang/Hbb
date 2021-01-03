@@ -16,13 +16,17 @@ ZZ_TuneCP5_13TeV-pythia8 (BTV-RunIIAutumn18MiniAOD-00083)
 
 nevents: 1979000 nlumis: 283
 
+After filter: final cross section = 1.223e+01 +- 2.433e-01 pb
+
+nlumis: 1618.152085
+
 ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8 (**NLO**)
 
 `/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM`
 
 nevents: 27900469 nlumis: 29499
 
-### ZToLL
+### Z+jets
 
 DYJetsToLL_M-4to50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8
 
