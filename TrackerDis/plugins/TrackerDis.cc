@@ -25,6 +25,8 @@
 #include <TProfile.h>
 #include <TTree.h>
 #include "TString.h"
+#include "TNtuple.h"
+
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -49,12 +51,12 @@
 // class declaration
 //
 
-class ZpeakSigTrigger : public edm::one::EDAnalyzer<edm::one::SharedResources> {
+class TrackerDis : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 
    public:
 
-      explicit ZpeakSigTrigger(const edm::ParameterSet&);
-      ~ZpeakSigTrigger();
+      explicit TrackerDis(const edm::ParameterSet&);
+      ~TrackerDis();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
@@ -72,117 +74,44 @@ class ZpeakSigTrigger : public edm::one::EDAnalyzer<edm::one::SharedResources> {
       //edm::EDGetTokenT<reco::Vertex> vertex_label;
       edm::EDGetTokenT<edm::TriggerResults> trigger_label;
   
-      TH1F* h_RecDiMuon_Tight_M;
-      TH1F* h_RecDiMuon_Tight_Trigger_M;
-      TH1F* h_RecDiMuon_Loose_M;
-      TH1F* h_RecDiMuon_Loose_Trigger_M;
-      TH1F* h_RecDiMuon_Tight_pt;
-      TH1F* h_RecDiMuon_Tight_Trigger_pt;
-      TH1F* h_RecDiMuon_Loose_pt;
-      TH1F* h_RecDiMuon_Loose_Trigger_pt;
-      TH1F* h_RecDiMuon_Tight_eta;
-      TH1F* h_RecDiMuon_Tight_Trigger_eta;
-      TH1F* h_RecDiMuon_Loose_eta;
-      TH1F* h_RecDiMuon_Loose_Trigger_eta;
-      TH1F* h_RecDiMuon_Tight_phi;
-      TH1F* h_RecDiMuon_Tight_Trigger_phi;
-      TH1F* h_RecDiMuon_Loose_phi;
-      TH1F* h_RecDiMuon_Loose_Trigger_phi;
-      TH1F* h_RecMuonPlus_Tight_pt;
-      TH1F* h_RecMuonPlus_Tight_Trigger_pt;
-      TH1F* h_RecMuonPlus_Loose_pt;
-      TH1F* h_RecMuonPlus_Loose_Trigger_pt;
-      TH1F* h_RecMuonMinus_Tight_pt;
-      TH1F* h_RecMuonMinus_Tight_Trigger_pt;
-      TH1F* h_RecMuonMinus_Loose_pt;
-      TH1F* h_RecMuonMinus_Loose_Trigger_pt;
-      TH1F* h_RecMuonPlus_Tight_eta;
-      TH1F* h_RecMuonPlus_Tight_Trigger_eta;
-      TH1F* h_RecMuonPlus_Loose_eta;
-      TH1F* h_RecMuonPlus_Loose_Trigger_eta;
-      TH1F* h_RecMuonMinus_Tight_eta;
-      TH1F* h_RecMuonMinus_Tight_Trigger_eta;
-      TH1F* h_RecMuonMinus_Loose_eta;
-      TH1F* h_RecMuonMinus_Loose_Trigger_eta;
-      TH1F* h_RecMuonPlus_Tight_phi;
-      TH1F* h_RecMuonPlus_Tight_Trigger_phi;
-      TH1F* h_RecMuonPlus_Loose_phi;
-      TH1F* h_RecMuonPlus_Loose_Trigger_phi;
-      TH1F* h_RecMuonMinus_Tight_phi;
-      TH1F* h_RecMuonMinus_Tight_Trigger_phi;
-      TH1F* h_RecMuonMinus_Loose_phi;
-      TH1F* h_RecMuonMinus_Loose_Trigger_phi;
-
-      //TH1F* h_GenDiMuonM;
-      
-  
+      TNtuple *mupDetector;
+      TNtuple *mumDetector;
+      TNtuple *mupTriggerDetector;
+      TNtuple *mumTriggerDetector;
+      TNtuple *mupCutDetector;
+      TNtuple *mumCutDetector;
+      TNtuple *mupCutTriggerDetector;
+      TNtuple *mumCutTriggerDetector;
   
 };
 
 //
 // constructors and destructor
 //
-ZpeakSigTrigger::ZpeakSigTrigger(const edm::ParameterSet& iConfig) {
+TrackerDis::TrackerDis(const edm::ParameterSet& iConfig) {
 
-  /*
-  edm::InputTag theMuonLabel("slimmedMuons");
-  //edm::InputTag theGenMuonLabel("packedGenParticles");
-  edm::InputTag VertexTag ("offlineSlimmedPrimaryVertices");
-  */
+  using namespace std;
+  
   muon_label = (consumes<pat::MuonCollection>(iConfig.getParameter<edm::InputTag>("muon")));
   //genCollToken = consumes<pat::PackedGenParticleCollection>(theGenMuonLabel);
   vertex_label = (consumes<reco::VertexCollection>(iConfig.getParameter<edm::InputTag>("vertexTag")));
   trigger_label = (consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("triggerResults")));
 
   edm::Service<TFileService> fs;
-  
-  h_RecDiMuon_Tight_M = fs->make<TH1F>("h_RecDiMuon_Tight_M",";m_{#mu^{+}#mu^{-}};",60,75,105);
-  h_RecDiMuon_Tight_Trigger_M = fs->make<TH1F>("h_RecDiMuon_Tight_Trigger_M",";m_{#mu^{+}#mu^{-}};",60,75,105);
-  h_RecDiMuon_Loose_M = fs->make<TH1F>("h_RecDiMuon_Loose_M",";m_{#mu^{+}#mu^{-}};",60,75,105);
-  h_RecDiMuon_Loose_Trigger_M = fs->make<TH1F>("h_RecDiMuon_Loose_Trigger_M",";m_{#mu^{+}#mu^{-}};",60,75,105);
-  h_RecDiMuon_Tight_pt = fs->make<TH1F>("h_RecDiMuon_Tight_pt",";p_{T};",50,0,500);
-  h_RecDiMuon_Tight_Trigger_pt = fs->make<TH1F>("h_RecDiMuon_Tight_Trigger_pt",";p_{T};",50,0,500);
-  h_RecDiMuon_Loose_pt = fs->make<TH1F>("h_RecDiMuon_Loose_pt",";p_{T};",50,0,500);
-  h_RecDiMuon_Loose_Trigger_pt = fs->make<TH1F>("h_RecDiMuon_Loose_Trigger_pt",";p_{T};",50,0,500);
-  h_RecDiMuon_Tight_eta = fs->make<TH1F>("h_RecDiMuon_Tight_eta",";#eta;",60,-6,6);
-  h_RecDiMuon_Tight_Trigger_eta = fs->make<TH1F>("h_RecDiMuon_Tight_Trigger_eta",";#eta;",60,-6,6);
-  h_RecDiMuon_Loose_eta = fs->make<TH1F>("h_RecDiMuon_Loose_eta",";#eta;",60,-6,6);
-  h_RecDiMuon_Loose_Trigger_eta = fs->make<TH1F>("h_RecDiMuon_Loose_Trigger_eta",";#eta;",60,-6,6);
-  h_RecDiMuon_Tight_phi = fs->make<TH1F>("h_RecDiMuon_Tight_phi",";#phi;",40,-4,4);
-  h_RecDiMuon_Tight_Trigger_phi = fs->make<TH1F>("h_RecDiMuon_Tight_Trigger_phi",";#phi;",40,-4,4);
-  h_RecDiMuon_Loose_phi = fs->make<TH1F>("h_RecDiMuon_Loose_phi",";#phi;",40,-4,4);
-  h_RecDiMuon_Loose_Trigger_phi = fs->make<TH1F>("h_RecDiMuon_Loose_Trigger_phi",";#phi;",40,-4,4);
-  h_RecMuonPlus_Tight_pt = fs->make<TH1F>("h_RecMuonPlus_Tight_pt",";p_{T};",50,0,500);
-  h_RecMuonPlus_Tight_Trigger_pt = fs->make<TH1F>("h_RecMuonPlus_Tight_Trigger_pt",";p_{T};",50,0,500);
-  h_RecMuonPlus_Loose_pt = fs->make<TH1F>("h_RecMuonPlus_Loose_pt",";p_{T};",50,0,500);
-  h_RecMuonPlus_Loose_Trigger_pt = fs->make<TH1F>("h_RecMuonPlus_Loose_Trigger_pt",";p_{T};",50,0,500);
-  h_RecMuonPlus_Tight_eta = fs->make<TH1F>("h_RecMuonPlus_Tight_eta",";#eta;",60,-6,6);
-  h_RecMuonPlus_Tight_Trigger_eta = fs->make<TH1F>("h_RecMuonPlus_Tight_Trigger_eta",";#eta;",60,-6,6);
-  h_RecMuonPlus_Loose_eta = fs->make<TH1F>("h_RecMuonPlus_Loose_eta",";#eta;",60,-6,6);
-  h_RecMuonPlus_Loose_Trigger_eta = fs->make<TH1F>("h_RecMuonPlus_Loose_Trigger_eta",";#eta;",60,-6,6);
-  h_RecMuonPlus_Tight_phi = fs->make<TH1F>("h_RecMuonPlus_Tight_phi",";#phi;",40,-4,4);
-  h_RecMuonPlus_Tight_Trigger_phi = fs->make<TH1F>("h_RecMuonPlus_Tight_Trigger_phi",";#phi;",40,-4,4);
-  h_RecMuonPlus_Loose_phi = fs->make<TH1F>("h_RecMuonPlus_Loose_phi",";#phi;",40,-4,4);
-  h_RecMuonPlus_Loose_Trigger_phi = fs->make<TH1F>("h_RecMuonPlus_Loose_Trigger_phi",";#phi;",40,-4,4);
-  h_RecMuonMinus_Tight_pt = fs->make<TH1F>("h_RecMuonMinus_Tight_pt",";p_{T};",50,0,500);
-  h_RecMuonMinus_Tight_Trigger_pt = fs->make<TH1F>("h_RecMuonMinus_Tight_Trigger_pt",";p_{T};",50,0,500);
-  h_RecMuonMinus_Loose_pt = fs->make<TH1F>("h_RecMuonMinus_Loose_pt",";p_{T};",50,0,500);
-  h_RecMuonMinus_Loose_Trigger_pt = fs->make<TH1F>("h_RecMuonMinus_Loose_Trigger_pt",";p_{T};",50,0,500);
-  h_RecMuonMinus_Tight_eta = fs->make<TH1F>("h_RecMuonMinus_Tight_eta",";#eta;",60,-6,6);
-  h_RecMuonMinus_Tight_Trigger_eta = fs->make<TH1F>("h_RecMuonMinus_Tight_Trigger_eta",";#eta;",60,-6,6);
-  h_RecMuonMinus_Loose_eta = fs->make<TH1F>("h_RecMuonMinus_Loose_eta",";#eta;",60,-6,6);
-  h_RecMuonMinus_Loose_Trigger_eta = fs->make<TH1F>("h_RecMuonMinus_Loose_Trigger_eta",";#eta;",60,-6,6);
-  h_RecMuonMinus_Tight_phi = fs->make<TH1F>("h_RecMuonMinus_Tight_phi",";#phi;",40,-4,4);
-  h_RecMuonMinus_Tight_Trigger_phi = fs->make<TH1F>("h_RecMuonMinus_Tight_Trigger_phi",";#phi;",40,-4,4);
-  h_RecMuonMinus_Loose_phi = fs->make<TH1F>("h_RecMuonMinus_Loose_phi",";#phi;",40,-4,4);
-  h_RecMuonMinus_Loose_Trigger_phi = fs->make<TH1F>("h_RecMuonMinus_Loose_Trigger_phi",";#phi;",40,-4,4);
-
+  mupDetector = fs->make<TNtuple>("mupDetector", "Muon Plus Detector Parameters", "m:pt:eta:phi:nMuonHits:nMatchedStations:nPixelHits:nTrackerLayerHits");
+  mumDetector = fs->make<TNtuple>("mumDetector", "Muon Minus Detector Parameters", "m:pt:eta:phi:nMuonHits:nMatchedStations:nPixelHits:nTrackerLayerHits");
+  mupTriggerDetector = fs->make<TNtuple>("mupTriggerDetector", "Muon Plus Detector Parameters After HLT", "m:pt:eta:phi:nMuonHits:nMatchedStations:nPixelHits:nTrackerLayerHits");
+  mumTriggerDetector = fs->make<TNtuple>("mumTriggerDetector", "Muon Minus Detector Parameters After HLT", "m:pt:eta:phi:nMuonHits:nMatchedStations:nPixelHits:nTrackerLayerHits");
+  mupCutDetector = fs->make<TNtuple>("mupCutDetector", "Muon Plus Detector Parameters With Cuts", "m:pt:eta:phi:nMuonHits:nMatchedStations:nPixelHits:nTrackerLayerHits");
+  mumCutDetector = fs->make<TNtuple>("mumCutDetector", "Muon Minus Detector Parameters With Cuts", "m:pt:eta:phi:nMuonHits:nMatchedStations:nPixelHits:nTrackerLayerHits");
+  mupCutTriggerDetector = fs->make<TNtuple>("mupCutTriggerDetector", "Muon Plus Detector Parameters After HLT With Cuts", "m:pt:eta:phi:nMuonHits:nMatchedStations:nPixelHits:nTrackerLayerHits");
+  mumCutTriggerDetector = fs->make<TNtuple>("mumCutTriggerDetector", "Muon Minus Detector Parameters After HLT With Cuts", "m:pt:eta:phi:nMuonHits:nMatchedStations:nPixelHits:nTrackerLayerHits"); 
   //h_GenDiMuonM = fs->make<TH1F>("h_GenDiMuonM",";m_{#mu^{+}#mu^{-}};",80,70,110);
  
 }
 
 
-ZpeakSigTrigger::~ZpeakSigTrigger() {
+TrackerDis::~TrackerDis() {
  
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
@@ -195,7 +124,7 @@ ZpeakSigTrigger::~ZpeakSigTrigger() {
 //
 
 // ------------ method called for each event  ------------
-void ZpeakSigTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void TrackerDis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
   using namespace edm;
   using namespace std;
@@ -238,11 +167,13 @@ void ZpeakSigTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& i
   //put your code here
   // Tight Muon
   // find mu+
+  
   for (auto mup = muons->cbegin(); mup != muons->cend(); ++mup) {
       const char *hltName = "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*";
       double mupRecPt = ((mup->p4()).pt());
       double mupRecEta = ((mup->p4()).eta());
       double mupRecPhi = ((mup->p4()).phi());
+      double mupRecM = ((mup->p4()).M());
 
       // Use tight muon ID, pT and eta cut were mentioned in AN2018/073 - Zhuolin 2020-12-22
       if ( not (mup->charge() > 0 ) ) continue;
@@ -250,21 +181,21 @@ void ZpeakSigTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
       if ( not (mup->isGlobalMuon()) ) continue;
       if ( not (mup->isPFMuon()) ) continue;
-      if ( not (mup->globalTrack()->normalizedChi2() < 10.) ) continue; // chi-square of the global-muon track fit < 10
-      if ( not (mup->globalTrack()->hitPattern().numberOfValidMuonHits() > 0) ) continue; // At least one muon-chamber hit included in the global-muon track fit
+      if ( not (mup->globalTrack()->normalizedChi2() < 10.) ) continue;
       if ( not (fabs(mup->muonBestTrack()->dxy(firstGoodVertex->position())) < 0.2 ) ) continue; // dxy < 0.2 
       if ( not (fabs(mup->muonBestTrack()->dz(firstGoodVertex->position())) < 0.5 ) ) continue; // dz < 0.5
-      if ( not (mup->numberOfMatchedStations() > 1) ) continue; // Muon segements in at least two muon stations
-      if ( not (mup->innerTrack()->hitPattern().numberOfValidPixelHits() > 0) ) continue; // Number of pixel hits > 0
-      if ( not (mup->innerTrack()->hitPattern().trackerLayersWithMeasurement() > 5) ) continue; // Cut on number of tracker layers with hits >5
       // PF Isolation very loose
       if ( not ((mup->pfIsolationR04().sumChargedHadronPt + std::max(0., mup->pfIsolationR04().sumNeutralHadronEt + mup->pfIsolationR04().sumPhotonEt - 0.5*mup->pfIsolationR04().sumPUPt))/mup->pt() < 0.4) ) continue; 
-      
+      float mupMuonHits = mup->globalTrack()->hitPattern().numberOfValidMuonHits();
+      float mupMuonStations = mup->numberOfMatchedStations();
+      float mupPixelHits = mup->innerTrack()->hitPattern().numberOfValidPixelHits();
+      float mupTrackerLayers = mup->innerTrack()->hitPattern().trackerLayersWithMeasurement();
       // find mu-
            for (auto mum = muons->cbegin(); mum != muons->cend(); ++mum) {
                 double mumRecPt = ((mum->p4()).pt());
                 double mumRecEta = ((mum->p4()).eta());
                 double mumRecPhi = ((mum->p4()).phi());
+                double mumRecM = ((mum->p4()).M());
 
                 if ( not (mum->charge() < 0 ) ) continue;
                 if ( not (fabs(mum->eta()) < 2.4) ) continue;
@@ -272,12 +203,8 @@ void ZpeakSigTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                 if ( not (mum->isPFMuon()) ) continue;
                 if ( not (mum->isGlobalMuon()) ) continue;
                 if ( not (mum->globalTrack()->normalizedChi2() < 10.) ) continue; // chi-square of the global-muon track fit < 10
-                if ( not (mum->globalTrack()->hitPattern().numberOfValidMuonHits() > 0) ) continue; // At least one muon-chamber hit included in the global-muon track fit
                 if ( not (fabs(mum->muonBestTrack()->dxy(firstGoodVertex->position())) < 0.2 ) ) continue; // dxy < 0.2 
                 if ( not (fabs(mum->muonBestTrack()->dz(firstGoodVertex->position())) < 0.5 ) ) continue; // dz < 0.5
-                if ( not (mum->numberOfMatchedStations() > 1) ) continue; // Muon segements in at least two muon stations
-                if ( not (mum->innerTrack()->hitPattern().numberOfValidPixelHits() > 0) ) continue; // Number of pixel hits > 0
-                if ( not (mum->innerTrack()->hitPattern().trackerLayersWithMeasurement() > 5) ) continue; // Cut on number of tracker layers with hits >5
                 // PF Isolation very loose
                 if ( not ((mum->pfIsolationR04().sumChargedHadronPt + std::max(0., mum->pfIsolationR04().sumNeutralHadronEt + mum->pfIsolationR04().sumPhotonEt - 0.5*mum->pfIsolationR04().sumPUPt))/mum->pt() < 0.4) ) continue; 
                 // pt constrains - Zhuolin 2020-10-12
@@ -290,95 +217,72 @@ void ZpeakSigTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& i
                   if ( mup->pt() <= 15.0 ) continue;
                   if ( mum->pt() <= 25.0 ) continue;
                 }
+                float mumMuonHits = mum->globalTrack()->hitPattern().numberOfValidMuonHits();
+                float mumMuonStations = mum->numberOfMatchedStations();
+                float mumPixelHits = mum->innerTrack()->hitPattern().numberOfValidPixelHits();
+                float mumTrackerLayers = mum->innerTrack()->hitPattern().trackerLayersWithMeasurement();
                 double diMuonRecMass = ((mup->p4() + mum->p4()).M());
-                double diMuonRecPt = ((mup->p4() + mum->p4()).pt());
-                double diMuonRecEta = ((mup->p4() + mum->p4()).eta());
-                double diMuonRecPhi = ((mup->p4() + mum->p4()).phi());
                 if ( diMuonRecMass < 75 || diMuonRecMass > 105) continue; // only look around the Z peak
                 // Trigger match
                 const pat::Muon *muon1 = &(*mup);
                 const pat::Muon *muon2 = &(*mum);
 
                 if ( muon1->triggerObjectMatchByPath(hltName) != nullptr && muon2->triggerObjectMatchByPath(hltName) != nullptr){
-                    h_RecDiMuon_Tight_Trigger_M->Fill(diMuonRecMass);
-                    h_RecDiMuon_Tight_Trigger_pt->Fill(diMuonRecPt);
-                    h_RecDiMuon_Tight_Trigger_eta->Fill(diMuonRecEta);
-                    h_RecDiMuon_Tight_Trigger_phi->Fill(diMuonRecPhi);
-                    h_RecMuonPlus_Tight_Trigger_pt->Fill(mupRecPt);
-                    h_RecMuonPlus_Tight_Trigger_eta->Fill(mupRecEta);
-                    h_RecMuonPlus_Tight_Trigger_phi->Fill(mupRecPhi);
-                    h_RecMuonMinus_Tight_Trigger_pt->Fill(mumRecPt);
-                    h_RecMuonMinus_Tight_Trigger_eta->Fill(mumRecEta);
-                    h_RecMuonMinus_Tight_Trigger_phi->Fill(mumRecPhi);
+                    mupCutTriggerDetector->Fill(mupRecM, mupRecPt, mupRecEta, mupRecPhi, mupMuonHits, mupMuonStations, mupPixelHits, mupTrackerLayers);
+                    mumCutTriggerDetector->Fill(mumRecM, mumRecPt, mumRecEta, mumRecPhi, mumMuonHits, mumMuonStations, mumPixelHits, mumTrackerLayers);
            }
-                h_RecDiMuon_Tight_M->Fill(diMuonRecMass);
-                h_RecDiMuon_Tight_pt->Fill(diMuonRecPt);
-                h_RecDiMuon_Tight_eta->Fill(diMuonRecEta);
-                h_RecDiMuon_Tight_phi->Fill(diMuonRecPhi);
-                h_RecMuonPlus_Tight_pt->Fill(mupRecPt);
-                h_RecMuonPlus_Tight_eta->Fill(mupRecEta);
-                h_RecMuonPlus_Tight_phi->Fill(mupRecPhi);
-                h_RecMuonMinus_Tight_pt->Fill(mumRecPt);
-                h_RecMuonMinus_Tight_eta->Fill(mumRecEta);
-                h_RecMuonMinus_Tight_phi->Fill(mumRecPhi);
+                mupCutDetector->Fill(mupRecM, mupRecPt, mupRecEta, mupRecPhi, mupMuonHits, mupMuonStations, mupPixelHits, mupTrackerLayers);
+                mumCutDetector->Fill(mumRecM, mumRecPt, mumRecEta, mumRecPhi, mumMuonHits, mumMuonStations, mumPixelHits, mumTrackerLayers);
            }
   }
-
+  
     // Loose Muon
     // find mu+
+
     for (auto mup = muons->cbegin(); mup != muons->cend(); ++mup) {
         const char *hltName = "HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v*";
         double mupRecPt = ((mup->p4()).pt());
         double mupRecEta = ((mup->p4()).eta());
         double mupRecPhi = ((mup->p4()).phi());
+        double mupRecM = ((mup->p4()).M());
         if ( not (mup->charge() > 0 ) ) continue;
         // Loose Muon ID
         if ( not (mup->isGlobalMuon()) ) continue;
         if ( not (mup->isPFMuon()) ) continue;
-        
+        float mupMuonHits = mup->globalTrack()->hitPattern().numberOfValidMuonHits();
+        float mupMuonStations = mup->numberOfMatchedStations();
+        float mupPixelHits = mup->innerTrack()->hitPattern().numberOfValidPixelHits();
+        float mupTrackerLayers = mup->innerTrack()->hitPattern().trackerLayersWithMeasurement();
+
         // find mu-
              for (auto mum = muons->cbegin(); mum != muons->cend(); ++mum) {
                   double mumRecPt = ((mum->p4()).pt());
                   double mumRecEta = ((mum->p4()).eta());
                   double mumRecPhi = ((mum->p4()).phi());
+                  double mumRecM = ((mum->p4()).M()); 
                   if ( not (mum->charge() < 0 ) ) continue;
                   // Loose muon ID
                   if ( not (mum->isPFMuon()) ) continue;
                   if ( not (mum->isGlobalMuon()) ) continue;
+                  float mumMuonHits = mum->globalTrack()->hitPattern().numberOfValidMuonHits();
+                  float mumMuonStations = mum->numberOfMatchedStations();
+                  float mumPixelHits = mum->innerTrack()->hitPattern().numberOfValidPixelHits();
+                  float mumTrackerLayers = mum->innerTrack()->hitPattern().trackerLayersWithMeasurement();
                   
                   double diMuonRecMass = ((mup->p4() + mum->p4()).M());
-                  double diMuonRecPt = ((mup->p4() + mum->p4()).pt());
-                  double diMuonRecEta = ((mup->p4() + mum->p4()).eta());
-                  double diMuonRecPhi = ((mup->p4() + mum->p4()).phi());
                   if ( diMuonRecMass < 75 || diMuonRecMass > 105) continue; // only look around the Z peak
-                    
+                  
                   // Trigger match
                   const pat::Muon *muon1 = &(*mup);
                   const pat::Muon *muon2 = &(*mum);
-
                   if ( muon1->triggerObjectMatchByPath(hltName) != nullptr && muon2->triggerObjectMatchByPath(hltName) != nullptr) 
                   {
-                      h_RecDiMuon_Loose_Trigger_M->Fill(diMuonRecMass);
-                      h_RecDiMuon_Loose_Trigger_pt->Fill(diMuonRecPt);
-                      h_RecDiMuon_Loose_Trigger_eta->Fill(diMuonRecEta);
-                      h_RecDiMuon_Loose_Trigger_phi->Fill(diMuonRecPhi);
-                      h_RecMuonPlus_Loose_Trigger_pt->Fill(mupRecPt);
-                      h_RecMuonPlus_Loose_Trigger_eta->Fill(mupRecEta);
-                      h_RecMuonPlus_Loose_Trigger_phi->Fill(mupRecPhi);
-                      h_RecMuonMinus_Loose_Trigger_pt->Fill(mumRecPt);
-                      h_RecMuonMinus_Loose_Trigger_eta->Fill(mumRecEta);
-                      h_RecMuonMinus_Loose_Trigger_phi->Fill(mumRecPhi);
+                      mupTriggerDetector->Fill(mupRecM, mupRecPt, mupRecEta, mupRecPhi, mupMuonHits, mupMuonStations, mupPixelHits, mupTrackerLayers);
+                      mumTriggerDetector->Fill(mumRecM, mumRecPt, mumRecEta, mumRecPhi, mumMuonHits, mumMuonStations, mumPixelHits, mumTrackerLayers);
                   }
-                  h_RecDiMuon_Loose_M->Fill(diMuonRecMass);
-                  h_RecDiMuon_Loose_pt->Fill(diMuonRecPt);
-                  h_RecDiMuon_Loose_eta->Fill(diMuonRecEta);
-                  h_RecDiMuon_Loose_phi->Fill(diMuonRecPhi);
-                  h_RecMuonPlus_Loose_pt->Fill(mupRecPt);
-                  h_RecMuonPlus_Loose_eta->Fill(mupRecEta);
-                  h_RecMuonPlus_Loose_phi->Fill(mupRecPhi);
-                  h_RecMuonMinus_Loose_pt->Fill(mumRecPt);
-                  h_RecMuonMinus_Loose_eta->Fill(mumRecEta);
-                  h_RecMuonMinus_Loose_phi->Fill(mumRecPhi);
+                  mupDetector->Fill(mupRecM, mupRecPt, mupRecEta, mupRecPhi, mupMuonHits, mupMuonStations, mupPixelHits, mupTrackerLayers);
+                  mumDetector->Fill(mumRecM, mumRecPt, mumRecEta, mumRecPhi, mumMuonHits, mumMuonStations, mumPixelHits, mumTrackerLayers);
+
              }
     
     }
@@ -408,15 +312,15 @@ void ZpeakSigTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
 
 // ------------ method called once each job just before starting event loop  ------------
-void ZpeakSigTrigger::beginJob() {
+void TrackerDis::beginJob() {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void ZpeakSigTrigger::endJob() {
+void TrackerDis::endJob() {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void ZpeakSigTrigger::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+void TrackerDis::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 
   // The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
@@ -427,4 +331,4 @@ void ZpeakSigTrigger::fillDescriptions(edm::ConfigurationDescriptions& descripti
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(ZpeakSigTrigger);
+DEFINE_FWK_MODULE(TrackerDis);

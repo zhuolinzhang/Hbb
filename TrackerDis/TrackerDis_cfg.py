@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-process = cms.Process("ZpeakSigTrigger")
+process = cms.Process("TrackerDis")
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
@@ -22,7 +22,7 @@ SkipEvent = cms.untracked.vstring('ProductNotFound'))
 process.source = cms.Source("PoolSource", fileNames =
         cms.untracked.vstring('root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/100000/26E84402-6DE5-6C44-A5EC-1D6F7AEFB167.root'))
 
-process.demo = cms.EDAnalyzer("ZpeakSigTrigger",
+process.analysis= cms.EDAnalyzer("TrackerDis",
                                        muon = cms.InputTag("slimmedMuons"),
                                        vertexTag = cms.InputTag("offlineSlimmedPrimaryVertices"),
                                        triggerResults = cms.InputTag("TriggerResults", "", "HLT"),
@@ -32,7 +32,7 @@ process.demo = cms.EDAnalyzer("ZpeakSigTrigger",
 )
 
 process.TFileService = cms.Service("TFileService",
-          fileName = cms.string('zpeak_trigger.root')
+          fileName = cms.string('detector_analysis.root')
 )
 
-process.p = cms.Path(process.demo)
+process.p = cms.Path(process.analysis)

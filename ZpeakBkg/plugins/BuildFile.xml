@@ -2,6 +2,7 @@
 <use name="FWCore/PluginManager"/>
 <use name="FWCore/ParameterSet"/>
 <use name="FWCore/ServiceRegistry"/>
+<use name="FWCore/Common"/>
 <use name="DataFormats/L1Trigger"/>
 <use name="DataFormats/TrackReco"/>
 <use name="SimTracker/Records"/>
@@ -13,6 +14,6 @@
 <use name="DataFormats/VertexReco"/>
 <use name="CLHEP"/>
 <use name="root"/>
-<library file="ZpeakBkg.cc" name="ZpeakBkg">
+<library file="ZpeakBkgTrigger.cc" name="ZpeakBkgTrigger">
   <flags EDM_PLUGIN="1"/>
 </library>

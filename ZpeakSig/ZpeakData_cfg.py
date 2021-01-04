@@ -14,13 +14,13 @@ process.MessageLogger.cerr.INFO = cms.untracked.PSet(
 
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False),
 SkipEvent = cms.untracked.vstring('ProductNotFound'))
 
 process.source = cms.Source("PoolSource", fileNames =
-        cms.untracked.vstring('root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v2/100000/26E84402-6DE5-6C44-A5EC-1D6F7AEFB167.root'))
+        cms.untracked.vstring('root://cmsxrootd.fnal.gov//store/data/Run2018B/DoubleMuon/MINIAOD/17Sep2018-v1/00000/054806F3-BB73-8B41-BD57-203C5E8940D2.root'))
 
 process.demo = cms.EDAnalyzer("ZpeakSigTrigger",
                                        muon = cms.InputTag("slimmedMuons"),
@@ -32,7 +32,7 @@ process.demo = cms.EDAnalyzer("ZpeakSigTrigger",
 )
 
 process.TFileService = cms.Service("TFileService",
-          fileName = cms.string('zpeak_trigger.root')
+          fileName = cms.string('zpeak_data_trigger.root')
 )
 
 process.p = cms.Path(process.demo)

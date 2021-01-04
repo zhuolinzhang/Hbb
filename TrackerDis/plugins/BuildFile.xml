@@ -14,6 +14,6 @@
 <use name="DataFormats/VertexReco"/>
 <use name="CLHEP"/>
 <use name="root"/>
-<library file="ZpeakSigTrigger.cc" name="ZpeakSigTrigger">
+<library file="*.cc" name="TrackerDis">
   <flags EDM_PLUGIN="1"/>
 </library>

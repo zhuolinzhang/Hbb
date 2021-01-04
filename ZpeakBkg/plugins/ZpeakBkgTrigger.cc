@@ -49,12 +49,12 @@
 // class declaration
 //
 
-class ZpeakSigTrigger : public edm::one::EDAnalyzer<edm::one::SharedResources> {
+class ZpeakBkgTrigger : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 
    public:
 
-      explicit ZpeakSigTrigger(const edm::ParameterSet&);
-      ~ZpeakSigTrigger();
+      explicit ZpeakBkgTrigger(const edm::ParameterSet&);
+      ~ZpeakBkgTrigger();
 
       static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 
@@ -122,7 +122,7 @@ class ZpeakSigTrigger : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 //
 // constructors and destructor
 //
-ZpeakSigTrigger::ZpeakSigTrigger(const edm::ParameterSet& iConfig) {
+ZpeakBkgTrigger::ZpeakBkgTrigger(const edm::ParameterSet& iConfig) {
 
   /*
   edm::InputTag theMuonLabel("slimmedMuons");
@@ -182,7 +182,7 @@ ZpeakSigTrigger::ZpeakSigTrigger(const edm::ParameterSet& iConfig) {
 }
 
 
-ZpeakSigTrigger::~ZpeakSigTrigger() {
+ZpeakBkgTrigger::~ZpeakBkgTrigger() {
  
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
@@ -195,7 +195,7 @@ ZpeakSigTrigger::~ZpeakSigTrigger() {
 //
 
 // ------------ method called for each event  ------------
-void ZpeakSigTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void ZpeakBkgTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
   using namespace edm;
   using namespace std;
@@ -408,15 +408,15 @@ void ZpeakSigTrigger::analyze(const edm::Event& iEvent, const edm::EventSetup& i
 
 
 // ------------ method called once each job just before starting event loop  ------------
-void ZpeakSigTrigger::beginJob() {
+void ZpeakBkgTrigger::beginJob() {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void ZpeakSigTrigger::endJob() {
+void ZpeakBkgTrigger::endJob() {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void ZpeakSigTrigger::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+void ZpeakBkgTrigger::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 
   // The following says we do not know what parameters are allowed so do no validation
   // Please change this to state exactly what you do use, even if it is no parameters
@@ -427,4 +427,4 @@ void ZpeakSigTrigger::fillDescriptions(edm::ConfigurationDescriptions& descripti
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(ZpeakSigTrigger);
+DEFINE_FWK_MODULE(ZpeakBkgTrigger);
