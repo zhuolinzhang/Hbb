@@ -17,6 +17,9 @@ def open_file(file_path):
 def get_primary_name(list_index, file_path = './Samples'):
     # Get the file name without suffix to help analysis
     file_list = os.listdir(file_path)
+    for i in file_list:
+        if i == '.DS_Store':
+            file_list.remove('.DS_Store')
     file_name = file_list[list_index]
     primary_name = file_name.rstrip('.root')
     return primary_name
