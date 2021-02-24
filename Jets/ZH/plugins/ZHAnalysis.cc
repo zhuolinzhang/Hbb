@@ -81,46 +81,46 @@ class ZHAnalysis : public edm::one::EDAnalyzer<edm::one::SharedResources> {
       edm::EDGetTokenT<pat::JetCollection> jetToken_;
 
       TH1F* h_RecDijet_Trigger_M;
-      TH1F* h_RecDijet_JetMatch_M;
+      TH1F* h_RecDijet_Match_M;
 
       TH1F* h_RecDijet_Trigger_pt;
-      TH1F* h_RecDijet_JetMatch_pt;
+      TH1F* h_RecDijet_Match_pt;
 
       TH1F* h_RecDijet_Trigger_eta;
-      TH1F* h_RecDijet_JetMatch_eta;
+      TH1F* h_RecDijet_Match_eta;
 
       TH1F* h_RecDijet_Trigger_phi;
-      TH1F* h_RecDijet_JetMatch_phi;
+      TH1F* h_RecDijet_Match_phi;
 
       TH1F* h_RecDiMuon_Trigger_M;
-      TH1F* h_RecDiMuon_MuonMatch_M;
+      TH1F* h_RecDiMuon_Match_M;
 
       TH1F* h_RecDiMuon_Trigger_pt;
-      TH1F* h_RecDiMuon_MuonMatch_pt;
+      TH1F* h_RecDiMuon_Match_pt;
 
       TH1F* h_RecDiMuon_Trigger_eta;
-      TH1F* h_RecDiMuon_MuonMatch_eta;
+      TH1F* h_RecDiMuon_Match_eta;
 
       TH1F* h_RecDiMuon_Trigger_phi;
-      TH1F* h_RecDiMuon_MuonMatch_phi;
+      TH1F* h_RecDiMuon_Match_phi;
 
       TH1F* h_RecMuonPlus_Trigger_pt;
-      TH1F* h_RecMuonPlus_MuonMatch_pt;
+      TH1F* h_RecMuonPlus_Match_pt;
 
       TH1F* h_RecMuonMinus_Trigger_pt;
-      TH1F* h_RecMuonMinus_MuonMatch_pt;
+      TH1F* h_RecMuonMinus_Match_pt;
 
       TH1F* h_RecMuonPlus_Trigger_eta;
-      TH1F* h_RecMuonPlus_MuonMatch_eta;
+      TH1F* h_RecMuonPlus_Match_eta;
 
       TH1F* h_RecMuonMinus_Trigger_eta;
-      TH1F* h_RecMuonMinus_MuonMatch_eta;
+      TH1F* h_RecMuonMinus_Match_eta;
 
       TH1F* h_RecMuonPlus_Trigger_phi;
-      TH1F* h_RecMuonPlus_MuonMatch_phi;
+      TH1F* h_RecMuonPlus_Match_phi;
 
       TH1F* h_RecMuonMinus_Trigger_phi;
-      TH1F* h_RecMuonMinus_MuonMatch_phi;
+      TH1F* h_RecMuonMinus_Match_phi;
 
       std::string HLTPath_;
       //TH1F* h_GenDiMuonM;
@@ -143,36 +143,36 @@ ZHAnalysis::ZHAnalysis(const edm::ParameterSet& iConfig) {
 
   edm::Service<TFileService> fs;
   h_RecDijet_Trigger_M = fs->make<TH1F>("h_RecDijet_Trigger_M",";m_{dijet};",60,90,150);
-  h_RecDijet_JetMatch_M = fs->make<TH1F>("h_RecDijet_JetMatch_M",";m_{dijet};",60,90,150);
+  h_RecDijet_Match_M = fs->make<TH1F>("h_RecDijet_Match_M",";m_{dijet};",60,90,150);
   h_RecDijet_Trigger_pt = fs->make<TH1F>("h_RecDijet_Trigger_pt",";dijet p_{T};",50,0,500);
-  h_RecDijet_JetMatch_pt = fs->make<TH1F>("h_RecDijet_JetMatch_pt",";dijet p_{T};",50,0,500);
+  h_RecDijet_Match_pt = fs->make<TH1F>("h_RecDijet_Match_pt",";dijet p_{T};",50,0,500);
   h_RecDijet_Trigger_eta = fs->make<TH1F>("h_RecDijet_Trigger_eta",";dijet #eta;",60,-6,6);
-  h_RecDijet_JetMatch_eta = fs->make<TH1F>("h_RecDijet_JetMatch_eta",";dijet #eta;",60,-6,6);
+  h_RecDijet_Match_eta = fs->make<TH1F>("h_RecDijet_Match_eta",";dijet #eta;",60,-6,6);
   h_RecDijet_Trigger_phi = fs->make<TH1F>("h_RecDijet_Trigger_phi",";dijet #phi;",40,-4,4);
-  h_RecDijet_JetMatch_phi = fs->make<TH1F>("h_RecDijet_JetMatch_phi",";dijet #phi;",40,-4,4);
+  h_RecDijet_Match_phi = fs->make<TH1F>("h_RecDijet_Match_phi",";dijet #phi;",40,-4,4);
   
   h_RecDiMuon_Trigger_M = fs->make<TH1F>("h_RecDiMuon_Trigger_M",";m_{#mu^{+}#mu^{-}};",60,75,105);
-  h_RecDiMuon_MuonMatch_M = fs->make<TH1F>("h_RecDiMuon_MuonMatch_M",";m_{#mu^{+}#mu^{-}};",60,75,105);
+  h_RecDiMuon_Match_M = fs->make<TH1F>("h_RecDiMuon_Match_M",";m_{#mu^{+}#mu^{-}};",60,75,105);
   h_RecDiMuon_Trigger_pt = fs->make<TH1F>("h_RecDiMuon_Trigger_pt",";p_{T};",50,0,500);
-  h_RecDiMuon_MuonMatch_pt = fs->make<TH1F>("h_RecDiMuon_MuonMatch_pt",";p_{T};",50,0,500);
+  h_RecDiMuon_Match_pt = fs->make<TH1F>("h_RecDiMuon_Match_pt",";p_{T};",50,0,500);
   h_RecDiMuon_Trigger_eta = fs->make<TH1F>("h_RecDiMuon_Trigger_eta",";#eta;",60,-6,6);
-  h_RecDiMuon_MuonMatch_eta = fs->make<TH1F>("h_RecDiMuon_MuonMatch_eta",";#eta;",60,-6,6);
+  h_RecDiMuon_Match_eta = fs->make<TH1F>("h_RecDiMuon_Match_eta",";#eta;",60,-6,6);
   h_RecDiMuon_Trigger_phi = fs->make<TH1F>("h_RecDiMuon_Trigger_phi",";#phi;",40,-4,4);
-  h_RecDiMuon_MuonMatch_phi = fs->make<TH1F>("h_RecDiMuon_MuonMatch_phi",";#phi;",40,-4,4);
+  h_RecDiMuon_Match_phi = fs->make<TH1F>("h_RecDiMuon_Match_phi",";#phi;",40,-4,4);
 
   h_RecMuonPlus_Trigger_pt = fs->make<TH1F>("h_RecMuonPlus_Trigger_pt",";p_{T};",50,0,500);
-  h_RecMuonPlus_MuonMatch_pt = fs->make<TH1F>("h_RecMuonPlus_MuonMatch_pt",";p_{T};",50,0,500);
+  h_RecMuonPlus_Match_pt = fs->make<TH1F>("h_RecMuonPlus_Match_pt",";p_{T};",50,0,500);
   h_RecMuonPlus_Trigger_eta = fs->make<TH1F>("h_RecMuonPlus_Trigger_eta",";#eta;",60,-6,6);
-  h_RecMuonPlus_MuonMatch_eta = fs->make<TH1F>("h_RecMuonPlus_MuonMatch_eta",";#eta;",60,-6,6);
+  h_RecMuonPlus_Match_eta = fs->make<TH1F>("h_RecMuonPlus_Match_eta",";#eta;",60,-6,6);
   h_RecMuonPlus_Trigger_phi = fs->make<TH1F>("h_RecMuonPlus_Trigger_phi",";#phi;",40,-4,4);
 
-  h_RecMuonPlus_MuonMatch_phi = fs->make<TH1F>("h_RecMuonPlus_MuonMatch_phi",";#phi;",40,-4,4);
+  h_RecMuonPlus_Match_phi = fs->make<TH1F>("h_RecMuonPlus_Match_phi",";#phi;",40,-4,4);
   h_RecMuonMinus_Trigger_pt = fs->make<TH1F>("h_RecMuonMinus_Trigger_pt",";p_{T};",50,0,500);
-  h_RecMuonMinus_MuonMatch_pt = fs->make<TH1F>("h_RecMuonMinus_MuonMatch_pt",";p_{T};",50,0,500);
+  h_RecMuonMinus_Match_pt = fs->make<TH1F>("h_RecMuonMinus_Match_pt",";p_{T};",50,0,500);
   h_RecMuonMinus_Trigger_eta = fs->make<TH1F>("h_RecMuonMinus_Trigger_eta",";#eta;",60,-6,6);
-  h_RecMuonMinus_MuonMatch_eta = fs->make<TH1F>("h_RecMuonMinus_MuonMatch_eta",";#eta;",60,-6,6);
+  h_RecMuonMinus_Match_eta = fs->make<TH1F>("h_RecMuonMinus_Match_eta",";#eta;",60,-6,6);
   h_RecMuonMinus_Trigger_phi = fs->make<TH1F>("h_RecMuonMinus_Trigger_phi",";#phi;",40,-4,4);
-  h_RecMuonMinus_MuonMatch_phi = fs->make<TH1F>("h_RecMuonMinus_MuonMatch_phi",";#phi;",40,-4,4);
+  h_RecMuonMinus_Match_phi = fs->make<TH1F>("h_RecMuonMinus_Match_phi",";#phi;",40,-4,4);
 
   //h_GenDiMuonM = fs->make<TH1F>("h_GenDiMuonM",";m_{#mu^{+}#mu^{-}};",80,70,110);
  
@@ -306,10 +306,10 @@ void ZHAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                 const pat::Muon *muon1 = &(*mup);
                 const pat::Muon *muon2 = &(*mum);
 
-                // find b jet
+                // find b jet in MC samples
                 for (auto jet1 = jets->cbegin(); jet1 != jets->cend(); ++jet1) {
                   if ( !(jet1->pt() > 20) ) continue;
-                  if ( !(jet1->hadronFlavour() == 5) ) continue;
+                  if ( !(jet1->partonFlavour() == 5 || jet1->partonFlavour() == -5) ) continue;
                   float NHF  = jet1->neutralHadronEnergyFraction();
                   float NEMF = jet1->neutralEmEnergyFraction();
                   float CHF  = jet1->chargedHadronEnergyFraction();
@@ -322,8 +322,8 @@ void ZHAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                   for (auto jet2 = jets->cbegin(); jet2 != jets->cend(); ++jet2){
                     if (jet2 < jet1) continue; // avoid double counting
                     if ( !(jet2->pt() > 20) ) continue;
-                    if ( !(jet2->hadronFlavour() == 5) ) continue;
-                    if ( !(jet1->jetCharge() * jet2->jetCharge() < 0)) continue;
+                    if ( !(jet2->partonFlavour() == 5 || jet2->partonFlavour() == -5) ) continue;
+                    if ( !(jet1->partonFlavour() * jet2->partonFlavour() < 0)) continue;
                     float NHF  = jet2->neutralHadronEnergyFraction();
                     float NEMF = jet2->neutralEmEnergyFraction();
                     float CHF  = jet2->chargedHadronEnergyFraction();
@@ -352,21 +352,21 @@ void ZHAnalysis::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
                       h_RecMuonMinus_Trigger_pt->Fill(mumRecPt);
                       h_RecMuonMinus_Trigger_eta->Fill(mumRecEta);
                       h_RecMuonMinus_Trigger_phi->Fill(mumRecPhi);
-                      if (muon1->triggerObjectMatchByPath(hltName) != nullptr && muon2->triggerObjectMatchByPath(hltName) != nullptr && jet1->triggerObjectMatchByPath(hltName) != nullptr && jet2->triggerObjectMatchByPath(hltName) != nullptr) {
-                        h_RecDiMuon_MuonMatch_M->Fill(diMuonRecMass);
-                        h_RecDiMuon_MuonMatch_pt->Fill(diMuonRecPt);
-                        h_RecDiMuon_MuonMatch_eta->Fill(diMuonRecEta);
-                        h_RecDiMuon_MuonMatch_phi->Fill(diMuonRecPhi);
-                        h_RecDijet_JetMatch_M->Fill(dijetRecMass);
-                        h_RecDijet_JetMatch_pt->Fill(dijetRecPt);
-                        h_RecDijet_JetMatch_eta->Fill(dijetRecEta);
-                        h_RecDijet_JetMatch_phi->Fill(dijetRecPhi);
-                        h_RecMuonPlus_MuonMatch_pt->Fill(mupRecPt);
-                        h_RecMuonPlus_MuonMatch_eta->Fill(mupRecEta);
-                        h_RecMuonPlus_MuonMatch_phi->Fill(mupRecPhi);
-                        h_RecMuonMinus_MuonMatch_pt->Fill(mumRecPt);
-                        h_RecMuonMinus_MuonMatch_eta->Fill(mumRecEta);
-                        h_RecMuonMinus_MuonMatch_phi->Fill(mumRecPhi);
+                      if (muon1->triggerObjectMatchByPath(hltName) != nullptr && muon2->triggerObjectMatchByPath(hltName) != nullptr) {
+                        h_RecDiMuon_Match_M->Fill(diMuonRecMass);
+                        h_RecDiMuon_Match_pt->Fill(diMuonRecPt);
+                        h_RecDiMuon_Match_eta->Fill(diMuonRecEta);
+                        h_RecDiMuon_Match_phi->Fill(diMuonRecPhi);
+                        h_RecDijet_Match_M->Fill(dijetRecMass);
+                        h_RecDijet_Match_pt->Fill(dijetRecPt);
+                        h_RecDijet_Match_eta->Fill(dijetRecEta);
+                        h_RecDijet_Match_phi->Fill(dijetRecPhi);
+                        h_RecMuonPlus_Match_pt->Fill(mupRecPt);
+                        h_RecMuonPlus_Match_eta->Fill(mupRecEta);
+                        h_RecMuonPlus_Match_phi->Fill(mupRecPhi);
+                        h_RecMuonMinus_Match_pt->Fill(mumRecPt);
+                        h_RecMuonMinus_Match_eta->Fill(mumRecEta);
+                        h_RecMuonMinus_Match_phi->Fill(mumRecPhi);
                       }
                     }
 
