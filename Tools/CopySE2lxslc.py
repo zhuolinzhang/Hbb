@@ -5,13 +5,7 @@ import os
 import re
 
 # Check VO
-voInfo = os.popen('voms-proxy-info')
-voInfoProxy = voInfo.readline()
-if re.search('found', voInfoProxy):
-    print("Your VO wasn't initialized, voms-proxy-init is run now.")
-    os.system('voms-proxy-init -voms cms')
-else:
-    print("Your VO is vaild!")
+os.system('voms-proxy-info')
 
 # Copy function
 def copyFiles(SEPath, targetDirectory, name, dataset, year, month, fullDate, mcOrData):
@@ -37,7 +31,11 @@ def copyFiles(SEPath, targetDirectory, name, dataset, year, month, fullDate, mcO
     return checkFlag
 
 mySEPath = 'gsiftp://ccsrm.ihep.ac.cn/dpm/ihep.ac.cn/home/cms/store/user/zhuolinz' # my new T2 path
+print("If your VO is not valid, you can input voinit to initialize VO")
 taskName = input("Please input the task name: ") # my CRAB job name style: dataset primary name_taskname_date e.g. ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8_AddTrigger_210112
+if taskName == 'voinit':
+    os.system('voms-proxy-init -voms cms')
+    taskName = input("Please input the task name: ")
 taskFullDate = input("Please input the date (YYMMDD): ")
 taskYear = '20' + taskFullDate[0:2]
 taskMonth = taskFullDate[2:4]
@@ -67,10 +65,12 @@ for datasetName in mcDirectoryList:
 for datasetName in dataDirectoryList:
     noOutputFlag = copyFiles(mySEPath, t3Directory, taskName, datasetName, taskYear, taskMonth, taskFullDate, 'data')
 
+# Compress all output .root files, print the path
+os.chdir(t3Directory)
+os.system('tar -zcvf {}_{}.tar.gz *.root'.format(taskName, taskFullDate))
+print("************************************")
+print("The path of output file is {}/{}_{}.tar.gz".format(t3Directory, taskName, taskFullDate))
+
 if noOutputList != []:
     print("************************************")
     print("There are some MC samples which didn't have output files: ", noOutputList)
-
-# Compress all output .root files, print the path
-os.system('tar -zcvf {2}/{0}_{1}.tar.gz {2}/*.root'.format(taskName, taskFullDate, t3Directory))
-print("The path of output file is {}/{}_{}.tar.gz".format(t3Directory, taskName, taskFullDate))
