@@ -4,6 +4,15 @@
 import os
 import re
 
+# Check VO
+voInfo = os.popen('voms-proxy-info')
+voInfoProxy = voInfo.readline()
+if re.search('found', voInfoProxy):
+    print("Your VO wasn't initialized, voms-proxy-init is run now.")
+    os.system('voms-proxy-init -voms cms')
+else:
+    print("Your VO is vaild!")
+
 # Copy function
 def copyFiles(SEPath, targetDirectory, name, dataset, year, month, fullDate, mcOrData):
     datasetPath = os.popen('gfal-ls -l {}/{} --full-time | grep {}-{}-[0-9][0-9]'.format(SEPath, dataset, year, month))
@@ -61,3 +70,7 @@ for datasetName in dataDirectoryList:
 if noOutputList != []:
     print("************************************")
     print("There are some MC samples which didn't have output files: ", noOutputList)
+
+# Compress all output .root files, print the path
+os.system('tar -zcvf {2}/{0}_{1}.tar.gz {2}/*.root'.format(taskName, taskFullDate, t3Directory))
+print("The path of output file is {}/{}_{}.tar.gz".format(t3Directory, taskName, taskFullDate))
