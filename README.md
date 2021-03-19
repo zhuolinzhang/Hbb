@@ -11,8 +11,3 @@ fill the TH1 histograms. So I will not use these macros for ZH analysis.
 `Cutflow` is the analysis about the cut-flow of dijet signal process and background process. 
 
 `Tools` includes some macros which help me work more effective. Now there is a macro to create a lots of CRAB scripts. There also has a simple shell to submit massive jobs to CRAB at same time. There also some macros to make and modify the database json file. 
-
-<<<<<<< HEAD
-=======
-**Attention:** There are some serious errors in the ZH analyzer macro. This analyzer will be reconstructed very soon. 
->>>>>>> 4559c4ebd6ec4e29bf041f9a01cdc64538a81295
