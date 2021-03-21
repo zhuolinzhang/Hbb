@@ -1,4 +1,4 @@
-# Samples in Hbb Analysis
+# MC Samples in ZH(bb) Analysis
 
 ## Signal Simulation
 
@@ -8,7 +8,7 @@ ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8
 
 ## Background Simulation
 
-### Diboson Samples
+### Double Z boson
 
 ZZ_TuneCP5_13TeV-pythia8 (BTV-RunIIAutumn18MiniAOD-00083)
 
@@ -58,79 +58,15 @@ DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8 (MUO-RunIIAutumn18MiniAOD-0003
 
 nevents: 19717537 nlumis: 19684
 
-DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8 (B2G-RunIIFall17MiniAODv2-00308)
-
-`/DYJetsToLL_M-50_HT-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v2/MINIAODSIM`
-
-nevents: 11197488 nlumis: 15074
-
-DYJetsToLL_M-50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8  (B2G-RunIIFall17MiniAODv2-00309)
-
-`/DYJetsToLL_M-50_HT-200to400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM`
-
-nevents: 10728447 nlumis: 14599
-
-DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8
-
-`/DYJetsToLL_M-50_HT-400to600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v2/MINIAODSIM`
-
-nevents: 10219524 nlumis: 11230
-
-DYJetsToLL_M-50_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8
-
-`/DYJetsToLL_M-50_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v2/MINIAODSIM`
-
-nevents:  8743640 nlumis: 12866
-
-DYJetsToLL_M-50_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8
-
-`/DYJetsToLL_M-50_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v2/MINIAODSIM`
-
-nevents: 3114980 nlumis: 4433
-
-DYJetsToLL_M-50_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8 (B2G-RunIIFall17MiniAODv2-00125)
-
-`/DYJetsToLL_M-50_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM`
-
-nevents: 625517 nlumis: 2871
-
-DYJetsToLL_M-50_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8 (B2G-RunIIFall17MiniAODv2-00313)
-
-`/DYJetsToLL_M-50_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v2/MINIAODSIM`
-
-nevents: 419308 nlumis: 846
-
-DYBJetsToLL_M-50_Zpt-100to200_TuneCP5_13TeV-madgraphMLM-pythia8
-
-`/DYBJetsToLL_M-50_Zpt-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM`
-
-nevents: 19917076 nlumis: 139391
-
-DYBJetsToLL_M-50_Zpt-200toInf_TuneCP5_13TeV-madgraphMLM-pythia8
-
-`/DYBJetsToLL_M-50_Zpt-200toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM`
-
-nevents: 1748080 nlumis: 14567
-
-DYJetsToLL_BGenFilter_Zpt-100to200_M-50_TuneCP5_13TeV-madgraphMLM-pythia8
-
-`/DYJetsToLL_BGenFilter_Zpt-100to200_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM`
-
-nevents: 7621116 nlumis: 85926
-
-DYJetsToLL_BGenFilter_Zpt-200toInf_M-50_TuneCP5_13TeV-madgraphMLM-pythia8
-
-`/DYJetsToLL_BGenFilter_Zpt-200toInf_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM`
-
-nevents: 2043053 nlumis: 29799
-
-### t$\bar{t}$, Single Top, QCD
+### tt
 
 TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8 (TOP-RunIIAutumn18MiniAOD-00058)
 
 `/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM`
 
 nevents:101550000 nlumis:20310
+
+### Single top
 
 ST_t-channel_top_4f_inclusiveDecays_TuneCP5_13TeV-powhegV2-madspin-pythia8
 
@@ -149,6 +85,8 @@ ST_s-channel_4f_leptonDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8 (TOP-RunII
 `/ST_s-channel_4f_leptonDecays_TuneCP5_PSweights_13TeV-amcatnlo-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/MINIAODSIM`
 
 nevents: 9914948 nlumis: 10745
+
+### QCD
 
 QCD_HT100to200_TuneCP5_13TeV-madgraphMLM-pythia8 (JME-RunIIAutumn18MiniAOD-00021)
 
