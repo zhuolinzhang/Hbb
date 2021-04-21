@@ -5,9 +5,12 @@ import os
 import re
 
 # Check VO
-os.system('voms-proxy-info')
+if os.path.exists("/tmp/x509up_u12918"): pass
+else:
+    print("Please activate your VO!")
+    os.system("voms-proxy-init -voms cms")
 
-# Copy function
+# Copy files function
 def copyFiles(SEPath, targetDirectory, name, dataset, year, month, fullDate, mcOrData):
     datasetPath = os.popen('gfal-ls -l {}/{} --full-time | grep {}-{}-[0-9][0-9]'.format(SEPath, dataset, year, month))
     datasetPathPrimaryList = datasetPath.readlines()
@@ -33,9 +36,6 @@ def copyFiles(SEPath, targetDirectory, name, dataset, year, month, fullDate, mcO
 mySEPath = 'gsiftp://ccsrm.ihep.ac.cn/dpm/ihep.ac.cn/home/cms/store/user/zhuolinz' # my new T2 path
 print("If your VO is not valid, you can input voinit to initialize VO")
 taskName = input("Please input the task name: ") # my CRAB job name style: dataset primary name_taskname_date e.g. ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8_AddTrigger_210112
-if taskName == 'voinit':
-    os.system('voms-proxy-init -voms cms')
-    taskName = input("Please input the task name: ")
 taskFullDate = input("Please input the date (YYMMDD): ")
 taskYear = '20' + taskFullDate[0:2]
 taskMonth = taskFullDate[2:4]
