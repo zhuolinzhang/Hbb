@@ -3,68 +3,58 @@
 
 import os
 import re
+import argparse
+import shutil
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-f", type=str, help="The full CRAB task name of MC sample of data")
+parser.add_argument("--type", type=str, help="MC of Data")
+parser.add_argument("-o", type=str, help="Input skim to delete all hadd root files")
+args = parser.parse_args()
 
 # Check VO
-if os.path.exists("/tmp/x509up_u12918"): pass
-else:
-    print("Please activate your VO!")
-    os.system("voms-proxy-init -voms cms")
+def checkVO():
+    if os.path.exists("/tmp/x509up_u12918"): pass
+    else:
+        print("Please activate your VO!")
+        os.system("voms-proxy-init -voms cms")
 
 # Copy files function
-def copyFiles(SEPath, targetDirectory, name, dataset, year, month, fullDate, mcOrData):
-    datasetPath = os.popen('gfal-ls -l {}/{} --full-time | grep {}-{}-[0-9][0-9]'.format(SEPath, dataset, year, month))
-    datasetPathPrimaryList = datasetPath.readlines()
-    checkFlag = True
-    for j in datasetPathPrimaryList:
-        if re.search('_{}_{}'.format(name, fullDate), j):
-            checkFlag = False
-            taskFullName = j.split()[-1]
-            jobDateFile = os.popen('gfal-ls {}/{}/{}'.format(SEPath, dataset, taskFullName))
-            jobDate = jobDateFile.readline().rstrip()
-            os.system('gfal-copy -r {}/{}/{}/{}/0000 {}/{}'.format(SEPath, dataset, taskFullName, jobDate, targetDirectory, taskFullName))
-            newDirectoryList = os.listdir('{}/{}'.format(targetDirectory,taskFullName))
-            if mcOrData == 'mc':
-                newFileName = dataset
-            elif mcOrData == 'data':
-                newFileName = taskFullName.split('_')[0]
-            if len(newDirectoryList) > 1:
-                os.system('hadd {0}/{1}.root {0}/{2}/*.root'.format(targetDirectory, newFileName, taskFullName))
-            else:
-                os.system('cp {0}/{2}/*.root {0}/{1}.root'.format(targetDirectory, newFileName, taskFullName))
-    return checkFlag
-
-mySEPath = 'gsiftp://ccsrm.ihep.ac.cn/dpm/ihep.ac.cn/home/cms/store/user/zhuolinz' # my new T2 path
-print("If your VO is not valid, you can input voinit to initialize VO")
-taskName = input("Please input the task name: ") # my CRAB job name style: dataset primary name_taskname_date e.g. ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8_AddTrigger_210112
-taskFullDate = input("Please input the date (YYMMDD): ")
-taskYear = '20' + taskFullDate[0:2]
-taskMonth = taskFullDate[2:4]
-
-t3Directory = '/cms/user/zhangzhuolin/target_files/{}_{}'.format(taskName, taskFullDate) # my T3 path
-os.system('mkdir {}'.format(t3Directory))
-homeDirectory = os.popen('gfal-ls -l {} --full-time | grep {}-{}-[0-9][0-9]'.format(mySEPath, taskYear, taskMonth))
-mcDirectoryList = []
-noOutputList = []
-dataDirectoryList = []
-homeDirectoryPrimaryList = homeDirectory.readlines()
-for i in homeDirectoryPrimaryList:
-    mcDirectoryList.append(i.split()[-1])
-for i in mcDirectoryList:
-    if re.search('TeV', i):
-        continue
+def copyFiles(targetDirectory, jobName, dataset, date, mcOrData):
+    SEPath = 'gsiftp://ccsrm.ihep.ac.cn/dpm/ihep.ac.cn/home/cms/store/user/zhuolinz' # my new T2 path
+    if mcOrData == 'mc':
+        jobDateFile = os.popen('gfal-ls {}/{}/{}'.format(SEPath, dataset, jobName))
+    elif mcOrData == 'data':
+        jobDateFile = os.popen('gfal-ls {}/DoubleMuon/{}'.format(SEPath, jobName))
+    jobDate = jobDateFile.readline().rstrip()
+    os.system('gfal-copy -rf {0}/{1}/{2}/{3}/0000 {4}/{2}'.format(SEPath, dataset, jobName, jobDate, targetDirectory))
+    newDirectoryList = os.listdir('{}/{}'.format(targetDirectory, jobName))
+    if len(newDirectoryList) > 1:
+        haddCommand = 'hadd -f {0}/{1}.root'.format(targetDirectory, dataset)
+        for i in newDirectoryList:
+            haddCommand += ' {}/{}/{}'.format(targetDirectory, jobName, i)
+        os.system(haddCommand)
+        if args.o == "skim": 
+            shutil.rmtree('{}/{}'.format(targetDirectory, jobName))
+            print("The folder {}/{} has been deleted!".format(targetDirectory, jobName))
     else:
-        dataDirectoryList.append(i)
-for i in dataDirectoryList:
-    mcDirectoryList.remove(i)
+        os.system('cp {0}/{2}/*.root {0}/{1}.root'.format(targetDirectory, dataset, jobName))
 
-for datasetName in mcDirectoryList:
-    noOutputFlag = copyFiles(mySEPath, t3Directory, taskName, datasetName, taskYear, taskMonth, taskFullDate, 'mc')
-    if noOutputFlag:
-        noOutputList.append(datasetName)
+checkVO()
+crabJobName = args.f
+crabJobNameList = crabJobName.split("_")
+taskDate = crabJobNameList.pop()
+taskName = crabJobNameList.pop()
+primaryDatasetName = crabJobNameList[0]
+for i in range(1, len(crabJobNameList)):
+    primaryDatasetName += "_" + crabJobNameList[i]
 
-for datasetName in dataDirectoryList:
-    noOutputFlag = copyFiles(mySEPath, t3Directory, taskName, datasetName, taskYear, taskMonth, taskFullDate, 'data')
+t3Directory = '/publicfs/cms/user/zhangzhuolin/target_files/{}_{}'.format(taskName, taskDate) # my T3 path
+if os.path.exists(t3Directory): pass
+else: os.mkdir(t3Directory)
+copyFiles(t3Directory, crabJobName, primaryDatasetName, taskDate, args.type)
 
+'''
 # Compress all output .root files, print the path
 os.chdir(t3Directory)
 os.system('tar -zcvf {}_{}.tar.gz *.root'.format(taskName, taskFullDate))
@@ -74,3 +64,4 @@ print("The path of output file is {}/{}_{}.tar.gz".format(t3Directory, taskName,
 if noOutputList != []:
     print("************************************")
     print("There are some MC samples which didn't have output files: ", noOutputList)
+'''
