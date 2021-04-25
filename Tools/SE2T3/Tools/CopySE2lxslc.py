@@ -4,7 +4,6 @@
 import os
 import re
 import argparse
-import shutil
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-f", type=str, help="The full CRAB job name of MC sample of data")
@@ -31,7 +30,7 @@ def copyFiles(targetDirectory, jobName, dataset, date, mcOrData):
 def tarFiles(directory, name, date):
     os.chdir(directory)
     os.system('tar -zcvf {}_{}.tar.gz *.root'.format(name, date))
-    print("The path of output file is {}/{}_{}.tar.gz".format(director, name, date))
+    print("The path of output file is {}/{}_{}.tar.gz".format(directory, name, date))
 
 def main():
     crabJobName = args.f
