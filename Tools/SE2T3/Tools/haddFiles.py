@@ -3,12 +3,6 @@ import re
 import argparse
 import shutil
 
-parser = argparse.ArgumentParser()
-parser.add_argument("-o", type=str, help="Input skim to delete all source files")
-parser.add_argument("--job", type=str, help="The full CRAB job name")
-parser.add_argument("-f", type=str, help='T3 target folder path')
-args = parser.parse_args()
-
 def haddFiles(targetDirectory, jobName, datasetName, optimizeFlag=None):
     directoryList = os.listdir('{}/{}'.format(targetDirectory, jobName))
     if len(directoryList) > 1:
@@ -29,11 +23,14 @@ def haddFiles(targetDirectory, jobName, datasetName, optimizeFlag=None):
     else: print("Your job {} does not have any output, please check it!".format(jobName))
 
 if __name__ == '__main__':
-    t3Directory = '/publicfs/cms/user/zhangzhuolin/target_files/{}'.format(args.job) # my T3 path
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-o", type=str, help="Input skim to delete all source files")
+    parser.add_argument("--job", type=str, help="The full CRAB job name")
+    parser.add_argument("-f", type=str, default="/publicfs/cms/user/zhangzhuolin/target_files",help='T3 target_files folder path') # /publicfs/cms/user/zhangzhuolin/target_files
+    args = parser.parse_args()
     jobNameList = args.job.split("_")
-    for i in range(0,2):
-        jobNameList.pop()
+    taskDate = jobNameList.pop()
+    taskName = jobNameList.pop()
     datasetName = jobNameList[0]
-    for i in range(1, len(jobNameList)):
-        datasetName += "_" + jobNameList[i]
+    t3Directory = args.f + '/{}_{}'.format(taskName, taskDate) # my T3 path
     haddFiles(t3Directory, args.job, datasetName, args.o)

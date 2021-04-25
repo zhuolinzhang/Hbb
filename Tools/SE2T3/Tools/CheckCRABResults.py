@@ -10,7 +10,8 @@ def checkVO():
         pass
     else:
         print("Please activate your VO!")
-        os.system("voms-proxy-init -voms cms")
+        while not(os.path.exists("/tmp/x509up_u12918")):
+            os.system("voms-proxy-init -voms cms")
 
 # Read MC Samples and Data list from .txt file
 def readLocalList(listFilePath):
@@ -39,7 +40,7 @@ def getFileFlag(sampleName, taskName, date, mcOrData):
     return findFlag
 
 def checkCRABResluts(resultPath, taskName, taskDate):
-    resultSavePath = resultPath + '/' + taskName
+    resultSavePath = resultPath + '/' + taskName + "_" + taskDate
     if os.path.exists(resultSavePath):
         pass
     else:
@@ -52,13 +53,13 @@ def checkCRABResluts(resultPath, taskName, taskDate):
     dataT2List = []
     # Get MC list and data list in T2
     for i in mcInputList:
-        mcFindFlag = getFileFlag(i, taskName, taskFullDate, 'mc')
+        mcFindFlag = getFileFlag(i, taskName, taskDate, 'mc')
         if mcFindFlag:
             mcT2List.append(i)
         else:
             noOutputMCList.append(i)
     for i in dataInputList:
-        dataFindFlag = getFileFlag(i, taskName, taskFullDate, 'data')
+        dataFindFlag = getFileFlag(i, taskName, taskDate, 'data')
         if dataFindFlag:
             dataT2List.append(i)
         else:
@@ -83,6 +84,4 @@ if __name__ == '__main__':
     resultPath = '/publicfs/cms/user/zhangzhuolin/CRABResult'
     taskName = input("Please input the task name: ") # my CRAB job name style: dataset primary name_taskname_date e.g. ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8_AddTrigger_210112
     taskFullDate = input("Please input the date (YYMMDD): ")
-    #taskYear = '20' + taskFullDate[0:2]
-    #taskMonth = taskFullDate[2:4]
     resultTuple = checkCRABResluts(resultPath, taskName, taskFullDate)
