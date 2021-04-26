@@ -3,6 +3,20 @@ import re
 import argparse
 import shutil
 
+def generateScripts(savePath, sourcePath, jobName, scriptNum, datasetType):
+    if os.path.exists(savePath): pass
+    else: os.mkdir(savePath)
+    fileName = 'haddJobSubmit_' + str(scriptNum) + '.sh'
+    with open(savePath +"/" + fileName, 'w') as f:
+        f.write('export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/\n')
+        f.write('source $VO_CMS_SW_DIR/cmsset_default.sh\n')
+        if datasetType == 'mc':
+            f.write('python3 {}/haddFiles.py --job {} --type mc\n'.format(sourcePath, jobName))
+        elif datasetType == 'data':
+            f.write('python3 {}/haddFiles.py --job {} --type data\n'.format(sourcePath, jobName))
+    os.chmod(savePath +"/" + fileName, 0o755)
+    print("Script {} is generated!".format(fileName))
+
 def haddFiles(targetDirectory, jobName, datasetName, optimizeFlag=None):
     directoryList = os.listdir('{}/{}'.format(targetDirectory, jobName))
     if len(directoryList) > 1:
@@ -11,7 +25,7 @@ def haddFiles(targetDirectory, jobName, datasetName, optimizeFlag=None):
             haddCommand += ' {}/{}/{}'.format(targetDirectory, jobName, i)
         print("{} is starting merging.".format(jobName))
         os.system(haddCommand)
-        if optimizeFlag == "skim": 
+        if optimizeFlag == "skim":
             shutil.rmtree('{}/{}'.format(targetDirectory, jobName))
             print("The folder {}/{} has been deleted!".format(targetDirectory, jobName))
     elif len(directoryList) == 1:
@@ -25,12 +39,16 @@ def haddFiles(targetDirectory, jobName, datasetName, optimizeFlag=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", type=str, help="Input skim to delete all source files")
-    parser.add_argument("--job", type=str, help="The full CRAB job name")
+    parser.add_argument("--job", type=str, help="The full CRAB job name") # e.g. DoubleMuonPrompt2018D_AddTrigger_210112
     parser.add_argument("-f", type=str, default="/publicfs/cms/user/zhangzhuolin/target_files",help='T3 target_files folder path') # /publicfs/cms/user/zhangzhuolin/target_files
+    parser.add_argument("--type", type=str, help="mc or data")
     args = parser.parse_args()
     jobNameList = args.job.split("_")
     taskDate = jobNameList.pop()
     taskName = jobNameList.pop()
     datasetName = jobNameList[0]
+    if args.type == 'mc':
+        for i in range(1, len(jobNameList)):
+            datasetName += "_" + jobNameList[i]
     t3Directory = args.f + '/{}_{}'.format(taskName, taskDate) # my T3 path
     haddFiles(t3Directory, args.job, datasetName, args.o)
