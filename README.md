@@ -14,9 +14,9 @@ fill the TH1 histograms. So I will not use these macros for ZH analysis. These t
 
 ## To-do List
 
-🔘 Update analyzer from reading cut-off ntuple to no-cut ntuple
+✔ Update analyzer from reading cut-off ntuple to no-cut ntuple
 
-🔘 Write a macro to cut ntuple
+✔ Write a macro to cut ntuple
 
 🔘 Update all macros which are incompatible with the new workflow
 
