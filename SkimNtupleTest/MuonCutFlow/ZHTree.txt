@@ -1,6 +1,0 @@
-Name	All	Pass	Efficiency	Cumulative Eff
-Muon pt	8209	7917	96.4429 %	96.4429 %
-Tight muon	7917	7321	92.4719 %	89.1826 %
-Muon eta	7321	7311	99.8634 %	89.0608 %
-Muon iso.	7311	6713	91.8205 %	81.7761 %
-Z mass	6713	6308	93.9669 %	76.8425 %
