@@ -1,8 +1,7 @@
-import os
 import ROOT
 import json
 
-class Hist(ROOT.TH1):
+class Hist():
     def __init__(self, kinematics, phyObject, selection, dataset, tree):
         self.kinematics = kinematics
         self.phyObject = phyObject
@@ -10,11 +9,21 @@ class Hist(ROOT.TH1):
         self.histName = "h_{}_{}_{}".format(phyObject, selection, kinematics)
         self.dataset = dataset
         self.tree = tree
+        recoTargetDict = {'RecDiMuon': 'Z', 'RecDiJet': 'Higgs'}
+        dataList = ['DoubleMuon2018A', 'DoubleMuon2018B', 'DoubleMuon2018C', 'DoubleMuonPrompt2018D']
+        self.recoObject = recoTargetDict[self.phyObject]
+        if dataList in dataList:
+            self.mcOrData = 'data'
+        else: self.mcOrData = 'mc'
+        self.histEdge = self.getTH1Edge()
+        self.hist = self.getHist()
+        if self.mcOrData == 'mc':
+            self.hist.Scale(self.getScaleFactor())
     
-    def getTH1Parameters(self):
-        histParasDict = {'M': {'RecDiMuon': '60, 75, 105', 'RecDiJet': '75, 50, 200'}, 'Pt':'50, 0, 500', 'Eta':'60, -6, 6', 'Phi':'40, -4, 4'}
+    def getTH1Edge(self):
+        histEdgeDict = {'M': {'RecDiMuon': '60, 75, 105', 'RecDiJet': '75, 50, 200'}, 'Pt':'50, 0, 500', 'Eta':'60, -6, 6', 'Phi':'40, -4, 4'}
         loopFlag = False
-        for kinimatic, para in histParasDict.items():
+        for kinimatic, para in histEdgeDict.items():
             if kinimatic == self.kinematics:
                 loopFlag = True
                 histEdge = para
@@ -22,7 +31,7 @@ class Hist(ROOT.TH1):
                     histEdge = para[self.phyObject]
         if loopFlag == False: 
             print('You input wrong physical object!')
-        self.histPara = histEdge
+        return histEdge
     
     def getScaleFactor(self):
         with open('MCInfo_IsoMu20.json') as mcInfo:
@@ -37,5 +46,6 @@ class Hist(ROOT.TH1):
         return factor
 
     def getHist(self):
-        self.tree.Draw("{} >> {}({})") # nbins, xmin, xmax in the bracket
-        h = ROOT.gROOT.FindObject()
+        self.tree.Draw("{}{} >> {}({})".format(self.recoObject, self.kinematics, self.histName, self.histEdge)) # nbins, xmin, xmax in the bracket
+        h = ROOT.gROOT.FindObject(self.histName)
+        return h

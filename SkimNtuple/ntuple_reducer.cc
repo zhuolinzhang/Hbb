@@ -290,7 +290,7 @@ int ntuple_reducer(TString fileName, TString savePath)
     std::cout << "Skim " << flatFileName << std::endl;
     auto branchNames = d.GetColumnNames();
     auto dCutMuon = d.Filter("mu1Pt > 25 && mu2Pt > 15", "Muon pt").Filter("mu1Tight == 1 && mu2Tight == 1", "Tight muon").Filter("mu1Eta < 2.4 && mu2Eta < 2.4", "Muon eta").Filter("mu1Iso < 0.4 && mu2Iso < 0.4", "Muon iso.").Filter("ZM > 75 && ZM < 105", "Z mass");
-    auto dCutJet = dCutMuon.Filter("jet1Pt > 20 && jet2Pt > 20", "Jet pt").Filter("jet1bTag > 0.4184 && jet2bTag > 0.4814", "deepCSV").Filter("jet1ID == 1 && jet2ID == 1", "Jet ID").Filter("HiggsM >= 90 && HiggsM <= 150", "Higgs mass");
+    auto dCutJet = dCutMuon.Filter("jet1Pt > 20 && jet2Pt > 20", "Jet pt").Filter("jet1bTag > 0.4184 && jet2bTag > 0.4184", "deepCSV").Filter("jet1ID == 1 && jet2ID == 1", "Jet ID").Filter("HiggsM >= 50 && HiggsM <= 200", "Higgs mass");
     //fileName.Remove(0, flatPathName.Length());
     //auto dMuonCutFlow = dCutMuon.Report();
     auto dJetCutFlow = dCutJet.Report();
