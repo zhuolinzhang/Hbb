@@ -263,13 +263,15 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
             eachMuPair["mu1Eta"] = mu1Eta->at(i);
             eachMuPair["mu1Phi"] = mu1Phi->at(i);
             eachMuPair["mu1M"] = mu1M->at(i);
+            eachMuPair["mu1Iso"] = mu1Iso->at(i);
             eachMuPair["mu1Tight"] = mu1Tight->at(i);
             eachMuPair["mu1Global"] = mu1Global->at(i);
-            eachMuPair["mu1Charge"] = mu1Charge->at(i);
+            eachMuPair["mu2Charge"] = mu2Charge->at(i);
             eachMuPair["mu2Pt"] = mu2Pt->at(i);
             eachMuPair["mu2Eta"] = mu2Eta->at(i);
             eachMuPair["mu2Phi"] = mu2Phi->at(i);
             eachMuPair["mu2M"] = mu2M->at(i);
+            eachMuPair["mu2Iso"] = mu2Iso->at(i);
             eachMuPair["mu2Tight"] = mu2Tight->at(i);
             eachMuPair["mu2Global"] = mu2Global->at(i);
             eachMuPair["ZPt"] = ZPt->at(i);
@@ -330,7 +332,7 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
             mu2Eta_ = cutMuPair[0]["mu2Eta"];
             mu2Phi_ = cutMuPair[0]["mu2Phi"];
             mu2M_ = cutMuPair[0]["mu2M"];
-            mu2Iso_ = cutMuPair[0]["mu1Iso"];
+            mu2Iso_ = cutMuPair[0]["mu2Iso"];
 
             jet1Pt_ = cutJetPair[0]["jet1Pt"];
             jet1Eta_ = cutJetPair[0]["jet1Eta"];
@@ -342,7 +344,7 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
             jet2Eta_ = cutJetPair[0]["jet2Eta"];
             jet2Phi_ = cutJetPair[0]["jet2Phi"];
             jet2M_ = cutJetPair[0]["jet2M"];
-            jet2bTag_ = cutJetPair[0]["jet1bTag"];
+            jet2bTag_ = cutJetPair[0]["jet2bTag"];
 
             ZPt_ = cutMuPair[0]["ZPt"];
             ZEta_ = cutMuPair[0]["ZEta"];
