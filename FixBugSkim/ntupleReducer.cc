@@ -101,7 +101,7 @@ std::vector<int> cutFlowCount(std::vector<std::map<std::string, float>> muonColl
                 if (muPair["mu1Tight"] == 1 && muPair["mu2Tight"] == 1)
                 {
                     cutScore++;
-                    if (muPair["mu1Eta"] < 2.4 && muPair["mu2Eta"] < 2.4)
+                    if (fabs(muPair["mu1Eta"]) < 2.4 && fabs(muPair["mu2Eta"]) < 2.4)
                     {
                         cutScore++;
                         if (muPair["mu1Iso"] < 0.4 && muPair["mu2Iso"] < 0.4)
