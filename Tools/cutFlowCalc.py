@@ -40,11 +40,6 @@ def genTxtList(cutFlowPath):
             datasetList.append(i.rstrip('.txt'))
     return datasetList
 
-def genKindDf(datasetDict):
-    global genKindDf
-    for i in datasetDict.keys():
-        exec('df_{} = pd.DataFrame(np.zeros((9, 2)), columns=["Pass", "All"], index=["Muon Pt", "Tight Muon", "Muon Eta", "Muon Iso", "Z Mass", "Jet Pt", "deepCSV", "Jet ID", "Higgs Mass"])'.format(i))
-
 def categoryCutFlowDf(path, dataset, cate_df):
     print('Read {}'.format(dataset))
     df = pd.read_csv(path + '/' + dataset + '.txt', delimiter='\t')
@@ -65,9 +60,8 @@ def calcEff(dataFrame, savePath, fileName):
 
 cutFlowList = genTxtList(args.path)
 datasetKindDict = genCategoryDict(cutFlowList)
-genKindDf(datasetKindDict)
 for i in datasetKindDict.keys():
-    exec('df_{} = pd.DataFrame(np.zeros((9, 2)), columns=["Pass", "All"], index=["Muon Pt", "Tight Muon", "Muon Eta", "Muon Iso", "Z Mass", "Jet Pt", "deepCSV", "Jet ID", "Higgs Mass"])'.format(i))
+        exec('df_{} = pd.DataFrame(np.zeros((9, 2)), columns=["Pass", "All"], index=["Muon Pt", "Tight Muon", "Muon Eta", "Muon Iso", "Z Mass", "Jet Pt", "deepCSV", "Jet ID", "Higgs Mass"])'.format(i))
 for datasetKind, datasetList in datasetKindDict.items():
     for dataset in datasetList:
         exec('df_{2} = categoryCutFlowDf("{0}", "{1}", df_{2})'.format(args.path, dataset, datasetKind))
