@@ -2,7 +2,7 @@ import ROOT
 import json
 
 class Hist():
-    def __init__(self, kinematics, phyObject, selection, dataset, tree):
+    def __init__(self, kinematics, phyObject, selection, dataset, tree) -> None:
         self.kinematics = kinematics
         self.phyObject = phyObject
         self.selection = selection
@@ -12,12 +12,15 @@ class Hist():
         recoTargetDict = {'RecDiMuon': 'Z', 'RecDiJet': 'Higgs'}
         dataList = ['DoubleMuon2018A', 'DoubleMuon2018B', 'DoubleMuon2018C', 'DoubleMuonPrompt2018D']
         self.recoObject = recoTargetDict[self.phyObject]
-        if dataList in dataList:
+        if dataset in dataList:
             self.mcOrData = 'data'
         else: self.mcOrData = 'mc'
         self.histEdge = self.getTH1Edge()
         self.hist = self.getHist()
-        if self.mcOrData == 'mc':
+        if self.mcOrData == 'data':
+            self.mcCategory = 'data'
+        else: 
+            self.mcCategory = self.getCategoryOfMC()
             self.hist.Scale(self.getScaleFactor())
     
     def getTH1Edge(self):
@@ -49,3 +52,13 @@ class Hist():
         self.tree.Draw("{}{} >> {}({})".format(self.recoObject, self.kinematics, self.histName, self.histEdge)) # nbins, xmin, xmax in the bracket
         h = ROOT.gROOT.FindObject(self.histName)
         return h
+    
+    def getCategoryOfMC(self):
+        matchDict = {'ZH_HToBB':'zh', 'TTTo':'tt', 'channel':'st', 'ZZ':'dib', 'QCD':'qcd', 'DYJetsToLL':'zjets'}
+        mcCategory = None
+        for datasetName in matchDict.keys():
+            if datasetName in self.dataset:
+                mcCategory = matchDict[datasetName]
+        if mcCategory == None:
+            print("The dataset name {} is wrong! Please check!".format(self.dataset))
+        return mcCategory
