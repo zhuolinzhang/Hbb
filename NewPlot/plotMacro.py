@@ -2,25 +2,13 @@ import os
 import ROOT
 import plotConfig
 import plotHelper
+import argparse
 
-def genCategoryHist(onlySampleCateList, phyObjList, selectKineDict, includeData=True):
-    global genCategoryHist
-    histEdgeDict = {'M': {'RecDiMuon': '60, 75, 105', 'RecDiJet': '75, 50, 200'}, 'Pt':'50, 0, 500', 'Eta':'60, -6, 6', 'Phi':'40, -4, 4'}
-    if includeData == True: 
-        sampleCateList = onlySampleCateList
-        sampleCateList.append('data')
-    for k in selectKineDict.values():
-        for s in selectKineDict.keys():
-            for phyObj in phyObjList:
-                for sample in sampleCateList:
-                    if k == 'M':
-                        histEdge = histEdgeDict['M'][phyObj]
-                    else:
-                        histEdge = histEdgeDict[k]
-                    exec('{0}_{1}_{2}_{3} = ROOT.TH1F("{0}_{1}_{2}_{3}", "{0}_{1}_{2}_{3}", {4})'.format(sample, phyObj, s, k, histEdge))
+parser = argparse.ArgumentParser()
+parser.add_argument("--data", type=str, default=True, help="The dataset include data")
+args = parser.parse_args()
 
 def categoryHists(sampleCateList, hist):
-    global categoryHists
     for sample in sampleCateList:
         if hist.mcCategory == sample:
             exec('{}_{}_{}_{} += {}'.format(sample, hist.phyObject, hist.selection, hist.kinematics, hist.hist))
@@ -28,7 +16,6 @@ def categoryHists(sampleCateList, hist):
             exec('data_{0}_{1}_{2} += {3}'.format(hist.phyObject, hist.selection, hist.kinematics, hist.hist))
 
 def getHistsFromTree(tree, datasetName, phyObjList, selectKineDict, sampleList):
-    global getHistsFromTree
     for phyObj in phyObjList:
         for select, kine in selectKineDict.items():
             for s in select:
@@ -40,10 +27,21 @@ sampleCategoryList = ['zh', 'st', 'tt', 'dib', 'qcd', 'zjets']
 phyObjList = ['RecDiMuon', 'RecDiJet']
 selectKineDict = {'Match': ['Pt', 'Eta', 'Phi', 'M']}
 
-genCategoryHist(sampleCategoryList, phyObjList, selectKineDict)
+histEdgeDict = {'M': {'RecDiMuon': '60, 75, 105', 'RecDiJet': '75, 50, 200'}, 'Pt':'50, 0, 500', 'Eta':'60, -6, 6', 'Phi':'40, -4, 4'}
+if args.data == True: 
+    sampleCategoryList.append('data')
+for k in selectKineDict.values():
+    for s in selectKineDict.keys():
+        for phyObj in phyObjList:
+            for sample in sampleCategoryList:
+                if k == 'M':
+                    histEdge = histEdgeDict['M'][phyObj]
+                else:
+                    histEdge = histEdgeDict[k]
+                exec('{0}_{1}_{2}_{3} = ROOT.TH1F("{0}_{1}_{2}_{3}", "{0}_{1}_{2}_{3}", {4})'.format(
+                        sample, phyObj, s, k, histEdge))
 fileList = plotHelper.openRootFiles("./dataset")
 for file in fileList:
     zhTree = file.Get("ZHCandidates")
     datasetPrimaryName = plotHelper.getPrimaryName(file)
     getHistsFromTree(zhTree, datasetPrimaryName, phyObjList, selectKineDict, sampleCategoryList)
-
