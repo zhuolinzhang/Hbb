@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <algorithm>
+#include <time.h>
 #include "ROOT/RDataFrame.hxx"
 #include "TTree.h"
 #include "TFile.h"
@@ -304,7 +305,7 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
         {
             if (!(muPair["mu1Pt"] > 25 && muPair["mu2Pt"] > 15)) continue;
             if (!(muPair["mu1Tight"] == 1 && muPair["mu2Tight"] == 1)) continue;
-            if (!(muPair["mu1Eta"] < 2.4 && muPair["mu2Eta"] < 2.4)) continue;
+            if (!(fabs(muPair["mu1Eta"]) < 2.4 && fabs(muPair["mu2Eta"]) < 2.4)) continue;
             if (!(muPair["mu1Iso"] < 0.4 && muPair["mu2Iso"] < 0.4)) continue;
             if (!(muPair["ZM"] >= 75 && muPair["ZM"] <= 105)) continue;
             cutMuPair.push_back(muPair);
@@ -385,6 +386,7 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
 // main function
 int ntupleReducer(TString fileName, TString savePath)
 {
+    clock_t tStart = clock();
     //ROOT::IsImplicitMTEnabled(); // open multi-process (For HTCondor, comment it!)
     auto oldTreeName = "demo/ZHCollection"; // keep same with the name of TTree in the source
     auto newTreeName = "ZHCandidates";
@@ -398,5 +400,6 @@ int ntupleReducer(TString fileName, TString savePath)
     checkPath(cutFlowPathName);
     TString flatFileName = flatPathName + returnPathOrFileName(fileName, "file");
     cutTree(fileName, savePath, oldTreeName, newTreeName);
+    printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
     return 0;
 }
