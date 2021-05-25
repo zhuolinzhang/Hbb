@@ -1,5 +1,0 @@
-Name	All	Pass	Efficiency	Cumulative Eff.(%)	Jet Cum. Eff.(%)
-Jet pt	8209	16	0.194908	0.194908	0
-deepCSV	16	0	0	0	0
-Jet ID	0	0	nan	0	0
-Higgs mass	0	0	nan	0	0
