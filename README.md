@@ -1,10 +1,10 @@
-# An Introduction to Hbb Repository
+# An Introduction to The Hbb Repository
 
 This repository is about my ZH(bb) analysis macros.
 
 `ZpeakSig` is about the analysis of Z to mu+ mu-. This analyzer can only produce `TH1` histograms. `ZH` contains the analyzer and plot macros in my ZH(bb) work. The subfolder `plot` includes macros which I use to plot histograms, stack histograms, the ratio of Data/MC and the ratio of sideband/signal region . The plot macro is an OOP macro which can plot histograms of MC samples and data easily and plot Data/MC of different categories. . The class `Hist` is defined in `plotConfig.py`. The functions of plot are in `plotConfig.py`. 
 
-`Cutflow` include two files. One is the analysis about the cut-flow of ZH cuts. The other is the fit of the invariant mass spectrum of dijet. 
+`Cutflow` include three files. `cutFlowCalc.py` is the analysis about the cut-flow of ZH cuts. `transferTxtToTex.py` can transfer a `.txt` which delimiter by tab to a `.tex` using `pandas`. The other is the fit of the invariant mass spectrum of dijet. 
 
 `Tools` includes some macros which help me work more effective. Now there is a macro to create a lots of CRAB scripts. There also has a simple shell to submit massive jobs to CRAB at same time. There also some macros to make and modify the database `json` file. 
 
