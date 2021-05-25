@@ -93,6 +93,7 @@ std::vector<int> cutFlowCount(std::vector<std::map<std::string, float>> muonColl
 {
     std::vector<int> entryCutScore;
     // Because there are m muon pairs * n jet pairs possibilities for the each entry, we nest the jet loop into the muon loop. 
+    // 0 - can't pass any cuts, 9 - pass all cuts
     for (auto muPair : muonCollection)
         {
             int cutScore = 0;
@@ -199,7 +200,7 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
     TString rootFileName = returnPathOrFileName(oldFileName, "file");
     TFile *fCut = new TFile((newDirPath + rootFileName).Data(), "RECREATE");
     TTree *cutZHTree = new TTree(newTreeName, newTreeName);
-    TString cutFlowFileName = newDirPath + "/CutFlow/" + rootFileName.Remove(rootFileName.First('.'), rootFileName.Length() - rootFileName.First('.')) + ".txt";
+    TString cutFlowFileName = newDirPath + "/CutFlow/" + rootFileName.Remove(rootFileName.First('.'), rootFileName.Length() - rootFileName.First('.')) + ".txt"; // path of cutflow
 
     int mu1Charge_, mu2Charge_;
     float mu1Pt_, mu1Eta_, mu1Phi_, mu1M_, mu1Iso_, mu2Pt_, mu2Eta_, mu2Phi_, mu2M_, mu2Iso_;
@@ -382,7 +383,6 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
     fOrigin->Close();
 }
 
-
 // main function
 int ntupleReducer(TString fileName, TString savePath)
 {
@@ -394,12 +394,10 @@ int ntupleReducer(TString fileName, TString savePath)
     // create the workspace
     TString oldDirName = "Samples";
     TString oldPathName = returnPathOrFileName(fileName, "path");
-    TString flatPathName = savePath + "/FlatTrees";
     TString cutFlowPathName = savePath + "/CutFlow";
     checkPath(savePath);
     checkPath(cutFlowPathName);
-    TString flatFileName = flatPathName + returnPathOrFileName(fileName, "file");
     cutTree(fileName, savePath, oldTreeName, newTreeName);
-    printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC);
+    printf("Time taken: %.2fs\n", (double)(clock() - tStart)/CLOCKS_PER_SEC); // print the execute time
     return 0;
 }

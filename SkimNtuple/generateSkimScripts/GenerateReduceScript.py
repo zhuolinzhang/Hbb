@@ -8,6 +8,7 @@ parser.add_argument("--date", type=str, help="The task date of CRAB job. e.g. 21
 args = parser.parse_args()
 
 def readLocalList(listFilePath):
+    # read data list or MC list to generate scripts
     fileList = []
     with open(listFilePath, 'r') as f:
         fileListOrigin = f.readlines()

@@ -9,11 +9,13 @@ def open_root_files(dirPath):
     for fileName in dirList:
         fileFullPath = dirPath + '/' + fileName
         f = ROOT.TFile(fileFullPath)
-        if f.IsZombie(): continue
+        if f.IsZombie(): continue # to make sure f is a valid .root file
         rootFileList.append(f)
     return rootFileList
 
 def get_primary_name(rootFile):
+    # Because in my analysis, the .root file is named by the primary dataset name. 
+    # This function actually get the primary dataset name.
     fileFullPath = rootFile.GetName()
     fileName = fileFullPath.split('/')[-1]
     datasetName = fileName.rstrip('.root')
@@ -41,7 +43,7 @@ def stack_fill(hist, stack):
         stack.Add(hist)
 
 def make_ratio(hist_pass, hist_total, option = 'pois'):
-    # make Data/MC graph and set the style of the graph
+    # make Data/MC or Sideband/SR graph and set the style of the graph
     ratio = ROOT.TGraphAsymmErrors()
     ratio.Divide(hist_pass, hist_total, option) # the defalut option in ROOT is 'cp'(Gauss case)
     ratio.Draw("AP")
@@ -56,8 +58,9 @@ def make_ratio(hist_pass, hist_total, option = 'pois'):
     ratio.GetYaxis().SetTitleOffset(0.4)
     return ratio
 
-def make_legend(legend, hist, errHist, sigHist):
-    # We must notice that the result of read_data is a list. Here we input data_hist which should be a TH1 histogram to this function.
+def make_legend(legend, hist, errHist, sigHist=None):
+    # Make the legend in THStack.
+    # The sigHist is provided when we need to plot the signal sample on the THStack after scaling.
     histLegDict = {'st': "Single top", 'tt': "t#bar{t}", 'zz': "ZZ", 'qcd': "QCD", 'zjets': "Z+jets", 'zh': 'ZH(b#bar{b})'}
     for i in hist:
         #if 'zh' in i.GetName(): continue
@@ -173,7 +176,7 @@ def plot_ratio(stackType, stackName, *hist):
 
     # Set the legend of THStack
     leg = ROOT.TLegend(0.63, 0.70, 0.86, 0.87)
-    make_legend(leg, hist, stackErr, sigHist)
+    make_legend(leg, hist, stackErr)
     leg.Draw("SAME")
 
     # Set the CMS label, collision energy and integrated luminosity

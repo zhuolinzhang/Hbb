@@ -241,22 +241,22 @@ void ZHNtuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
     
     for (auto mu1 = muonsHandle->cbegin(); mu1 != muonsHandle->cend(); ++mu1) {
       // Use tight muon ID, pT and eta cut were mentioned in AN2018/073 - Zhuolin 2020-12-22
-      //if (!(mu1->pt() > 25)) continue;
-      //if (!(fabs(mu1->eta()) < 2.4)) continue;
-      //if (!mu1->isTightMuon(*firstGoodVertex)) continue; // Tight muon ID
+      if (!(mu1->pt() > 25)) continue;
+      if (!(fabs(mu1->eta()) < 2.4)) continue;
+      if (!mu1->isTightMuon(*firstGoodVertex)) continue; // Tight muon ID
       // PF Isolation very loose
-      //if (!((mu1->pfIsolationR04().sumChargedHadronPt + std::max(0., mu1->pfIsolationR04().sumNeutralHadronEt + mu1->pfIsolationR04().sumPhotonEt - 0.5 * mu1->pfIsolationR04().sumPUPt)) / mu1->pt() < 0.4)) continue;
+      if (!((mu1->pfIsolationR04().sumChargedHadronPt + std::max(0., mu1->pfIsolationR04().sumNeutralHadronEt + mu1->pfIsolationR04().sumPhotonEt - 0.5 * mu1->pfIsolationR04().sumPUPt)) / mu1->pt() < 0.4)) continue;
       nMu1++;
       // find mu2
       for (auto mu2 = muonsHandle->cbegin(); mu2 != muonsHandle->cend(); ++mu2) {
         if (!(mu2 > mu1)) continue; // avoid double counting
-        //if (!(mu2->pt() > 15)) continue;
+        if (!(mu2->pt() > 15)) continue;
         if (!(mu1->charge() * mu2->charge() < 0)) continue; // muon in dimuon pair should have different charge
-        //if (!(fabs(mu2->eta()) < 2.4)) continue;
-        //if (!mu2->isTightMuon(*firstGoodVertex)) continue; // Tight muon ID
+        if (!(fabs(mu2->eta()) < 2.4)) continue;
+        if (!mu2->isTightMuon(*firstGoodVertex)) continue; // Tight muon ID
         // PF Isolation very loose
-        //if (!((mu2->pfIsolationR04().sumChargedHadronPt + std::max(0., mu2->pfIsolationR04().sumNeutralHadronEt + mu2->pfIsolationR04().sumPhotonEt - 0.5 * mu2->pfIsolationR04().sumPUPt)) / mu2->pt() < 0.4)) continue; 
-        //if (((mu1->p4() + mu2->p4()).M()) < 75 || ((mu1->p4() + mu2->p4()).M()) > 105) continue; // only look around the Z peak
+        if (!((mu2->pfIsolationR04().sumChargedHadronPt + std::max(0., mu2->pfIsolationR04().sumNeutralHadronEt + mu2->pfIsolationR04().sumPhotonEt - 0.5 * mu2->pfIsolationR04().sumPUPt)) / mu2->pt() < 0.4)) continue; 
+        if (((mu1->p4() + mu2->p4()).M()) < 75 || ((mu1->p4() + mu2->p4()).M()) > 105) continue; // only look around the Z peak
         if (mu1->triggerObjectMatchByPath(hltName) == nullptr || mu2->triggerObjectMatchByPath(hltName) == nullptr) continue; // trigger match
         nMu2++;
         
@@ -404,85 +404,7 @@ void ZHNtuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) 
   nMu1 = 0; nMu2 = 0; nJet1 = 0; nJet2 = 0;
   
   }
-  if (muonsHandle->size() >= 2 && jetsHandle->size() >= 2 && eventPassFlag){
-    int cutScore = 0;
-  for (auto mu1 = muonsHandle->begin(); mu1 != muonsHandle->end(); mu1++)
-  {
-    int muCutScore = 0;
-    for (auto mu2 = muonsHandle->begin(); mu2 != muonsHandle->end(); mu2++)
-    {
-      if (!(mu1 > mu2)) continue;
-      if (!(mu1->charge() * mu2->charge() < 0)) continue;
-      if (mu1->pt() > 25 && mu2->pt() > 15) 
-      {
-        muCutScore++;
-        if (mu1->isTightMuon(*firstGoodVertex) && mu2->isTightMuon(*firstGoodVertex))
-        {
-          muCutScore++;
-          if (mu1->eta() < 2.4 && mu2->eta() < 2.4) 
-          {
-            muCutScore++;
-            if (((mu1->pfIsolationR04().sumChargedHadronPt + std::max(0., mu1->pfIsolationR04().sumNeutralHadronEt + mu1->pfIsolationR04().sumPhotonEt - 0.5 * mu1->pfIsolationR04().sumPUPt)) / mu1->pt() < 0.4) && ((mu2->pfIsolationR04().sumChargedHadronPt + std::max(0., mu2->pfIsolationR04().sumNeutralHadronEt + mu2->pfIsolationR04().sumPhotonEt - 0.5 * mu2->pfIsolationR04().sumPUPt)) / mu2->pt() < 0.4))
-            {
-              muCutScore++;
-              if (((mu1->p4() + mu2->p4()).M()) >= 75 && ((mu1->p4() + mu2->p4()).M()) <= 105)
-              {
-                muCutScore++;
-              }
-            }
-          }
-        }
-      }
-    }
-    eventMuCutFlow.push_back(muCutScore);
-  }
-  std::sort(eventMuCutFlow.begin(), eventMuCutFlow.end());
-  if (eventMuCutFlow.back() < 5) eventCutFlow.push_back(eventMuCutFlow.back());
-    else if (eventMuCutFlow.back() == 5)
-    {
-      cutScore = 5;
-      for (auto jet1 = jetsHandle->begin(); jet1 != jetsHandle->end(); jet1++)
-      {
-        for (auto jet2 = jetsHandle->begin(); jet2 != jetsHandle->end(); jet2++)
-        {
-          if (!(jet1 > jet2)) continue;
-          if (jet1->pt() > 20 && jet2->pt() > 20) 
-          {
-            cutScore++;
-            if (((jet1->bDiscriminator(bTag_ + ":probb") + jet1->bDiscriminator(bTag_ + ":probbb")) > 0.4184) && ((jet2->bDiscriminator(bTag_ + ":probb") + jet2->bDiscriminator(bTag_ + ":probbb")) > 0.4184))
-            {
-              cutScore++;
-              float NHF1  = jet1->neutralHadronEnergyFraction();
-              float NEMF1 = jet1->neutralEmEnergyFraction();
-              float CHF1  = jet1->chargedHadronEnergyFraction();
-              float MUF1  = jet1->muonEnergyFraction();
-              float CEMF1 = jet1->chargedEmEnergyFraction();
-              float NumConst1 = jet1->chargedMultiplicity() + jet1->neutralMultiplicity();
-              float CHM1 = jet1->chargedMultiplicity();
-              float NHF2  = jet2->neutralHadronEnergyFraction();
-              float NEMF2 = jet2->neutralEmEnergyFraction();
-              float CHF2  = jet2->chargedHadronEnergyFraction();
-              float MUF2  = jet2->muonEnergyFraction();
-              float CEMF2 = jet2->chargedEmEnergyFraction();
-              float NumConst2 = jet2->chargedMultiplicity() + jet2->neutralMultiplicity();
-              float CHM2 = jet2->chargedMultiplicity();
-              if ((fabs(jet1->eta())<=2.6 && CEMF1<0.8 && CHM1>0 && CHF1>0 && NumConst1>1 && NEMF1<0.9 && MUF1 <0.8 && NHF1 < 0.9) && (fabs(jet2->eta())<=2.6 && CEMF2<0.8 && CHM2>0 && CHF2>0 && NumConst2>1 && NEMF2<0.9 && MUF2 <0.8 && NHF2 < 0.9))
-              {
-                cutScore++;
-                if ((jet1->p4() + jet2->p4()).M() >= 50 && (jet1->p4() + jet2->p4()).M() <= 200) cutScore++;
-              }
-            }
-
-          }
-        }
-        eventCutFlow.push_back(cutScore);
-      }
-    }
-  std::sort(eventCutFlow.begin(), eventCutFlow.end());
-  cutFlowCollect.push_back(eventCutFlow.back());
-  eventCutFlow.clear();
-  eventMuCutFlow.clear();
-  }
+  
 }
 
 
@@ -495,32 +417,7 @@ void ZHNtuple::beginJob() {
 
 // ------------ method called once each job just after ending the event loop  ------------
 void ZHNtuple::endJob() {
-  std::cout << "Generate the cutflow of this dataset file." << std::endl;
   
-  using namespace std;
-  size_t nEvents = cutFlowCollect.size();
-    size_t nPassMuPt = nEvents - count(cutFlowCollect.begin(), cutFlowCollect.end(), 0);
-    size_t nPassMuTight = nPassMuPt - count(cutFlowCollect.begin(), cutFlowCollect.end(), 1);
-    size_t nPassMuEta = nPassMuTight - count(cutFlowCollect.begin(), cutFlowCollect.end(), 2);
-    size_t nPassMuIso = nPassMuEta - count(cutFlowCollect.begin(), cutFlowCollect.end(), 3);
-    size_t nPassZM = nPassMuIso - count(cutFlowCollect.begin(), cutFlowCollect.end(), 4);
-    size_t nPassJetPt = nPassZM - count(cutFlowCollect.begin(), cutFlowCollect.end(), 5);
-    size_t nPassbTag = nPassJetPt - count(cutFlowCollect.begin(), cutFlowCollect.end(), 6);
-    size_t nPassJetID = nPassbTag - count(cutFlowCollect.begin(), cutFlowCollect.end(), 7);
-    size_t nPassHiggsM = nPassJetID - count(cutFlowCollect.begin(), cutFlowCollect.end(), 8);
-    ofstream cutFlowOut("./cutflow.txt");
-    cutFlowOut << "Name\tPass\tAll\tEff.(%)\tCumulative Eff.(%)" << endl;
-    cutFlowOut << "Muon Pt" << "\t" << nPassMuPt << "\t" << nEvents << "\t" << (float) nPassMuPt / nEvents * 100 << "\t" << (float) nPassMuPt / nEvents * 100 << endl;
-    cutFlowOut << "Tight Muon" << "\t" << nPassMuTight << "\t" << nPassMuPt << "\t" << (float) nPassMuTight / nPassMuPt * 100 << "\t" << (float) nPassMuTight / nEvents * 100 << endl;
-    cutFlowOut << "Muon Eta" << "\t" << nPassMuEta << "\t" << nPassMuTight << "\t" << (float) nPassMuEta / nPassMuTight * 100 << "\t" << (float) nPassMuEta / nEvents * 100 << endl;
-    cutFlowOut << "Muon Iso" << "\t" << nPassMuIso << "\t" << nPassMuEta << "\t" << (float) nPassMuIso / nPassMuEta * 100 << "\t" << (float) nPassMuIso / nEvents * 100 << endl;
-    cutFlowOut << "Z Mass" << "\t" << nPassZM << "\t" << nPassMuIso << "\t" << (float) nPassZM / nPassMuIso * 100 << "\t" << (float) nPassZM / nEvents * 100 << endl;
-    cutFlowOut << "Jet Pt" << "\t" << nPassJetPt << "\t" << nPassZM << "\t" << (float) nPassJetPt / nPassZM * 100 << "\t" << (float) nPassJetPt / nEvents * 100 << endl;
-    cutFlowOut << "deepCSV" << "\t" << nPassbTag << "\t" << nPassJetPt << "\t" << (float) nPassbTag / nPassJetPt * 100 << "\t" << (float) nPassbTag / nEvents * 100 << endl;
-    cutFlowOut << "Jet ID" << "\t" << nPassJetID << "\t" << nPassbTag << "\t" << (float) nPassJetID / nPassbTag * 100 << "\t" << (float) nPassJetID / nEvents * 100 << endl;
-    cutFlowOut << "Higgs Mass" << "\t" << nPassHiggsM << "\t" << nPassJetID << "\t" << (float) nPassHiggsM / nPassJetID * 100 << "\t" << (float) nPassHiggsM / nEvents * 100;
-    cutFlowOut.close();
-    //for (auto i : cutFlowCollect) std::cout << i;
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------

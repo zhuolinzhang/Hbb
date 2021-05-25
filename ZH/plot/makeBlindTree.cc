@@ -50,13 +50,14 @@ TString returnPathOrFileName(TString fileName, std::string flag)
     if (flag == "path") nameString = fileNameString.substr(0, fileNameString.find_last_of("/"));
     else 
     {
-        // file name with /
+        // file name beginning with /
         if(flag == "file") nameString = fileNameString.substr(fileNameString.find_last_of("/"), fileNameString.length());
         else std::cout << "You input wrong option!" << std::endl;
     }
     return TString(nameString);
 }
 
+// Check the path exist. If the path doesn't exist, mkdir it.
 void checkPath(TString pathName)
 {
     if (gSystem->AccessPathName(pathName.Data()))
@@ -70,6 +71,7 @@ void checkPath(TString pathName)
 
 int makeBlindTree()
 {
+    clock_t tStart = clock();
     ROOT::IsImplicitMTEnabled();
     TString inputPath = "./ZHTree";
     TString outputSideband = "./sideband";
@@ -89,5 +91,6 @@ int makeBlindTree()
         d_sideband.Snapshot(treeName.View(), (outputSideband + datasetName).View(), branchNames);
         d_sr.Snapshot(treeName.View(), (outputSR + datasetName).View(), branchNames);
     }
+    printf("Time taken: %.2fs\n", (double)(clock() - tStart) / CLOCKS_PER_SEC);
     return 0;
 }
