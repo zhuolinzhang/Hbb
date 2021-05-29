@@ -26,7 +26,7 @@ databaseList = []
 newDatabaseList = []
 with open(args.i, 'r') as databaseJson:
     databaseList = json.load(databaseJson)
-
+print('*' * 60)
 for datasetDict in databaseList:
     newDatasetDict = datasetDict
     nEvents = datasetDict["nevents"]
@@ -38,6 +38,13 @@ for datasetDict in databaseList:
             else: 
                 print("The primary_name is wrong. Correct it!")
                 newDatasetDict["primary_name"] = newPrimaryName
+        if key == "nevents":
+            if value == nEvents:
+                factor = args.lumi / ((nEvents / datasetDict["xsection"]) / 1000)
+                if datasetDict["factor_IsoMu20"] == factor: continue
+                else:
+                    print("The scale factor to {} /fb is wrong!\tnow = {}\tcalculate = {}".format(args.lumi, datasetDict["factor_IsoMu20"], factor))
+                    newDatasetDict["factor_IsoMu20"] = factor
         if key == "dasname":
             f = os.popen('dasgoclient -query="summary dataset={}"'.format(value))
             dasSummary = f.readline()
@@ -45,13 +52,14 @@ for datasetDict in databaseList:
             for i in dasSummaryList:
                 if "nevents" in i:
                     nEvents = int(i.split(":")[-1])
-        if datasetDict["nevents"] == nEvents:
-            continue
-        else:
-            print("The nevnets is wrong!\tlocal = {}\tdas = {}".format(datasetDict["nevents"], nEvents))
-            newDatasetDict["nevents"] = nEvents
-            newDatasetDict["factor_IsoMu20"] = args.lumi / ((nEvents / datasetDict["xsection"]) / 1000)
+            if datasetDict["nevents"] == nEvents:
+                continue
+            else:
+                print("The nevnets is wrong!\tlocal = {}\tdas = {}".format(datasetDict["nevents"], nEvents))
+                newDatasetDict["nevents"] = nEvents
+                newDatasetDict["factor_IsoMu20"] = args.lumi / ((nEvents / datasetDict["xsection"]) / 1000)
     newDatabaseList.append(newDatasetDict)
+    print('*' * 60)
         
 outputPath = args.o
 if args.o == None: outputPath = args.i
