@@ -1,29 +1,36 @@
 import json
+import argparse
 import os
-import re
+
+parse = argparse.ArgumentParser()
+parse.add_argument("-i", type=str, help="input json file")
+parse.add_argument("-o", type=str, default="./output", help="output path, default = ./output")
+parse.add_argument("-n", type=str, help="task name e.g. ZHTree")
+parse.add_argument("--date", type=str, help="date (YYMMDD)")
+parse.add_argument("--type", type=str, help="dataset type, input data or mc")
+parse.add_argument("--pset", type=str, help="config.JobType.psetName, cfg.py e.g. ZHAnalysis_cfg.py")
+parse.add_argument("--temp", type=str, default="crabConfig.py", help="the template of carbConfig, default = crabConfig.py")
+args = parse.parse_args()
+
+if os.path.exists(args.o): pass
+else: 
+    print("Create the output path {}".format(args.o))
+    os.mkdir(args.o)
 
 primary_name_list = []
 new_crab_cfg_list = []
 new_str = ''
-data_mc_option = input("Please input the type of dataset you want to analyze(data/mc): ")
-task_name = input("Please input the task name: ")
-date = input("Please input the date of submitting (YYMMDD): ")
-psetName = input("Please input the config.JobType.psetName: ")
 
-with open("crabConfig.py", 'r') as cfg_template:
+with open(args.temp, 'r') as cfg_template:
     file_content = cfg_template.readlines()
 
 for i in file_content:
-    if re.search('config.JobType.psetName', i):
+    if 'config.JobType.psetName' in i:
         file_content_index = file_content.index(i)
-        file_content[file_content_index] = "config.JobType.psetName = '{}'\n".format(psetName)
+        file_content[file_content_index] = "config.JobType.psetName = '{}'\n".format(args.pset)
 
-if data_mc_option == 'data':
-    with open('DataInfo.json', 'r') as mcinfo:
-        sample_list = json.load(mcinfo)
-elif data_mc_option == 'mc':
-    with open('MCInfo.json', 'r') as mcinfo:
-        sample_list = json.load(mcinfo)
+with open(args.i, 'r') as mcinfo:
+    sample_list = json.load(mcinfo)
 
 for sample in sample_list:
     for key, value in sample.items():
@@ -34,20 +41,21 @@ for sample in sample_list:
 for name in primary_name_list:
     for i in file_content:
         new_str = i
-        if re.search("config.General.requestName", i):
-            new_str = "config.General.requestName = '{}_{}_{}'\n".format(name, task_name, date)
-        if re.search("config.Data.inputDataset", i):
+        if "config.General.requestName" in i:
+            new_str = "config.General.requestName = '{}_{}_{}'\n".format(name, args.n, args.date)
+        if "config.Data.inputDataset" in i:
             for sample in sample_list:
                 if sample["primary_name"] == name:
                     dataset_name = sample["dasname"] 
             new_str = "config.Data.inputDataset = '{}'\n".format(dataset_name)
-        if re.search("config.Data.outputDatasetTag", i):
-            if data_mc_option == 'data':
-                new_str = "config.Data.outputDatasetTag = '{}_{}_{}'\nconfig.Data.lumiMask = 'https://cms-service-dqm.web.cern.ch/cms-service-dqm/CAF/certification/Collisions18/13TeV/ReReco/Cert_314472-325175_13TeV_17SeptEarlyReReco2018ABC_PromptEraD_Collisions18_JSON.txt'\n".format(name, task_name, date)
-            elif data_mc_option == 'mc':
-                new_str = "config.Data.outputDatasetTag = '{}_{}_{}'\n".format(name, task_name, date)
+        if "config.Data.outputDatasetTag" in i:
+            if args.type == 'data':
+                new_str = "config.Data.outputDatasetTag = '{}_{}_{}'\nconfig.Data.lumiMask = '/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions18/13TeV/Legacy_2018/Cert_314472-325175_13TeV_Legacy2018_Collisions18_JSON.txt'\n".format(name, args.n, args.date)
+            elif args.type == 'mc':
+                new_str = "config.Data.outputDatasetTag = '{}_{}_{}'\n".format(name, args.n, args.date)
         new_crab_cfg_list.append(new_str)
     crab_file_name = "crabConfig_{}.py".format(name)
-    with open(crab_file_name, 'w') as crabcfg:
+    print("Generate {}".format(crab_file_name))
+    with open(args.o + '/' + crab_file_name, 'w') as crabcfg:
         crabcfg.writelines(new_crab_cfg_list)
     new_crab_cfg_list = []
