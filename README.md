@@ -8,6 +8,8 @@ This repository is about my ZH(bb) analysis macros.
 
 `Tools` includes some macros which help me work more effective. Now there is a macro to create a lots of CRAB scripts. There also has a simple shell to submit massive jobs to CRAB at same time. There also some macros to make and modify the database `json` file. 
 
+`dev` branch is the developing branch. `master` branch is the stable branch. All new macros will be uploaded to `dev` branch first, then I will merge it to `master` when it is stable.
+
 ## To-do List
 
 ✔ Update analyzer from reading cut-off ntuple to no-cut ntuple
