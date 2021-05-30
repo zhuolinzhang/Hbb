@@ -1,6 +1,7 @@
 # This script will 
 # 1 - check the number of events for each dataset and correct it. Then, it will calculate the right normalization factor
 # 2 - check the primary name
+# 3 - check the scale factor
 # This script MUST be run on the LXPLUS or lxslc(IHEP)
 
 import argparse
