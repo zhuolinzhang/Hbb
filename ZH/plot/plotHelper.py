@@ -63,7 +63,6 @@ def make_legend(legend, hist, errHist, sigHist=None):
     # The sigHist is provided when we need to plot the signal sample on the THStack after scaling.
     histLegDict = {'st': "Single top", 'tt': "t#bar{t}", 'zz': "ZZ", 'qcd': "QCD", 'zjets': "Z+jets", 'zh': 'ZH(b#bar{b})'}
     for i in hist:
-        #if 'zh' in i.GetName(): continue
         if 'data' in i.GetName():
             legend.AddEntry(i, "Data", "PE")
             continue
@@ -74,7 +73,8 @@ def make_legend(legend, hist, errHist, sigHist=None):
             if key in i.GetName():
                 legend.AddEntry(i, value, "F")
     legend.AddEntry(errHist, "MC Stat. Error", "F")
-    #legend.AddEntry(sigHist, "ZH(b#bar{b}) x 1000", "L")
+    if sigHist:
+        legend.AddEntry(sigHist, "ZH(b#bar{b}) x 500", "L")
     legend.SetNColumns(2)
     legend.SetBorderSize(0)
     
@@ -83,7 +83,7 @@ def plot_ratio(stackType, stackName, *hist):
     # Sum MC samples and create MC Stat. Err. graphs
     for i in hist:
         if 'zh' in i.GetName():
-            sigHist = i
+            sigHist = i.Clone() # If we don't use TH1::Clone, the legend of signal stack will be wrong.
     sumHist = sigHist
     dataNevents = 0
     for i in hist:
@@ -152,13 +152,13 @@ def plot_ratio(stackType, stackName, *hist):
     stackErr.SetFillColor(ROOT.kBlack)
     stackErr.SetLineColor(ROOT.kBlack)
     stackErr.Draw("2")
-    '''
-    sigHist.Scale(1000)
-    sigHist.SetLineStyle(9)
+    
+    sigHist.Scale(500)
     sigHist.SetLineColor(ROOT.kRed)
-    sigHist.SetLineWidth(3)
-    sigHist.Draw("SAME")
-    '''
+    sigHist.SetMarkerColor(ROOT.kRed)
+    sigHist.SetLineWidth(2)
+    sigHist.Draw("SAME HIST ][")
+    
     # Plot data points
     dataHist = ROOT.TH1F()
     for i in hist:
@@ -176,7 +176,7 @@ def plot_ratio(stackType, stackName, *hist):
 
     # Set the legend of THStack
     leg = ROOT.TLegend(0.63, 0.70, 0.86, 0.87)
-    make_legend(leg, hist, stackErr)
+    make_legend(leg, hist, stackErr, sigHist)
     leg.Draw("SAME")
 
     # Set the CMS label, collision energy and integrated luminosity
