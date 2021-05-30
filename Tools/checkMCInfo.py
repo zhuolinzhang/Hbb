@@ -15,7 +15,7 @@ parse.add_argument("-o", type=str, default=None, help="The path of output json f
 args = parse.parse_args()
 
 def checkVO():
-    if os.path.exists("/tmp/x509up_u12918"):
+    if os.path.exists("/tmp/x509up_u12918"): # for lxpuls(CERN), /tmp/x509up_u132269
         pass
     else:
         print("Please activate your VO!")
