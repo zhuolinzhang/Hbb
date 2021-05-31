@@ -2,7 +2,6 @@
 # This script must be run on the lxslc of IHEP in the python3 environment.
 
 import os
-import re
 
 # Check VO is activated. But if the VO is invaild, this function doesn't work. I will update to fix this
 # bug in the furture.
@@ -37,7 +36,7 @@ def getFileFlag(sampleName, taskName, date, mcOrData):
         sampleDirectory = os.popen('gfal-ls -l {0}/DoubleMuon'.format(t2Path))
     sampleDirectoryList = sampleDirectory.readlines()
     for i in sampleDirectoryList:
-        if re.search("{}_{}_{}".format(sampleName, taskName, date), i):
+        if "{}_{}_{}".format(sampleName, taskName, date) in i:
             findFlag = True
             break
     return findFlag

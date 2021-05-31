@@ -1,6 +1,5 @@
 # This script can be executed independently
 import os
-import re
 import argparse
 import shutil
 
@@ -41,7 +40,7 @@ def haddFiles(targetDirectory, jobName, datasetName, optimizeFlag):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--clean", help="Delete all source files")
+    parser.add_argument("--clean", help="Delete all source files", action='store_true')
     parser.add_argument("--job", type=str, help="The full CRAB job name") # e.g. DoubleMuonPrompt2018D_AddTrigger_210112
     parser.add_argument("-f", type=str, default="/publicfs/cms/user/zhangzhuolin/target_files",help='T3 target_files folder path') # /publicfs/cms/user/zhangzhuolin/target_files
     parser.add_argument("--type", type=str, help="mc or data")

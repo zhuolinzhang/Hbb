@@ -2,7 +2,6 @@
 # This script must be run on the lxslc of IHEP in the python3 environment.
 
 import os
-import re
 import argparse
 
 # Check VO is activated. But if the VO is invaild, this function doesn't work. I will update to fix this

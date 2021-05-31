@@ -8,7 +8,7 @@ parser.add_argument("--mode", type=int, help='''1 - Only check results
 2 - Check results and copy files 
 3 - mode 2 and generate HTCondor scripts
 4 - mode 3 and merge files''')
-parser.add_argument("--clean", help="Delete all source files")
+parser.add_argument("--clean", help="Delete all source files", action='store_true')
 parser.add_argument("-n", type=str, help="Input the task name(e.g. ZHTree)")
 parser.add_argument("--date", type=str, help="Input the date (YYMMDD)")
 args = parser.parse_args()
