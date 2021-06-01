@@ -50,8 +50,8 @@ def checkCRABResluts(resultPath, taskName, taskDate):
         os.mkdir(resultSavePath)
     noOutputMCList = []
     noOutputDataList = []
-    mcInputList = readLocalList(resultPath + "/SampleList.txt")
-    dataInputList = readLocalList(resultPath + "/DataList.txt")
+    mcInputList = readLocalList(resultPath + "/SampleListUL2018.txt") # When the dataset is changed, this file should also changed.
+    dataInputList = readLocalList(resultPath + "/DataListUL2018.txt") # When the dataset is changed, this file should also changed.
     mcT2List = []
     dataT2List = []
     # Get MC list and data list in T2
@@ -68,12 +68,20 @@ def checkCRABResluts(resultPath, taskName, taskDate):
         else:
             noOutputDataList.append(i)
     if len(noOutputDataList) == 0 and len(noOutputMCList) == 0:
+        print('*' * 70)
         print("All CRAB jobs have output!")
+        print('*' * 70)
     elif len(noOutputMCList) > 0:
+        print('*' * 70)
         print("There are some MC samples which didn't have output files: ", noOutputMCList)
+        print('*' * 70)
     elif len(noOutputDataList) > 0:
+        print('*' * 70)
         print("There are some data which didn't have output files: ", noOutputDataList)
+        print('*' * 70)
+    print('#' * 70)
     print("The MC list and data list have been written to ", resultSavePath)
+    print('#' * 70)
     with open(resultSavePath + '/MCList.txt', 'w') as f: # Save MC samples which have output in a .txt file
         for i in mcT2List:
             f.write(i + '\n')

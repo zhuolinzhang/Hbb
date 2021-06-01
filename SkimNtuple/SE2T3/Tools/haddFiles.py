@@ -16,7 +16,9 @@ def generateScripts(savePath, sourcePath, jobName, scriptNum, datasetType):
         elif datasetType == 'data':
             f.write('python3 {}/haddFiles.py --job {} --type data\n'.format(sourcePath, jobName))
     os.chmod(savePath +"/" + fileName, 0o755)
+    print('*' * 70)
     print("Script {} is generated!".format(fileName))
+    print('*' * 70)
 
 # hadd root files
 def haddFiles(targetDirectory, jobName, datasetName, optimizeFlag):
@@ -25,8 +27,10 @@ def haddFiles(targetDirectory, jobName, datasetName, optimizeFlag):
         haddCommand = 'hadd -f {0}/{1}.root'.format(targetDirectory, datasetName) # -f force
         for i in directoryList:
             haddCommand += ' {}/{}/{}'.format(targetDirectory, jobName, i)
+        print('#' * 70)
         print("{} is starting merging.".format(jobName))
         os.system(haddCommand)
+        print('#' * 70)
         if optimizeFlag:
             shutil.rmtree('{}/{}'.format(targetDirectory, jobName)) # remove source .root files
             print("The folder {}/{} has been deleted!".format(targetDirectory, jobName))
