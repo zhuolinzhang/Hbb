@@ -10,7 +10,7 @@ class Hist():
         self.dataset = dataset
         self.tree = tree
         recoTargetDict = {'RecDiMuon': 'Z', 'RecDiJet': 'Higgs'}
-        dataList = ['DoubleMuon2018A', 'DoubleMuon2018B', 'DoubleMuon2018C', 'DoubleMuonPrompt2018D']
+        dataList = ['DoubleMuon2018A', 'DoubleMuon2018B', 'DoubleMuon2018C', 'DoubleMuon2018D']
         self.recoObject = recoTargetDict[self.phyObject]
         if dataset in dataList:
             self.mcOrData = 'data'
@@ -37,7 +37,7 @@ class Hist():
         return histEdge
     
     def getScaleFactor(self):
-        with open('MCInfo_IsoMu20.json') as mcInfo:
+        with open('MCInfo_IsoMu20_UL2018.json') as mcInfo:
             mcInfoList = json.load(mcInfo)
         factor = 1
         for eachDataset in mcInfoList:
