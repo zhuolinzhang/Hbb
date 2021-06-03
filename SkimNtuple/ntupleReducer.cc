@@ -184,14 +184,29 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
     TTreeReaderValue<vector<float>> jet1Eta = {myCutReader, "jet1Eta"};
     TTreeReaderValue<vector<float>> jet1Phi = {myCutReader, "jet1Phi"};
     TTreeReaderValue<vector<float>> jet1M = {myCutReader, "jet1M"};
-    TTreeReaderValue<vector<bool>> jet1ID = {myCutReader, "jet1ID"};
     TTreeReaderValue<vector<float>> jet1bTag = {myCutReader, "jet1bTag"};
+    TTreeReaderValue<vector<float>> jet1NHF = {myCutReader, "jet1NHF"};
+    TTreeReaderValue<vector<float>> jet1NEMF = {myCutReader, "jet1NEMF"};
+    TTreeReaderValue<vector<float>> jet1MUF = {myCutReader, "jet1MUF"};
+    TTreeReaderValue<vector<float>> jet1CEMF = {myCutReader, "jet1CEMF"};
+    TTreeReaderValue<vector<float>> jet1NumConst = {myCutReader, "jet1NumConst"};
+    TTreeReaderValue<vector<float>> jet1CHM = {myCutReader, "jet1CHM"};
+    TTreeReaderValue<vector<float>> jet1NumNeutralParticles = {myCutReader, "jet1NumNeutralParticles"};
+    TTreeReaderValue<vector<float>> jet1CHF = {myCutReader, "jet1CHF"};
+
     TTreeReaderValue<vector<float>> jet2Pt = {myCutReader, "jet2Pt"};
     TTreeReaderValue<vector<float>> jet2Eta = {myCutReader, "jet2Eta"};
     TTreeReaderValue<vector<float>> jet2Phi = {myCutReader, "jet2Phi"};
     TTreeReaderValue<vector<float>> jet2M = {myCutReader, "jet2M"};
-    TTreeReaderValue<vector<bool>> jet2ID = {myCutReader, "jet2ID"};
     TTreeReaderValue<vector<float>> jet2bTag = {myCutReader, "jet2bTag"};
+    TTreeReaderValue<vector<float>> jet2NHF = {myCutReader, "jet2NHF"};
+    TTreeReaderValue<vector<float>> jet2NEMF = {myCutReader, "jet2NEMF"};
+    TTreeReaderValue<vector<float>> jet2MUF = {myCutReader, "jet2MUF"};
+    TTreeReaderValue<vector<float>> jet2CEMF = {myCutReader, "jet2CEMF"};
+    TTreeReaderValue<vector<float>> jet2NumConst = {myCutReader, "jet2NumConst"};
+    TTreeReaderValue<vector<float>> jet2CHM = {myCutReader, "jet2CHM"};
+    TTreeReaderValue<vector<float>> jet2NumNeutralParticles = {myCutReader, "jet2NumNeutralParticles"};
+    TTreeReaderValue<vector<float>> jet2CHF = {myCutReader, "jet2CHF"};
     TTreeReaderValue<vector<float>> HiggsPt = {myCutReader, "HiggsPt"};
     TTreeReaderValue<vector<float>> HiggsEta = {myCutReader, "HiggsEta"};
     TTreeReaderValue<vector<float>> HiggsPhi = {myCutReader, "HiggsPhi"};
@@ -289,13 +304,43 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
             eachJetPair["jet1Phi"] = jet1Phi->at(i);
             eachJetPair["jet1M"] = jet1M->at(i);
             eachJetPair["jet1bTag"] = jet1bTag->at(i);
-            eachJetPair["jet1ID"] = jet1ID->at(i);
+            if (fabs(jet1Eta->at(i)) <= 2.6)
+            {
+                eachJetPair["jet1ID"] = (fabs(jet1Eta->at(i)) <= 2.6 && jet1CEMF->at(i) < 0.8 && jet1CHM->at(i) > 0 && jet1CHF->at(i) > 0 && jet1NumConst->at(i) > 1 && jet1NEMF->at(i) < 0.9 && jet1MUF->at(i) < 0.8 && jet1NHF->at(i) < 0.9);
+            }
+            else if (fabs(jet1Eta->at(i)) > 2.6 && fabs(jet1Eta->at(i)) <= 2.7)
+            {
+                eachJetPair["jet1ID"] = (fabs(jet1Eta->at(i)) > 2.6 && fabs(jet1Eta->at(i)) <= 2.7 && jet1CEMF->at(i) < 0.8 && jet1CHM->at(i) > 0 && jet1NEMF->at(i) < 0.99 && jet1MUF->at(i) < 0.8 && jet1NHF->at(i) < 0.9);
+            }
+            else if (fabs(jet1Eta->at(i)) > 2.7 && fabs(jet1Eta->at(i)) <= 3.0)
+            {
+                eachJetPair["jet1ID"] = (fabs(jet1Eta->at(i)) > 2.7 && fabs(jet1Eta->at(i)) <= 3.0 && jet1NEMF->at(i) > 0.02 && jet1NEMF->at(i) < 0.99 && jet1NumNeutralParticles->at(i) > 2);
+            }
+            else if (fabs(jet1Eta->at(i)) > 3.0)
+            {
+                eachJetPair["jet1ID"] = (fabs(jet1Eta->at(i)) > 3.0 && jet1NEMF->at(i) < 0.90 && jet1NHF->at(i) > 0.2 && jet1NumNeutralParticles->at(i) > 10);
+            }
             eachJetPair["jet2Pt"] = jet2Pt->at(i);
             eachJetPair["jet2Eta"] = jet2Eta->at(i);
             eachJetPair["jet2Phi"] = jet2Phi->at(i);
             eachJetPair["jet2M"] = jet2M->at(i);
             eachJetPair["jet2bTag"] = jet2bTag->at(i);
-            eachJetPair["jet2ID"] = jet2ID->at(i);
+            if (fabs(jet2Eta->at(i)) <= 2.6)
+            {
+                eachJetPair["jet2ID"] = (fabs(jet2Eta->at(i)) <= 2.6 && jet2CEMF->at(i) < 0.8 && jet2CHM->at(i) > 0 && jet2CHF->at(i) > 0 && jet2NumConst->at(i) > 1 && jet2NEMF->at(i) < 0.9 && jet2MUF->at(i) < 0.8 && jet2NHF->at(i) < 0.9);
+            }
+            else if (fabs(jet2Eta->at(i)) > 2.6 && fabs(jet2Eta->at(i)) <= 2.7)
+            {
+                eachJetPair["jet2ID"] = (fabs(jet2Eta->at(i)) > 2.6 && fabs(jet2Eta->at(i)) <= 2.7 && jet2CEMF->at(i) < 0.8 && jet2CHM->at(i) > 0 && jet2NEMF->at(i) < 0.99 && jet2MUF->at(i) < 0.8 && jet2NHF->at(i) < 0.9);
+            }
+            else if (fabs(jet2Eta->at(i)) > 2.7 && fabs(jet2Eta->at(i)) <= 3.0)
+            {
+                eachJetPair["jet2ID"] = (fabs(jet2Eta->at(i)) > 2.7 && fabs(jet2Eta->at(i)) <= 3.0 && jet2NEMF->at(i) > 0.02 && jet2NEMF->at(i) < 0.99 && jet2NumNeutralParticles->at(i) > 2);
+            }
+            else if (fabs(jet2Eta->at(i)) > 3.0)
+            {
+                eachJetPair["jet2ID"] = (fabs(jet2Eta->at(i)) > 3.0 && jet2NEMF->at(i) < 0.90 && jet2NHF->at(i) > 0.2 && jet2NumNeutralParticles->at(i) > 10);
+            }            
             eachJetPair["HiggsPt"] = HiggsPt->at(i);
             eachJetPair["HiggsEta"] = HiggsEta->at(i);
             eachJetPair["HiggsPhi"] = HiggsPhi->at(i);
