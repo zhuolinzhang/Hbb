@@ -8,10 +8,10 @@
     },
     {
         "primary_name": "ZZ_TuneCP5_13TeV-pythia8",
-        "nevents": 3907000,
+        "nevents": 2000000,
         "xsection": 12.23,
-        "factor_IsoMu20": 0.000849608887588943,
-        "dasname": "/ZZ_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
+        "factor_IsoMu20": 0.0016597109619050003,
+        "dasname": "/ZZ_TuneCP5_13TeV-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8",
@@ -50,17 +50,24 @@
     },
     {
         "primary_name": "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8",
-        "nevents": 98433266,
+        "nevents": 104017741,
         "xsection": 7039.0,
-        "factor_IsoMu20": 0.019409085405466483,
-        "dasname": "/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM"
+        "factor_IsoMu20": 0.018367055928786225,
+        "dasname": "/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM"
     },
     {
         "primary_name": "TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8",
-        "nevents": 495030000,
+        "nevents": 104660999,
         "xsection": 687.1,
-        "factor_IsoMu20": 0.00037672499045249784,
-        "dasname": "/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
+        "factor_IsoMu20": 0.0017818497224902279,
+        "dasname": "/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
+    },
+    {
+        "primary_name": "TTToHadronic_TuneCP5_13TeV-powheg-pythia8",
+        "nevents": 124421000,
+        "xsection": 377.96,
+        "factor_IsoMu20": 0.0008244952420581734,
+        "dasname": "/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8",
