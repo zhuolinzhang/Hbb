@@ -122,7 +122,7 @@ std::vector<int> cutFlowCount(std::vector<std::map<std::string, float>> muonColl
                     if (jetPair["jet1Pt"] > 20 && jetPair["jet2Pt"] > 20) 
                     {
                         cutScore++;
-                        if (jetPair["jet1bTag"] > 0.4184 && jetPair["jet2bTag"] > 0.4184)
+                        if (jetPair["jet1bTag"] > 0.4168 && jetPair["jet2bTag"] > 0.4168)
                         {
                             cutScore++;
                             if (jetPair["jet1ID"] == 1 && jetPair["jet2ID"] == 1)
@@ -314,7 +314,7 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
             }
             else if (fabs(jet1Eta->at(i)) > 2.7 && fabs(jet1Eta->at(i)) <= 3.0)
             {
-                eachJetPair["jet1ID"] = (fabs(jet1Eta->at(i)) > 2.7 && fabs(jet1Eta->at(i)) <= 3.0 && jet1NEMF->at(i) > 0.02 && jet1NEMF->at(i) < 0.99 && jet1NumNeutralParticles->at(i) > 2);
+                eachJetPair["jet1ID"] = (fabs(jet1Eta->at(i)) > 2.7 && fabs(jet1Eta->at(i)) <= 3.0 && jet1NEMF->at(i) > 0.01 && jet1NEMF->at(i) < 0.99 && jet1NumNeutralParticles->at(i) > 1);
             }
             else if (fabs(jet1Eta->at(i)) > 3.0)
             {
@@ -335,7 +335,7 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
             }
             else if (fabs(jet2Eta->at(i)) > 2.7 && fabs(jet2Eta->at(i)) <= 3.0)
             {
-                eachJetPair["jet2ID"] = (fabs(jet2Eta->at(i)) > 2.7 && fabs(jet2Eta->at(i)) <= 3.0 && jet2NEMF->at(i) > 0.02 && jet2NEMF->at(i) < 0.99 && jet2NumNeutralParticles->at(i) > 2);
+                eachJetPair["jet2ID"] = (fabs(jet2Eta->at(i)) > 2.7 && fabs(jet2Eta->at(i)) <= 3.0 && jet2NEMF->at(i) > 0.01 && jet2NEMF->at(i) < 0.99 && jet2NumNeutralParticles->at(i) > 1);
             }
             else if (fabs(jet2Eta->at(i)) > 3.0)
             {
@@ -359,7 +359,7 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
         for (auto jetPair : oldJetPair)
         {
             if (!(jetPair["jet1Pt"] > 20 && jetPair["jet2Pt"] > 20)) continue;
-            if (!(jetPair["jet1bTag"] > 0.4184 && jetPair["jet2bTag"] > 0.4184)) continue;
+            if (!(jetPair["jet1bTag"] > 0.4168 && jetPair["jet2bTag"] > 0.4168)) continue;
             if (!(jetPair["jet1ID"] == 1 && jetPair["jet2ID"] == 1)) continue;
             if (!(jetPair["HiggsM"] >= 50 && jetPair["HiggsM"] <= 200)) continue;
             cutJetPair.push_back(jetPair);

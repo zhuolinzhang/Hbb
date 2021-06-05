@@ -1,5 +1,4 @@
 import ROOT
-import numpy as np
 import os
 
 def open_root_files(dirPath):
@@ -32,7 +31,7 @@ def plot_hist(hist):
 
 def stack_fill(hist, stack):
     # Fill histograms to THStack
-    color_dict = {'st': ROOT.kAzure + 8, 'tt': ROOT.kAzure + 4, 'zz': ROOT.kSpring + 2, 'qcd': ROOT.kViolet - 4, 'zjets': ROOT.kOrange - 2, 'zh': ROOT.kRed - 4}
+    color_dict = {'st': ROOT.kAzure + 8, 'tt': ROOT.kAzure + 4, 'zz': ROOT.kSpring + 2, 'qcd': ROOT.kViolet - 4, 'zjets': ROOT.kOrange - 2}
     findHist = False
     for key, value in color_dict.items():
         if key in hist.GetName():
@@ -58,7 +57,7 @@ def make_ratio(hist_pass, hist_total, option = 'pois'):
     ratio.GetYaxis().SetTitleOffset(0.4)
     return ratio
 
-def make_legend(legend, hist, errHist, sigHist=None):
+def make_legend(legend, hist, errHist, sigHist):
     # Make the legend in THStack.
     # The sigHist is provided when we need to plot the signal sample on the THStack after scaling.
     histLegDict = {'st': "Single top", 'tt': "t#bar{t}", 'zz': "ZZ", 'qcd': "QCD", 'zjets': "Z+jets", 'zh': 'ZH(b#bar{b})'}
@@ -71,10 +70,10 @@ def make_legend(legend, hist, errHist, sigHist=None):
             continue
         for key, value in histLegDict.items():
             if key in i.GetName():
+                if 'zh' in i.GetName(): continue
                 legend.AddEntry(i, value, "F")
     legend.AddEntry(errHist, "MC Stat. Error", "F")
-    if sigHist:
-        legend.AddEntry(sigHist, "ZH(b#bar{b}) x 500", "L")
+    legend.AddEntry(sigHist, "ZH(b#bar{b}) x 500", "L")
     legend.SetNColumns(2)
     legend.SetBorderSize(0)
     
@@ -140,6 +139,7 @@ def plot_ratio(stackType, stackName, *hist):
     # Fill THStack and set the style of THStack
     hs = ROOT.THStack("hs","")
     for i in hist:
+        if 'zh' in i.GetName(): continue
         stack_fill(i, hs)
     hs.Draw("HIST")
     hs.SetMinimum(1e-3)

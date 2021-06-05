@@ -69,11 +69,11 @@ void checkPath(TString pathName)
         std::cout << "The folder " << pathName.Data() << " exist!" << std::endl;
 }
 
-int makeBlindTree()
+int makeBlindTree(TString inputPath)
 {
     clock_t tStart = clock();
     ROOT::IsImplicitMTEnabled();
-    TString inputPath = "./ZHTree";
+    //TString inputPath = "./ZHTree";
     TString outputSideband = "./sideband";
     TString outputSR = "./sr";
     checkPath(outputSideband);
@@ -86,10 +86,13 @@ int makeBlindTree()
         std::cout << "Blind " << fileName << std::endl;
         auto branchNames = d.GetColumnNames();
         auto d_sideband = d.Filter("HiggsM < 90 || HiggsM > 150");
-        auto d_sr = d.Filter("HiggsM >= 90 && HiggsM <= 150");
         TString datasetName = returnPathOrFileName(fileName, "file");
         d_sideband.Snapshot(treeName.View(), (outputSideband + datasetName).View(), branchNames);
-        d_sr.Snapshot(treeName.View(), (outputSR + datasetName).View(), branchNames);
+        if (!fileName.Contains("DoubleMuon"))
+        {
+            auto d_sr = d.Filter("HiggsM >= 90 && HiggsM <= 150");
+            d_sr.Snapshot(treeName.View(), (outputSR + datasetName).View(), branchNames);
+        }
     }
     printf("Time taken: %.2fs\n", (double)(clock() - tStart) / CLOCKS_PER_SEC);
     return 0;
