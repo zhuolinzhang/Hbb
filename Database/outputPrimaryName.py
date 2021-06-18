@@ -13,7 +13,7 @@ with open(args.i, 'r') as f:
     inputList = json.load(f)
 
 for datasetDict in inputList:
-    primaryNameList.append(datasetDict["primary_name"] + '\n')
+    primaryNameList.append(datasetDict["dasname"] + '\n')
 
 with open(args.o, 'w') as fout:
     for i in primaryNameList:

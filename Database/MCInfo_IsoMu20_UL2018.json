@@ -2,57 +2,57 @@
     {
         "primary_name": "ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8",
         "nevents": 4814600,
-        "xsection": 0.04615,
-        "factor_IsoMu20": 2.60164175924272e-06,
+        "xsection": 0.07924,
+        "factor_IsoMu20": 4.467044268740913e-06,
         "dasname": "/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM"
     },
     {
         "primary_name": "ZZ_TuneCP5_13TeV-pythia8",
         "nevents": 2000000,
-        "xsection": 12.23,
-        "factor_IsoMu20": 0.0016597109619050003,
+        "xsection": 12.1,
+        "factor_IsoMu20": 0.0016420688993499999,
         "dasname": "/ZZ_TuneCP5_13TeV-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8",
         "nevents": 27900469,
-        "xsection": 3.495,
-        "factor_IsoMu20": 3.399943322691099e-05,
+        "xsection": 3.705,
+        "factor_IsoMu20": 3.604231762681122e-05,
         "dasname": "/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"
     },
     {
         "primary_name": "DYJetsToLL_M-4to50_HT-100to200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8",
         "nevents": 6794838,
-        "xsection": 240.6,
-        "factor_IsoMu20": 0.009610644593469338,
+        "xsection": 250.06,
+        "factor_IsoMu20": 0.009988519480643982,
         "dasname": "/DYJetsToLL_M-4to50_HT-100to200_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"
     },
     {
         "primary_name": "DYJetsToLL_M-4to50_HT-200to400_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8",
         "nevents": 1939010,
-        "xsection": 64.96,
-        "factor_IsoMu20": 0.009092890650961057,
+        "xsection": 66.58,
+        "factor_IsoMu20": 0.009319653010175295,
         "dasname": "/DYJetsToLL_M-4to50_HT-200to400_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"
     },
     {
         "primary_name": "DYJetsToLL_M-4to50_HT-400to600_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8",
         "nevents": 2008779,
-        "xsection": 7.2,
-        "factor_IsoMu20": 0.0009728286179813708,
+        "xsection": 7.04,
+        "factor_IsoMu20": 0.0009512102042484513,
         "dasname": "/DYJetsToLL_M-4to50_HT-400to600_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"
     },
     {
         "primary_name": "DYJetsToLL_M-4to50_HT-600toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8",
         "nevents": 1975490,
-        "xsection": 2.247,
-        "factor_IsoMu20": 0.00030871962485712405,
+        "xsection": 2.27,
+        "factor_IsoMu20": 0.00031187963881872344,
         "dasname": "/DYJetsToLL_M-4to50_HT-600toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"
     },
     {
         "primary_name": "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8",
         "nevents": 104017741,
-        "xsection": 7039.0,
-        "factor_IsoMu20": 0.018367055928786225,
+        "xsection": 5393,
+        "factor_IsoMu20": 0.014072102944160265,
         "dasname": "/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM"
     },
     {
@@ -65,85 +65,85 @@
     {
         "primary_name": "TTToHadronic_TuneCP5_13TeV-powheg-pythia8",
         "nevents": 124421000,
-        "xsection": 377.96,
-        "factor_IsoMu20": 0.0008244952420581734,
+        "xsection": 687.1,
+        "factor_IsoMu20": 0.0014988641147692112,
         "dasname": "/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8",
         "nevents": 47707100,
-        "xsection": 113.2923077,
-        "factor_IsoMu20": 0.0006445452416754314,
+        "xsection": 113.4,
+        "factor_IsoMu20": 0.0006451579272225727,
         "dasname": "/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM"
     },
     {
         "primary_name": "ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8",
         "nevents": 23421300,
-        "xsection": 67.90769231,
-        "factor_IsoMu20": 0.0007869442678237412,
+        "xsection": 67.93,
+        "factor_IsoMu20": 0.0007872027791672538,
         "dasname": "/ST_t-channel_antitop_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM"
     },
     {
         "primary_name": "ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8",
         "nevents": 19756800,
-        "xsection": 3.741538462,
-        "factor_IsoMu20": 5.140076841978652e-05,
+        "xsection": 3.549,
+        "factor_IsoMu20": 4.875570008822279e-05,
         "dasname": "/ST_s-channel_4f_leptonDecays_TuneCP5_13TeV-amcatnlo-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM"
     },
     {
         "primary_name": "QCD_HT100to200_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8",
         "nevents": 76676451,
-        "xsection": 24430000.0,
-        "factor_IsoMu20": 86.47637274200393,
+        "xsection": 23600000.0,
+        "factor_IsoMu20": 83.53837072088797,
         "dasname": "/QCD_HT100to200_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "QCD_HT200to300_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8",
         "nevents": 22826901,
-        "xsection": 1501000.0,
-        "factor_IsoMu20": 17.84718551357453,
+        "xsection": 1554000.0,
+        "factor_IsoMu20": 18.477365948097816,
         "dasname": "/QCD_HT200to300_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "QCD_HT300to500_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8",
         "nevents": 55135074,
-        "xsection": 311900.0,
-        "factor_IsoMu20": 1.5354066384185863,
+        "xsection": 324600.0,
+        "factor_IsoMu20": 1.5979256006113278,
         "dasname": "/QCD_HT300to500_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "QCD_HT500to700_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8",
         "nevents": 58487165,
-        "xsection": 30300.0,
-        "factor_IsoMu20": 0.14061059916479113,
+        "xsection": 29960.0,
+        "factor_IsoMu20": 0.13903279046129183,
         "dasname": "/QCD_HT500to700_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "QCD_HT700to1000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8",
         "nevents": 47703400,
-        "xsection": 6675.0,
-        "factor_IsoMu20": 0.03797851130579791,
+        "xsection": 6445.0,
+        "factor_IsoMu20": 0.03666988844432472,
         "dasname": "/QCD_HT700to1000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "QCD_HT1000to1500_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8",
         "nevents": 15675643,
-        "xsection": 1036.0,
-        "factor_IsoMu20": 0.017937850172525617,
+        "xsection": 1114.0,
+        "factor_IsoMu20": 0.019288383293623104,
         "dasname": "/QCD_HT1000to1500_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "QCD_HT1500to2000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8",
         "nevents": 10612885,
-        "xsection": 104.5,
-        "factor_IsoMu20": 0.002672506887759549,
+        "xsection": 108.4,
+        "factor_IsoMu20": 0.002772246379264451,
         "dasname": "/QCD_HT1500to2000_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     },
     {
         "primary_name": "QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8",
         "nevents": 4504262,
-        "xsection": 20.28,
-        "factor_IsoMu20": 0.0012220256097802483,
+        "xsection": 20.25,
+        "factor_IsoMu20": 0.0012202178795882655,
         "dasname": "/QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8/RunIISummer19UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM"
     }
 ]

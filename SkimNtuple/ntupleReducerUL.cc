@@ -429,7 +429,7 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
 }
 
 // main function
-int ntupleReducer(TString fileName, TString savePath)
+int ntupleReducerUL(TString fileName, TString savePath)
 {
     clock_t tStart = clock();
     //ROOT::IsImplicitMTEnabled(); // open multi-process (For HTCondor, comment it!)
