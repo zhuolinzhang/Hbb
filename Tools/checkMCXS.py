@@ -1,3 +1,5 @@
+# use https://twiki.cern.ch/twiki/bin/viewauth/CMS/HowToGenXSecAnalyzer to calculate the 
+# xs of MC sample
 import os
 
 mcFileList = []
