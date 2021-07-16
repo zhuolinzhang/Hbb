@@ -22,6 +22,7 @@ def checkEnv(stackType, sidebandDataset, SRDataset, output):
     if os.path.exists(output): pass
     else: os.mkdir(output)
 
+ROOT.gROOT.SetBatch(True)
 sampleCategoryList = ['zh', 'st', 'tt', 'zz', 'qcd', 'zjets']
 phyObjList = ['RecDiMuon', 'RecDiJet']
 selectKineDict = {'Match': ['Pt', 'Eta', 'Phi', 'M']}

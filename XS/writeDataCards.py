@@ -12,7 +12,7 @@ f = ROOT.TFile(args.n, "read")
 sigHist = f.Get("sigHist")
 bkgHist = f.Get("sumBkgHist")
 
-for i in range(1, sigHist.GetNbinsX()):
+for i in range(1, sigHist.GetNbinsX() + 1):
 	mass = sigHist.GetBinCenter(i)
 	bkgBinNum = bkgHist.FindBin(mass)
 	sigN = sigHist.GetBinContent(i)
