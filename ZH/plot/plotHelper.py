@@ -1,5 +1,6 @@
 import ROOT
 import os
+from array import array
 
 def open_root_files(dirPath):
     # Load root files in a folder
@@ -94,10 +95,19 @@ def plot_ratio(stackType, stackName, *hist):
             continue
         if 'zh' in i.GetName(): continue
         sumHist += i
+    
     if stackType == 'mcData':
         print("Stack: {}\tNevents in Signal: {:.3f}\tNevents in Data: {:.0f}".format(stackName, sigHist.Integral(), dataNevents))
     elif stackType == 'srSideband':
         print("Stack: {}\tNevents in Signal: {:.3f}\tNevents in Sideband: {:.3f}".format(stackName, sigHist.Integral(), dataNevents))
+    '''
+    nTT = 0
+    nZjets = 0
+    for i in hist:
+        if 'tt' in i.GetName(): nTT = i.Integral()
+        if 'zjets' in i.GetName(): nZjets = i.Integral()
+    print("Stack: {}\tNevents in ttbar: {:.3f}\tNevents in z+jets: {:.3f}".format(stackName, nTT, nZjets))
+    '''
     stackErr = ROOT.TGraphErrors(sumHist) # MC. Stat. Err.
     #rel_err_hist = stackErr.Clone("rel_err_hist") # MC. relative Stat. Err.
     relErr = ROOT.TGraphErrors(sumHist.GetNbinsX())
@@ -146,6 +156,8 @@ def plot_ratio(stackType, stackName, *hist):
     hs.SetMaximum(3e3)
     hs.GetYaxis().SetTitleOffset(1)
     hs.GetYaxis().SetTitle("Events / {:.1f}".format(sumHist.GetXaxis().GetBinWidth(1)))
+    if '_Pt' in stackName:
+        hs.GetYaxis().SetTitle("Events")
 
     # Plot the MC Stat. Err. and set the style of MC Stat. Err.
     stackErr.SetFillStyle(3013)
@@ -227,20 +239,43 @@ def plot_ratio(stackType, stackName, *hist):
     if "DiJet" in stackName:
         if '_M' in stackName:
             ratio.GetXaxis().SetTitle("m_{DiJet} [GeV]")
-        if 'pt' in stackName:
+        if 'Pt' in stackName:
             ratio.GetXaxis().SetTitle("p_{T}^{DiJet} [GeV]")
-        if 'eta' in stackName:
+        if 'Eta' in stackName:
             ratio.GetXaxis().SetTitle("#eta_{DiJet}")
-        if 'phi' in stackName:
+        if 'Phi' in stackName:
             ratio.GetXaxis().SetTitle("#phi_{DiJet}")
     elif "DiMuon" in stackName:
         if '_M' in stackName:
             ratio.GetXaxis().SetTitle("m_{DiMuon} [GeV]")
-        if 'pt' in stackName:
+        if 'Pt' in stackName:
             ratio.GetXaxis().SetTitle("p_{T}^{DiMuon} [GeV]")
-        if 'eta' in stackName:
+        if 'Eta' in stackName:
             ratio.GetXaxis().SetTitle("#eta_{DiMuon}")
-        if 'phi' in stackName:
+        if 'Phi' in stackName:
             ratio.GetXaxis().SetTitle("#phi_{DiMuon}")
 
     c.SaveAs("stack/{}.pdf".format(stackName))
+
+def write_to_root(objName, kiniName, *hist):
+    sumBkgHist = ROOT.TH1F()
+    if kiniName == 'Pt':
+        edgeArray = array('d', [0, 10, 20, 30, 40, 50, 60, 80, 100, 120,
+                                140, 160, 180, 200, 220, 240, 260, 280, 300, 350, 400, 500])
+        sumBkgHist = ROOT.TH1F("sumBkgHist", "sumBkgHist", 21, edgeArray)
+    for i in hist:
+        if 'zh' in i.GetName():
+            sigHist = i.Clone()
+    for i in hist:
+        if 'zh' in i.GetName():
+            continue
+        if 'data' in i.GetName():
+            continue
+        sumBkgHist += i
+    sigHist.SetName("sigHist")
+    sumBkgHist.SetName("sumBkgHist")
+    #sumBkgHist.GetXaxis().SetLimits(sigHist.GetXaxis().GetXmin(), sigHist.GetXaxis().GetXmax())
+    f = ROOT.TFile("./stack/{}_{}.root".format(objName, kiniName), "RECREATE")
+    sigHist.Write()
+    sumBkgHist.Write()
+    f.Close()

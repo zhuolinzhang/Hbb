@@ -3,9 +3,11 @@ import ROOT
 import plotConfig
 import plotHelper
 import argparse
+from array import array
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--type", type=str, help="mcData or srSideband The type of THStack")
+parser.add_argument("-t", "--type", type=str, help="mcData or srSideband The type of THStack")
+parser.add_argument("-w", action='store_true', help="write mcData histograms to root file")
 args = parser.parse_args()
 
 def checkEnv(stackType, sidebandDataset, SRDataset, output):
@@ -31,7 +33,9 @@ srPath = './sr' # input Signal Region TTree path
 outputPath = './stack' # output THStack path
 checkEnv(args.type, sidebandPath, srPath, outputPath)
 
-histEdgeDict = {'M': {'RecDiMuon': '60, 75, 105', 'RecDiJet': '75, 50, 200'}, 'Pt':'50, 0, 500', 'Eta':'60, -6, 6', 'Phi':'40, -4, 4'}
+histEdgeDict = {'M': {'RecDiMuon': '60, 75, 105', 'RecDiJet': '75, 50, 200'}, 'Eta':'60, -6, 6', 'Phi':'40, -4, 4'}
+edgeArray = array('d', [0, 10, 20, 30, 40, 50, 60, 80, 100, 120,
+                  140, 160, 180, 200, 220, 240, 260, 280, 300, 350, 400, 500])
 if args.type == 'mcData': 
     sampleCategoryList.append('data')
 elif args.type == 'srSideband':
@@ -42,12 +46,16 @@ for select, kine in selectKineDict.items():
     for k in kine:
         for phyObj in phyObjList:
             for sample in sampleCategoryList:
-                if k == 'M':
-                    histEdge = histEdgeDict['M'][phyObj]
-                else:
-                    histEdge = histEdgeDict[k]
-                exec('{0}_{1}_{2}_{3} = ROOT.TH1F("{0}_{1}_{2}_{3}", "{0}_{1}_{2}_{3}", {4})'.format(
+                if k != 'Pt':
+                    if k == 'M':
+                        histEdge = histEdgeDict['M'][phyObj]
+                    else:
+                        histEdge = histEdgeDict[k]
+                    exec('{0}_{1}_{2}_{3} = ROOT.TH1F("{0}_{1}_{2}_{3}", "{0}_{1}_{2}_{3}", {4})'.format(
                         sample, phyObj, select, k, histEdge))
+                elif k == "Pt":
+                    exec('{0}_{1}_{2}_{3} = ROOT.TH1F("{0}_{1}_{2}_{3}", "{0}_{1}_{2}_{3}", 21, edgeArray)'.format(
+                        sample, phyObj, select, k))
 
 # open .root files
 fileList = plotHelper.open_root_files("./sideband")
@@ -74,9 +82,12 @@ if args.type == 'mcData':
     for phyObj in phyObjList:
         for select, kine in selectKineDict.items():
             for k in kine:
-                #exec('plotHelper.plot_hist(qcd_{}_{}_{})'.format(phyObj, select, k)) # just for test
+                exec('plotHelper.plot_hist(zh_{}_{}_{})'.format(phyObj, select, k)) # just for test
                 exec('plotHelper.plot_ratio("{0}", "{0}_{1}_{2}_{3}", zh_{1}_{2}_{3}, st_{1}_{2}_{3}, tt_{1}_{2}_{3}, zz_{1}_{2}_{3}, qcd_{1}_{2}_{3}, zjets_{1}_{2}_{3}, data_{1}_{2}_{3})'.format(
-                    args.type, phyObj, select, k)) 
+                    args.type, phyObj, select, k))
+                if args.w:
+                    exec('plotHelper.write_to_root("{0}", "{2}", zh_{0}_{1}_{2}, st_{0}_{1}_{2}, tt_{0}_{1}_{2}, zz_{0}_{1}_{2}, qcd_{0}_{1}_{2}, zjets_{0}_{1}_{2}, data_{0}_{1}_{2})'.format(
+                    phyObj, select, k)) # this function leads to TH1::Merge
 elif args.type == 'srSideband':
     # sum up all sideband hists to the sumSideband_x_x_x hist
     for file in sidebandFileList:

@@ -1,5 +1,6 @@
 import ROOT
 import json
+from array import array
 
 class Hist():
     def __init__(self, kinematics, phyObject, selection, dataset, tree) -> None:
@@ -23,7 +24,7 @@ class Hist():
             self.mcCategory = self.getCategoryOfMC()
             self.hist.Scale(self.getScaleFactor())
     
-    def getTH1Edge(self):
+    def getTH1Edge(self) -> float:
         histEdgeDict = {'M': {'RecDiMuon': '60, 75, 105', 'RecDiJet': '75, 50, 200'}, 'Pt':'50, 0, 500', 'Eta':'60, -6, 6', 'Phi':'40, -4, 4'}
         loopFlag = False
         for kinimatic, para in histEdgeDict.items():
@@ -36,7 +37,7 @@ class Hist():
             print('You input wrong physical object!')
         return histEdge
     
-    def getScaleFactor(self):
+    def getScaleFactor(self) -> float:
         with open('MCInfo_IsoMu20_UL2018.json') as mcInfo:
             mcInfoList = json.load(mcInfo)
         factor = 1
@@ -48,12 +49,18 @@ class Hist():
         if factor == 1: print("Your dataset name is not in the json file!")
         return factor
 
-    def getHist(self):
+    def getHist(self) -> ROOT.TH1F():
         self.tree.Draw("{}{} >> {}({})".format(self.recoObject, self.kinematics, self.histName, self.histEdge)) # nbins, xmin, xmax in the bracket
         h = ROOT.gROOT.FindObject(self.histName)
-        return h
+        if self.kinematics == 'Pt':
+            edgeArray = array('d', [0, 10, 20, 30, 40, 50, 60, 80, 100, 120,
+                              140, 160, 180, 200, 220, 240, 260, 280, 300, 350, 400, 500])
+            h.Rebin(21, "hRebin_{}_{}".format(self.dataset, self.histName), edgeArray)
+            hRebin = ROOT.gROOT.FindObject("hRebin_{}_{}".format(self.dataset, self.histName))
+            return hRebin
+        else: return h
     
-    def getCategoryOfMC(self):
+    def getCategoryOfMC(self) -> str:
         matchDict = {'ZH_HToBB':'zh', 'TTTo':'tt', 'channel':'st', 'ZZ':'zz', 'QCD':'qcd', 'DYJetsToLL':'zjets'}
         mcCategory = None
         for datasetName in matchDict.keys():
