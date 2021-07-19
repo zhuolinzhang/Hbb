@@ -145,5 +145,33 @@
         "xsection": 20.25,
         "factor_IsoMu20": 0.0010021259964749566,
         "dasname": "/QCD_HT2000toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"
+    },
+    {
+        "primary_name": "DYBJetsToLL_M-50_Zpt-100to200_TuneCP5_13TeV-madgraphMLM-pythia8",
+        "nevents": 19917076,
+        "xsection": 3.206,
+        "factor_IsoMu20": 4.361873440057165e-05,
+        "dasname": "/DYBJetsToLL_M-50_Zpt-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"
+    },
+    {
+        "primary_name": "DYBJetsToLL_M-50_Zpt-200toInf_TuneCP5_13TeV-madgraphMLM-pythia8",
+        "nevents": 1748080,
+        "xsection": 0.3304,
+        "factor_IsoMu20": 5.1216967113633255e-05,
+        "dasname": "/DYBJetsToLL_M-50_Zpt-200toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"
+    },
+    {
+        "primary_name": "DYJetsToLL_BGenFilter_Zpt-100to200_M-50_TuneCP5_13TeV-madgraphMLM-pythia8",
+        "nevents": 7621116,
+        "xsection": 2.664,
+        "factor_IsoMu20": 9.472198081225901e-05,
+        "dasname": "/DYJetsToLL_BGenFilter_Zpt-100to200_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"
+    },
+    {
+        "primary_name": "DYJetsToLL_BGenFilter_Zpt-200toInf_M-50_TuneCP5_13TeV-madgraphMLM-pythia8",
+        "nevents": 2043053,
+        "xsection": 0.3949,
+        "factor_IsoMu20": 5.2377241673123506e-05,
+        "dasname": "/DYJetsToLL_BGenFilter_Zpt-200toInf_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM"
     }
 ]
