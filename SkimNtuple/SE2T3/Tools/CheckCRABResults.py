@@ -15,7 +15,7 @@ def checkVO():
 
 # Read MC Samples and Data list from .txt file. 
 # We can modify the .txt file to decide which MC sample of data is needed to check.
-def readLocalList(listFilePath):
+def readLocalList(listFilePath: str) -> list:
     fileList = []
     with open(listFilePath, 'r') as f:
         fileListOrigin = f.readlines()
@@ -25,7 +25,7 @@ def readLocalList(listFilePath):
 
 # Return the result whether the dataset is found in the CRAB results.
 # return a bool value
-def getFileFlag(sampleName, taskName, date, mcOrData):
+def getFileFlag(sampleName, taskName, date, mcOrData) -> bool:
     findFlag = False
     # my new T2 path
     t2Path = 'gsiftp://ccsrm.ihep.ac.cn/dpm/ihep.ac.cn/home/cms/store/user/zhuolinz'
@@ -42,7 +42,7 @@ def getFileFlag(sampleName, taskName, date, mcOrData):
     return findFlag
 
 # The main function
-def checkCRABResluts(resultPath, taskName, taskDate):
+def checkCRABResluts(resultPath: str, taskName: str, taskDate:str , datasetListPath=None, customDatasetPathData=False) -> tuple[list, list]:
     resultSavePath = resultPath + '/' + taskName + "_" + taskDate # The folder that saves the .txt file which include primary names of dataset
     if os.path.exists(resultSavePath):
         pass
@@ -50,8 +50,17 @@ def checkCRABResluts(resultPath, taskName, taskDate):
         os.mkdir(resultSavePath)
     noOutputMCList = []
     noOutputDataList = []
-    mcInputList = readLocalList(resultPath + "/SampleListUL2018.txt") # When the dataset is changed, this file should also changed.
-    dataInputList = readLocalList(resultPath + "/DataListUL2018.txt") # When the dataset is changed, this file should also changed.
+    if datasetListPath == None:
+        mcInputList = readLocalList(resultPath + "/SampleListUL2018.txt") # When the dataset is changed, this file should also changed.
+        dataInputList = readLocalList(resultPath + "/DataListUL2018.txt") # When the dataset is changed, this file should also changed.
+    if datasetListPath != None:
+        if customDatasetPathData:
+            mcInputList = []
+            dataInputList = readLocalList(datasetListPath)
+        else:
+            mcInputList = readLocalList(datasetListPath)
+            dataInputList = []
+
     mcT2List = []
     dataT2List = []
     # Get MC list and data list in T2

@@ -15,7 +15,7 @@ def checkVO():
             os.system("voms-proxy-init -voms cms")
 
 # Copy files from T2 to T3
-def copyFiles(targetDirectory, jobName, dataset, date, mcOrData):
+def copyFiles(targetDirectory: str, jobName: str, dataset: str, mcOrData: str):
     SEPath = 'gsiftp://ccsrm.ihep.ac.cn/dpm/ihep.ac.cn/home/cms/store/user/zhuolinz' # my new T2 path
     if mcOrData == 'mc':
         jobDateFile = os.popen('gfal-ls {}/{}/{}'.format(SEPath, dataset, jobName))

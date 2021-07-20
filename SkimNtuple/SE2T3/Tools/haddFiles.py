@@ -4,7 +4,7 @@ import argparse
 import shutil
 
 # Generate HTCondor scripts, this function doesn't called in the main function
-def generateScripts(savePath, sourcePath, jobName, scriptNum, datasetType):
+def generateScripts(savePath: str, sourcePath: str, jobName: str, scriptNum: str, datasetType: str):
     if os.path.exists(savePath): pass
     else: os.mkdir(savePath)
     fileName = 'haddJobSubmit_' + str(scriptNum) + '.sh'
@@ -21,7 +21,7 @@ def generateScripts(savePath, sourcePath, jobName, scriptNum, datasetType):
     print('*' * 70)
 
 # hadd root files
-def haddFiles(targetDirectory, jobName, datasetName, optimizeFlag):
+def haddFiles(targetDirectory: str, jobName: str, datasetName: str, optimizeFlag: bool):
     directoryList = os.listdir('{}/{}'.format(targetDirectory, jobName))
     if len(directoryList) > 1:
         haddCommand = 'hadd -f {0}/{1}.root'.format(targetDirectory, datasetName) # -f force
