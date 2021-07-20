@@ -42,7 +42,7 @@ def getFileFlag(sampleName, taskName, date, mcOrData) -> bool:
     return findFlag
 
 # The main function
-def checkCRABResluts(resultPath: str, taskName: str, taskDate:str , datasetListPath=None, customDatasetPathData=False) -> tuple[list, list]:
+def checkCRABResluts(resultPath: str, taskName: str, taskDate:str , datasetListPath=None, customDatasetPathData=False) -> tuple:
     resultSavePath = resultPath + '/' + taskName + "_" + taskDate # The folder that saves the .txt file which include primary names of dataset
     if os.path.exists(resultSavePath):
         pass
