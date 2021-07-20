@@ -2,13 +2,12 @@ import os
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--path", type=str, default="/publicfs/cms/user/zhangzhuolin/CRABResult", help="The successful result of CRAB jobs, default path is ../CRABResult")
-parser.add_argument("-n", type=str, help="The task name of CRAB job. e.g. ZHTree")
-parser.add_argument("--date", type=str, help="The task date of CRAB job. e.g. 210412")
+parser.add_argument("--path", type=str, default="/publicfs/cms/user/zhangzhuolin/CRABResult", help="The default path of CRAB result")
+parser.add_argument("-t", "--task", type=str, help="The task name of CRAB job. e.g. ZHTree")
+parser.add_argument("-d", "--date", type=str, help="The task date of CRAB job. e.g. 210412")
 args = parser.parse_args()
 
 def readLocalList(listFilePath):
-    # read data list or MC list to generate scripts
     fileList = []
     with open(listFilePath, 'r') as f:
         fileListOrigin = f.readlines()
@@ -29,10 +28,10 @@ def generateScripts(scriptSavePath, skimTTreeSavePath, originTTreePath, macroPat
 
 t3OriginPath = '/publicfs/cms/user/zhangzhuolin/target_files'
 t3SkimPath = '/publicfs/cms/user/zhangzhuolin/TTreeReducer'
-macroPath = t3SkimPath + '/ntupleReducer.cc'
-taskFilePath = t3OriginPath + '/' + args.n + "_" + args.date
-skimFilePath = t3SkimPath + '/' + args.n + "_" + args.date
-checkResultPath = args.path + "/" + args.n + "_" + args.date
+macroPath = t3SkimPath + '/ntupleReducerUL.cc'
+taskFilePath = t3OriginPath + '/' + args.task + "_" + args.date
+skimFilePath = t3SkimPath + '/' + args.task + "_" + args.date
+checkResultPath = args.path + "/" + args.task + "_" + args.date
 mcListPath = checkResultPath + "/" + "MCList.txt"
 dataListPath = checkResultPath + "/" + "DataList.txt"
 
