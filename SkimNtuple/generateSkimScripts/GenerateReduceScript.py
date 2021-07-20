@@ -4,6 +4,7 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument("--path", type=str, default="/publicfs/cms/user/zhangzhuolin/CRABResult", help="The default path of CRAB result")
 parser.add_argument("-t", "--task", type=str, help="The task name of CRAB job. e.g. ZHTree")
+parser.add_argument("-c", "--campaign", type=str, default='ul', help="Dataset campaign (UL/ReReco), type ul or rereco")
 parser.add_argument("-d", "--date", type=str, help="The task date of CRAB job. e.g. 210412")
 args = parser.parse_args()
 
@@ -28,7 +29,9 @@ def generateScripts(scriptSavePath, skimTTreeSavePath, originTTreePath, macroPat
 
 t3OriginPath = '/publicfs/cms/user/zhangzhuolin/target_files'
 t3SkimPath = '/publicfs/cms/user/zhangzhuolin/TTreeReducer'
-macroPath = t3SkimPath + '/ntupleReducerUL.cc'
+if args.campaign == 'ul': macroName = '/ntupleReducerUL.cc'
+elif args.campaign == 'rereco': macroName = '/ntupleReducerReReco.cc'
+macroPath = t3SkimPath + macroName
 taskFilePath = t3OriginPath + '/' + args.task + "_" + args.date
 skimFilePath = t3SkimPath + '/' + args.task + "_" + args.date
 checkResultPath = args.path + "/" + args.task + "_" + args.date
@@ -40,7 +43,6 @@ dataList = readLocalList(dataListPath)
 
 mcScriptSavePath = checkResultPath + "/" + "MCReduceScripts"
 dataScriptSavePath = checkResultPath + "/" + "DataReduceScripts"
-
 for i in mcList:
     print("Generate the script of {}.".format(i))
     mcSourcePath = taskFilePath + '/' + i + '.root'
@@ -50,3 +52,11 @@ for i in dataList:
     print("Generate the script of {}.".format(i))
     dataSourcePath = taskFilePath + '/' + i + '.root'
     generateScripts(dataScriptSavePath, skimFilePath, dataSourcePath, macroPath, dataList.index(i))
+
+if len(mcList) > 0:
+    print("*" * 60)
+    print("The MC skimming script path: {}".format(mcScriptSavePath))
+if len(dataList) > 0:
+    print("*" * 60)
+    print("The DATA skimming script path: {}".format(dataScriptSavePath))
+    
