@@ -1,31 +1,33 @@
 import ROOT
-from array import array
+import numpy as np
 import glob
 import argparse
+import uproot
 
-ROOT.gROOT.SetBatch(True)
+ROOT.gROOT.SetBatch()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--type", help="m or pt")
 args = parser.parse_args()
 
-limitExpected = array('d')
-limitExpected95up = array('d')
-limitExpected95down = array('d')
-limitExpected68up = array('d')
-limitExpected68down = array('d')
-limitObserved = array('d')
-mass = array('d')
-masserr = array('d')
+limitExpected = np.array([], 'd')
+limitExpected95up = np.array([], 'd')
+limitExpected95down = np.array([], 'd')
+limitExpected68up = np.array([], 'd')
+limitExpected68down = np.array([], 'd')
+limitObserved = np.array([], 'd')
+mass = np.array([], 'd')
+masserr = np.array([], 'd')
 lable = ''
 
 #make the loop
+xsFile = uproot.open("./HiggsHist.root")
+
 if args.type == 'm':
 	massTotal = list(range(51, 91, 2)) + list(range(151, 199, 2))
 	lable = 'm_{Dijet}'
 elif args.type == 'pt':
-	massTotal = [5.0, 15.0, 25.0, 35.0, 45.0, 55.0, 70.0, 90.0, 110.0, 130.0, 150.0, 170.0, 190.0, 210.0, 230.0, 250.0, 270.0, 290.0, 325.0, 375.0,
-                450.0]
+	massTotal = list(range(5, 490, 10))
 	lable = 'p_{T}^{Dijet}'
 rootFileList = glob.glob("*.root")
 fileList = []
@@ -38,29 +40,29 @@ for i in rootFileList:
 
 for i in fileList:
 	m = massTotal[fileList.index(i)]
-	f = ROOT.TFile("./higgsCombine.test.pt{}.AsymptoticLimits.mH125.root".format(m))
+	f = ROOT.TFile("./higgsCombinetest.AsymptoticLimits.mH{}.root".format(m))
 	tree = f.Get("limit")
 	tree.GetEntry(2)
-	limitExpected.append(tree.limit)
+	np.append(limitExpected, [tree.limit])
 
 	tree = f.Get("limit")
 	tree.GetEntry(0)
-	limitExpected95up.append(abs(tree.limit - limitExpected[-1]))
+	np.append(limitExpected95up, [abs(tree.limit - limitExpected[-1])])
 	tree = f.Get("limit")
 	tree.GetEntry(4)
-	limitExpected95down.append(abs(tree.limit - limitExpected[-1]))
+	np.append(limitExpected95down, [abs(tree.limit - limitExpected[-1])])
 	
 	tree.GetEntry(1)
-	limitExpected68up.append(abs(tree.limit - limitExpected[-1]))
+	np.append(limitExpected68up, [abs(tree.limit - limitExpected[-1])])
 	tree = f.Get("limit")
 	tree.GetEntry(3)
-	limitExpected68down.append(abs(tree.limit - limitExpected[-1]))
+	np.append(limitExpected68down, [abs(tree.limit - limitExpected[-1])])
 	
 	tree.GetEntry(5)
-	limitObserved.append(tree.limit)
+	np.append(limitObserved, [tree.limit])
 		
-	mass.append(m)
-	masserr.append(0.)
+	np.append(mass, [m])
+	np.append(masserr, [0.])
 	
 c1=ROOT.TCanvas("c1","c1",700,500)
 #c1.SetGrid()
@@ -69,7 +71,7 @@ c1=ROOT.TCanvas("c1","c1",700,500)
 
 mg=ROOT.TMultiGraph()
 mgeps=ROOT.TMultiGraph()
-
+print(mass)
 graph_limitExpected = ROOT.TGraph(len(mass), mass, limitExpected)
 graph_limitExpected.SetMarkerSize(1)
 graph_limitExpected.SetMarkerStyle(20)
@@ -101,7 +103,7 @@ mg.Draw("APC")
 
 #mg.GetYaxis().SetTitle(
 #	"#sigma(pp#rightarrow ZH)#times BR(Z#rightarrow #mu#mu)#times BR(H#rightarrow b#bar{b}). [pb]")
-mg.GetYaxis().SetTitle("Signal Strength")
+mg.GetYaxis().SetTitle("d #sigma(ZH) #times BR(Z #rightarrow l^{+}l^{-} / d p_{T} [fb/GeV]")
 mg.GetYaxis().SetTitleSize(0.05)
 mg.GetXaxis().SetTitle("{}[GeV]".format(lable))
 mg.GetXaxis().SetTitleSize(0.05)
@@ -120,7 +122,7 @@ cmsTag2.SetTextAlign(11)
 #cmsTag.SetTextFont(61)
 cmsTag2.Draw()
 cmsTag3 = ROOT.TLatex(
-	0.90, 0.917, "#scale[0.9]{#bf{59.83 fb^{-1} (13 TeV, 2018)}}")
+	0.90, 0.917, "#scale[0.9]{#bf{0.271 fb^{-1} (13 TeV, 2018)}}")
 cmsTag3.SetNDC()
 cmsTag3.SetTextAlign(31)
 #cmsTag.SetTextFont(61)
