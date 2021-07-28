@@ -143,3 +143,6 @@ leg.AddEntry(graph_limit68up, "68% Expected",  "F")
 leg.AddEntry(graph_limit95up, "95% Expected",  "F")
 leg.Draw("same")
 c1.SaveAs("limit_{}.pdf".format(args.type))
+
+# Calculate the total distribution
+print("The total XS is {}".format(np.sum(limitExpected)))

@@ -21,7 +21,6 @@ for datasetDict in inputList:
     
 with open(args.o, 'w') as fout:
     for key, value in outPutDict.items():
-        fout.write(key + '\n')
         for i in value:
             if i != value[-1]:
                 fout.write(str(i) + ' & ')
