@@ -109,7 +109,7 @@ mg.Draw("APC")
 
 #mg.GetYaxis().SetTitle(
 #	"#sigma(pp#rightarrow ZH)#times BR(Z#rightarrow #mu#mu)#times BR(H#rightarrow b#bar{b}). [pb]")
-mg.GetYaxis().SetTitle("d#sigma(ZH)#timesBR(Z#rightarrowl^{+}l^{-}) / dp_{T} [fb/GeV]")
+mg.GetYaxis().SetTitle("d#sigma(ZH)#timesBR(Z#rightarrowl^{+}l^{-}) / dp_{T} [fb/ N GeV]")
 mg.GetYaxis().SetTitleSize(0.05)
 mg.GetXaxis().SetTitle("{}[GeV]".format(lable))
 mg.GetXaxis().SetTitleSize(0.05)
