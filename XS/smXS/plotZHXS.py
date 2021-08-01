@@ -2,7 +2,7 @@ import ROOT
 import json
 
 def get_scale_factor(dataset):
-	with open('MCInfo_IsoMu20_UL2018.json') as mcInfo:
+	with open('../../Database/MCInfo_UL2018.json') as mcInfo:
             mcInfoList = json.load(mcInfo)
 	factor = 1
 	for eachDataset in mcInfoList:
@@ -40,9 +40,9 @@ def save_hist(*histList):
 			hist.SetName("recoHiggsXS")
 			hist.Draw()
 			c.SaveAs("recoXSPt.pdf")
-		print("{} Total XS: {}fb".format(hist.GetTitle(), hist.Integral()))
+		print("{} Total XS: {} fb".format(hist.GetTitle(), hist.Integral("width")))
 
-ROOT.gROOT.SetBatch(1)
+ROOT.gROOT.SetBatch()
 f = ROOT.TFile("./HiggsHist.root")
 h_dijet_genparticle_pt = f.Get("demo/h_dijet_genparticle_pt")
 h_dijet_pfjets_pt = f.Get("demo/h_dijet_pfjets_pt")
