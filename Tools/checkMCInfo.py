@@ -12,6 +12,7 @@ parse = argparse.ArgumentParser()
 parse.add_argument("--lumi", type=float, default=59.83, help="The integrated luminosity of data (/fb)")
 parse.add_argument("-i", type=str, help="The path of input json file")
 parse.add_argument("-o", type=str, default=None, help="The path of output json file, the default path is same as the input path")
+parse.add_argument("-t", type=str, default='factor', help="The factor which you want to check")
 args = parse.parse_args()
 
 def checkVO():
@@ -42,10 +43,10 @@ for datasetDict in databaseList:
         if key == "nevents":
             if value == nEvents:
                 factor = args.lumi / ((nEvents / datasetDict["xsection"]) / 1000)
-                if datasetDict["factor_IsoMu20"] == factor: continue
+                if datasetDict[args.t] == factor: continue
                 else:
-                    print("The scale factor to {} /fb is wrong!\tnow = {}\tcalculate = {}".format(args.lumi, datasetDict["factor_IsoMu20"], factor))
-                    newDatasetDict["factor_IsoMu20"] = factor
+                    print("The scale factor to {} /fb is wrong!\tnow = {}\tcalculate = {}".format(args.lumi, datasetDict[args.t], factor))
+                    newDatasetDict[args.t] = factor
         if key == "dasname":
             f = os.popen('dasgoclient -query="summary dataset={}"'.format(value))
             dasSummary = f.readline()
@@ -58,7 +59,7 @@ for datasetDict in databaseList:
             else:
                 print("The nevnets is wrong!\tlocal = {}\tdas = {}".format(datasetDict["nevents"], nEvents))
                 newDatasetDict["nevents"] = nEvents
-                newDatasetDict["factor_IsoMu20"] = args.lumi / ((nEvents / datasetDict["xsection"]) / 1000)
+                newDatasetDict[args.t] = args.lumi / ((nEvents / datasetDict["xsection"]) / 1000)
     newDatabaseList.append(newDatasetDict)
     print('*' * 60)
         
