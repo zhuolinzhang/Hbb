@@ -93,12 +93,12 @@ graph_limitObserved.SetMarkerStyle(20)
 graph_limit95up = ROOT.TGraphAsymmErrors(len(
 	mass), mass, limitExpected, masserr, masserr, limitExpected95up, limitExpected95down)
 graph_limit95up.SetTitle("graph_limit95up")
-graph_limit95up.SetFillColor(ROOT.kOrange - 2)
+graph_limit95up.SetFillColor(ROOT.kOrange)
 
 graph_limit68up = ROOT.TGraphAsymmErrors(len(
 	mass), mass, limitExpected, masserr, masserr, limitExpected68up, limitExpected68down)
 graph_limit68up.SetTitle("graph_limit68up")
-graph_limit68up.SetFillColor(ROOT.kGreen - 6)
+graph_limit68up.SetFillColor(ROOT.kGreen + 1)
 
 mg.Add(graph_limit95up, "3")
 mg.Add(graph_limit68up, "3")
