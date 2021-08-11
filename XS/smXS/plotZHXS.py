@@ -35,7 +35,7 @@ def save_hist(*histList):
 			c.SaveAs("genXSPt.pdf")
 		if "pfjets" in hist.GetTitle():
 			hist.GetXaxis().SetTitle("p_{T}^{Dijets}")
-			hist.GetYaxis().SetTitle("d #sigma / d p_{T} [fb/GeV]")
+			hist.GetYaxis().SetTitle("d #sigma / d p_{T} [fb/ N GeV]")
 			hist.SetTitle("recoHiggsXS")
 			hist.SetName("recoHiggsXS")
 			hist.Draw()
