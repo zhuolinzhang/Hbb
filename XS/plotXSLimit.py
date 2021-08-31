@@ -24,7 +24,7 @@ signalStrengthLimitExpected68down = np.array([], 'd')
 signalStrengthLimitObserved = np.array([], 'd')
 mass = np.array([], 'd')
 masserr = np.array([], 'd')
-lable = ''
+label = ''
 
 # make the loop
 xsFile = uproot.open('./smXS/HiggsXS.root')
@@ -32,9 +32,9 @@ massTotal = xsFile['recoHiggsXS'].axis().centers()
 xsList = xsFile['recoHiggsXS'].values()
 
 if args.type == 'm':
-	lable = 'm_{Dijet}'
+	label = 'm_{Dijet}'
 elif args.type == 'pt':
-	lable = 'p_{T}^{Dijet}'
+	label = 'p_{T}^{Dijet}'
 rootFileList = glob.glob("./DijetPtResult/*.root")
 fileList = []
 for i in rootFileList:
@@ -145,7 +145,7 @@ mgXS.Draw("APC")
 #	"#sigma(pp#rightarrow ZH)#times BR(Z#rightarrow #mu#mu)#times BR(H#rightarrow b#bar{b}). [pb]")
 mgXS.GetYaxis().SetTitle("d#sigma(ZH)#timesBR(Z#rightarrowl^{+}l^{-}) / dp_{T} [fb/ N GeV]")
 mgXS.GetYaxis().SetTitleSize(0.05)
-mgXS.GetXaxis().SetTitle("{}[GeV]".format(lable))
+mgXS.GetXaxis().SetTitle("{}[GeV]".format(label))
 mgXS.GetXaxis().SetTitleSize(0.05)
 mgXS.GetYaxis().SetTitleOffset(1.0)
 mgXS.GetXaxis().SetRangeUser(mass[0] - 1, mass[-1] + .1)
@@ -156,17 +156,27 @@ cmsTag = ROOT.TLatex(0.13, 0.917, "#scale[1.1]{CMS}")
 cmsTag.SetNDC()
 cmsTag.SetTextAlign(11)
 cmsTag.Draw()
-cmsTag2 = ROOT.TLatex(0.215, 0.917, "#scale[0.825]{#bf{#it{Preliminary}}}")
+cmsTag2 = ROOT.TLatex(0.215, 0.917, "#scale[0.825]{#bf{#it{Work In Progress}}}")
 cmsTag2.SetNDC()
 cmsTag2.SetTextAlign(11)
 #cmsTag.SetTextFont(61)
 cmsTag2.Draw()
-cmsTag3 = ROOT.TLatex(
-	0.90, 0.917, "#scale[0.9]{#bf{59.83 fb^{-1} (13 TeV, 2018)}}")
+cmsTag3 = ROOT.TLatex(0.90, 0.917, "#scale[0.9]{#bf{59.83 fb^{-1} (13 TeV, 2018)}}")
 cmsTag3.SetNDC()
 cmsTag3.SetTextAlign(31)
 #cmsTag.SetTextFont(61)
 cmsTag3.Draw()
+
+xsLine10to20 = ROOT.TArrow(60, 0, 60, 50, 0.02, "<|")
+xsLine20to50 = ROOT.TArrow(300, 0, 300, 50, 0.02, "<|")
+xsLine50to100 = ROOT.TArrow(400, 0, 400, 50, 0.02, "<|")
+xsLine10to20.SetLineWidth(2)
+xsLine20to50.SetLineWidth(2)
+xsLine50to100.SetLineWidth(2)
+xsLine10to20.Draw()
+xsLine20to50.Draw()
+xsLine50to100.Draw()
+
 leg1 = ROOT.TLegend(0.65, 0.65, 0.88, 0.85)  
 leg1.SetBorderSize(0)
 leg1.SetFillStyle(1001)
@@ -176,12 +186,14 @@ leg1.AddEntry(graphXSLimitExpected, "Expected",  "PL")
 leg1.AddEntry(graphXSLimit68up, "68% Expected",  "F")
 leg1.AddEntry(graphXSLimit95up, "95% Expected",  "F")
 leg1.Draw("same")
+
 c1.SaveAs("xs_{}.pdf".format(args.type))
 
-c2 = ROOT.TCanvas()
+c2 = ROOT.TCanvas("c2", "c2", 800, 600)
+c2.SetBottomMargin(.15)
 mgSignalStrength.GetYaxis().SetTitle("Signal Strength")
 mgSignalStrength.GetYaxis().SetTitleSize(0.05)
-mgSignalStrength.GetXaxis().SetTitle("{}[GeV]".format(lable))
+mgSignalStrength.GetXaxis().SetTitle("{}[GeV]".format(label))
 mgSignalStrength.GetXaxis().SetTitleSize(0.05)
 mgSignalStrength.GetYaxis().SetTitleOffset(1.0)
 mgSignalStrength.GetXaxis().SetRangeUser(mass[0] - 1, mass[-1] + .1)
@@ -197,6 +209,15 @@ leg2.AddEntry(graphSignalStrengthLimitExpected, "Expected",  "PL")
 leg2.AddEntry(graphSignalStrengthLimit68up, "68% Expected",  "F")
 leg2.AddEntry(graphSignalStrengthLimit95up, "95% Expected",  "F")
 leg2.Draw("same")
+signalStrengthLine10to20 = ROOT.TArrow(60, 5, 60, 150, 0.02, "<|")
+signalStrengthLine20to50 = ROOT.TArrow(300, 5, 300, 150, 0.02, "<|")
+signalStrengthLine50to100 = ROOT.TArrow(400, 5, 400, 150, 0.02, "<|")
+signalStrengthLine10to20.SetLineWidth(2)
+signalStrengthLine20to50.SetLineWidth(2)
+signalStrengthLine50to100.SetLineWidth(2)
+signalStrengthLine10to20.Draw()
+signalStrengthLine20to50.Draw()
+signalStrengthLine50to100.Draw()
 c2.SaveAs("signalStrength_{}.pdf".format(args.type))
 # Calculate the total distribution
 print("The total XS is {}".format(np.sum(xsLimitExpected)))
