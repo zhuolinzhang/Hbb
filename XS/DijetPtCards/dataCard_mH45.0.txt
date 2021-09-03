@@ -3,13 +3,13 @@ jmax    1 number of processes minus 1
 kmax    * number of nuisance parameters
 --------------------------------------------------
 --------------------------------------------------
-bin          signal_region
-observation  3338.037260532379
+bin          bin1
+observation  4415.498046875
 --------------------------------------------------
-bin		signal_region	signal_region
+bin		bin1	bin1
 process		signal	bkg
 process		0	1
-rate		5.54385232925415	3332.493408203125
+rate		5.54385232925415	3374.705322265625
 --------------------------------------------------
 lumi13TeV_2018	lnN	1.023	1.023
 BR_hbb	lnN	1.005	-

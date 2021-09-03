@@ -10,15 +10,21 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-t", "--type", help="m or pt")
 args = parser.parse_args()
 
-limitExpected = np.array([], 'd')
-limitExpected95up = np.array([], 'd')
-limitExpected95down = np.array([], 'd')
-limitExpected68up = np.array([], 'd')
-limitExpected68down = np.array([], 'd')
-limitObserved = np.array([], 'd')
+xsLimitExpected = np.array([], 'd')
+xsLimitExpected95up = np.array([], 'd')
+xsLimitExpected95down = np.array([], 'd')
+xsLimitExpected68up = np.array([], 'd')
+xsLimitExpected68down = np.array([], 'd')
+xsLimitObserved = np.array([], 'd')
+signalStrengthLimitExpected = np.array([], 'd')
+signalStrengthLimitExpected95up = np.array([], 'd')
+signalStrengthLimitExpected95down = np.array([], 'd')
+signalStrengthLimitExpected68up = np.array([], 'd')
+signalStrengthLimitExpected68down = np.array([], 'd')
+signalStrengthLimitObserved = np.array([], 'd')
 mass = np.array([], 'd')
 masserr = np.array([], 'd')
-lable = ''
+label = ''
 
 # make the loop
 xsFile = uproot.open('./smXS/HiggsXS.root')
@@ -26,9 +32,9 @@ massTotal = xsFile['recoHiggsXS'].axis().centers()
 xsList = xsFile['recoHiggsXS'].values()
 
 if args.type == 'm':
-	lable = 'm_{Dijet}'
+	label = 'm_{Dijet}'
 elif args.type == 'pt':
-	lable = 'p_{T}^{Dijet}'
+	label = 'p_{T}^{Dijet}'
 rootFileList = glob.glob("./DijetPtResult/*.root")
 fileList = []
 for i in rootFileList:
@@ -44,25 +50,30 @@ for i in fileList:
 	# f = ROOT.TFile("./DijetPtResult/higgsCombinetest.AsymptoticLimits.mH{}.root".format(m))
 	tree = f.Get("limit")
 	tree.GetEntry(2)
-	limitExpected = np.append(limitExpected, tree.limit * xsList[fileList.index(i)])
-	signalStrengthExpected = tree.limit
+	xsLimitExpected = np.append(xsLimitExpected, tree.limit * xsList[fileList.index(i)])
+	signalStrengthLimitExpected = np.append(signalStrengthLimitExpected, tree.limit)
 
 	tree = f.Get("limit")
 	tree.GetEntry(0)
-	limitExpected95up = np.append(limitExpected95up, abs(tree.limit - signalStrengthExpected) * xsList[fileList.index(i)])
+	xsLimitExpected95up = np.append(xsLimitExpected95up, abs(tree.limit - signalStrengthLimitExpected[fileList.index(i)]) * xsList[fileList.index(i)])
+	signalStrengthLimitExpected95up = np.append(signalStrengthLimitExpected95up, abs(tree.limit - signalStrengthLimitExpected[fileList.index(i)]))
 
 	tree = f.Get("limit")
 	tree.GetEntry(4)
-	limitExpected95down = np.append(limitExpected95down, abs(tree.limit - signalStrengthExpected) * xsList[fileList.index(i)])
+	xsLimitExpected95down = np.append(xsLimitExpected95down, abs(tree.limit - signalStrengthLimitExpected[fileList.index(i)]) * xsList[fileList.index(i)])
+	signalStrengthLimitExpected95down = np.append(signalStrengthLimitExpected95down, abs(tree.limit - signalStrengthLimitExpected[fileList.index(i)]))
 	
 	tree.GetEntry(1)
-	limitExpected68up = np.append(limitExpected68up, abs(tree.limit - signalStrengthExpected) * xsList[fileList.index(i)])
+	xsLimitExpected68up = np.append(xsLimitExpected68up, abs(tree.limit - signalStrengthLimitExpected[fileList.index(i)]) * xsList[fileList.index(i)])
+	signalStrengthLimitExpected68up = np.append(signalStrengthLimitExpected68up, abs(tree.limit - signalStrengthLimitExpected[fileList.index(i)]))
 	tree = f.Get("limit")
+
 	tree.GetEntry(3)
-	limitExpected68down = np.append(limitExpected68down, abs(tree.limit - signalStrengthExpected) * xsList[fileList.index(i)])
+	xsLimitExpected68down = np.append(xsLimitExpected68down, abs(tree.limit - signalStrengthLimitExpected[fileList.index(i)]) * xsList[fileList.index(i)])
+	signalStrengthLimitExpected68down = np.append(signalStrengthLimitExpected68down, abs(tree.limit - signalStrengthLimitExpected[fileList.index(i)]))
 	
 	tree.GetEntry(5)
-	limitObserved = np.append(limitObserved, tree.limit * xsList[fileList.index(i)])
+	xsLimitObserved = np.append(xsLimitObserved, tree.limit * xsList[fileList.index(i)])
 		
 	mass = np.append(mass, m)
 	masserr = np.append(masserr, 0.)
@@ -74,47 +85,70 @@ c1.SetLeftMargin(.15)
 c1.SetLogy()
 #c1.SetLogx()
 
-mg=ROOT.TMultiGraph()
-mgeps=ROOT.TMultiGraph()
+mgXS = ROOT.TMultiGraph()
+mgSignalStrength = ROOT.TMultiGraph()
+mgeps = ROOT.TMultiGraph()
 
-graph_limitExpected = ROOT.TGraph(len(mass), mass, limitExpected)
-graph_limitExpected.SetMarkerSize(1)
-graph_limitExpected.SetMarkerStyle(20)
-graph_limitExpected.SetMarkerColor(ROOT.kBlack)
-graph_limitExpected.SetLineWidth(2)
-graph_limitExpected.SetLineStyle(7)
-
+graphXSLimitExpected = ROOT.TGraph(len(mass), mass, xsLimitExpected)
+graphXSLimitExpected.SetMarkerSize(1)
+graphXSLimitExpected.SetMarkerStyle(20)
+graphXSLimitExpected.SetMarkerColor(ROOT.kBlack)
+graphXSLimitExpected.SetLineWidth(2)
+graphXSLimitExpected.SetLineStyle(7)
 
 '''
 graph_limitObserved = ROOT.TGraph(len(mass), mass, limitObserved)
 graph_limitObserved.SetMarkerStyle(20)
 '''
 
-graph_limit95up = ROOT.TGraphAsymmErrors(len(
-	mass), mass, limitExpected, masserr, masserr, limitExpected95up, limitExpected95down)
-graph_limit95up.SetTitle("graph_limit95up")
-graph_limit95up.SetFillColor(ROOT.kOrange - 2)
+graphXSLimit95up = ROOT.TGraphAsymmErrors(len( mass), mass, xsLimitExpected, masserr, masserr, xsLimitExpected95up, xsLimitExpected95down)
+graphXSLimit95up.SetTitle("graph_limit95up")
+graphXSLimit95up.SetFillColor(ROOT.kOrange)
 
-graph_limit68up = ROOT.TGraphAsymmErrors(len(
-	mass), mass, limitExpected, masserr, masserr, limitExpected68up, limitExpected68down)
-graph_limit68up.SetTitle("graph_limit68up")
-graph_limit68up.SetFillColor(ROOT.kGreen - 6)
+graphXSLimit68up = ROOT.TGraphAsymmErrors(len( mass), mass, xsLimitExpected, masserr, masserr, xsLimitExpected68up, xsLimitExpected68down)
+graphXSLimit68up.SetTitle("graph_limit68up")
+graphXSLimit68up.SetFillColor(ROOT.kGreen + 1)
 
-mg.Add(graph_limit95up, "3")
-mg.Add(graph_limit68up, "3")
-mg.Add(graph_limitExpected, "pl")
-#mg.Add(graph_limitObserved, "pl")
 
-mg.Draw("APC")
+graphSignalStrengthLimitExpected = ROOT.TGraph(len(mass), mass, signalStrengthLimitExpected)
+graphSignalStrengthLimitExpected.SetMarkerSize(1)
+graphSignalStrengthLimitExpected.SetMarkerStyle(20)
+graphSignalStrengthLimitExpected.SetMarkerColor(ROOT.kBlack)
+graphSignalStrengthLimitExpected.SetLineWidth(2)
+graphSignalStrengthLimitExpected.SetLineStyle(7)
 
-#mg.GetYaxis().SetTitle(
+'''
+graphSignalStrengthimitObserved = ROOT.TGraph(len(mass), mass, limitObserved)
+graphSignalStrengthimitObserved.SetMarkerStyle(20)
+'''
+
+graphSignalStrengthLimit95up = ROOT.TGraphAsymmErrors(len( mass), mass, signalStrengthLimitExpected, masserr, masserr, signalStrengthLimitExpected95up, signalStrengthLimitExpected95down)
+graphSignalStrengthLimit95up.SetTitle("graph_limit95up")
+graphSignalStrengthLimit95up.SetFillColor(ROOT.kOrange)
+
+graphSignalStrengthLimit68up = ROOT.TGraphAsymmErrors(len( mass), mass, signalStrengthLimitExpected, masserr, masserr, signalStrengthLimitExpected68up, signalStrengthLimitExpected68down)
+graphSignalStrengthLimit68up.SetTitle("graph_limit68up")
+graphSignalStrengthLimit68up.SetFillColor(ROOT.kGreen + 1)
+
+mgXS.Add(graphXSLimit95up, "3")
+mgXS.Add(graphXSLimit68up, "3")
+mgXS.Add(graphXSLimitExpected, "pl")
+#mgXS.Add(graph_limitObserved, "pl")
+
+mgSignalStrength.Add(graphSignalStrengthLimit95up, "3")
+mgSignalStrength.Add(graphSignalStrengthLimit68up, "3")
+mgSignalStrength.Add(graphSignalStrengthLimitExpected, "pl")
+
+mgXS.Draw("APC")
+
+#mgXS.GetYaxis().SetTitle(
 #	"#sigma(pp#rightarrow ZH)#times BR(Z#rightarrow #mu#mu)#times BR(H#rightarrow b#bar{b}). [pb]")
-mg.GetYaxis().SetTitle("d#sigma(ZH)#timesBR(Z#rightarrowl^{+}l^{-}) / dp_{T} [fb/GeV]")
-mg.GetYaxis().SetTitleSize(0.05)
-mg.GetXaxis().SetTitle("{}[GeV]".format(lable))
-mg.GetXaxis().SetTitleSize(0.05)
-mg.GetYaxis().SetTitleOffset(1.0)
-mg.GetXaxis().SetRangeUser(mass[0] - 1, mass[-1] + .1)
+mgXS.GetYaxis().SetTitle("d#sigma(ZH)#timesBR(Z#rightarrowl^{+}l^{-}) / dp_{T} [fb/ N GeV]")
+mgXS.GetYaxis().SetTitleSize(0.05)
+mgXS.GetXaxis().SetTitle("{}[GeV]".format(label))
+mgXS.GetXaxis().SetTitleSize(0.05)
+mgXS.GetYaxis().SetTitleOffset(1.0)
+mgXS.GetXaxis().SetRangeUser(mass[0] - 1, mass[-1] + .1)
 
 c1.Update()
 legend = ROOT.TLegend(0.5, 0.6, 0.8, 0.9)
@@ -122,27 +156,68 @@ cmsTag = ROOT.TLatex(0.13, 0.917, "#scale[1.1]{CMS}")
 cmsTag.SetNDC()
 cmsTag.SetTextAlign(11)
 cmsTag.Draw()
-cmsTag2 = ROOT.TLatex(0.215, 0.917, "#scale[0.825]{#bf{#it{Preliminary}}}")
+cmsTag2 = ROOT.TLatex(0.215, 0.917, "#scale[0.825]{#bf{#it{Work In Progress}}}")
 cmsTag2.SetNDC()
 cmsTag2.SetTextAlign(11)
 #cmsTag.SetTextFont(61)
 cmsTag2.Draw()
-cmsTag3 = ROOT.TLatex(
-	0.90, 0.917, "#scale[0.9]{#bf{59.83 fb^{-1} (13 TeV, 2018)}}")
+cmsTag3 = ROOT.TLatex(0.90, 0.917, "#scale[0.9]{#bf{59.83 fb^{-1} (13 TeV, 2018)}}")
 cmsTag3.SetNDC()
 cmsTag3.SetTextAlign(31)
 #cmsTag.SetTextFont(61)
 cmsTag3.Draw()
-leg=ROOT.TLegend(0.65, 0.65,0.88, 0.85)  
-leg.SetBorderSize(0)
-leg.SetFillStyle(1001)
-leg.SetFillColor(ROOT.kWhite) 
 
-leg.AddEntry(graph_limitExpected, "Expected",  "PL")
-leg.AddEntry(graph_limit68up, "68% Expected",  "F")
-leg.AddEntry(graph_limit95up, "95% Expected",  "F")
-leg.Draw("same")
-c1.SaveAs("limit_{}.pdf".format(args.type))
+xsLine10to20 = ROOT.TArrow(60, 0, 60, 50, 0.02, "<|")
+xsLine20to50 = ROOT.TArrow(300, 0, 300, 50, 0.02, "<|")
+xsLine50to100 = ROOT.TArrow(400, 0, 400, 50, 0.02, "<|")
+xsLine10to20.SetLineWidth(2)
+xsLine20to50.SetLineWidth(2)
+xsLine50to100.SetLineWidth(2)
+xsLine10to20.Draw()
+xsLine20to50.Draw()
+xsLine50to100.Draw()
 
+leg1 = ROOT.TLegend(0.65, 0.65, 0.88, 0.85)  
+leg1.SetBorderSize(0)
+leg1.SetFillStyle(1001)
+leg1.SetFillColor(ROOT.kWhite) 
+
+leg1.AddEntry(graphXSLimitExpected, "Expected",  "PL")
+leg1.AddEntry(graphXSLimit68up, "68% Expected",  "F")
+leg1.AddEntry(graphXSLimit95up, "95% Expected",  "F")
+leg1.Draw("same")
+
+c1.SaveAs("xs_{}.pdf".format(args.type))
+
+c2 = ROOT.TCanvas("c2", "c2", 800, 600)
+c2.SetBottomMargin(.15)
+mgSignalStrength.GetYaxis().SetTitle("Signal Strength")
+mgSignalStrength.GetYaxis().SetTitleSize(0.05)
+mgSignalStrength.GetXaxis().SetTitle("{}[GeV]".format(label))
+mgSignalStrength.GetXaxis().SetTitleSize(0.05)
+mgSignalStrength.GetYaxis().SetTitleOffset(1.0)
+mgSignalStrength.GetXaxis().SetRangeUser(mass[0] - 1, mass[-1] + .1)
+mgSignalStrength.Draw("APC")
+cmsTag.Draw()
+cmsTag2.Draw()
+cmsTag3.Draw()
+leg2 = ROOT.TLegend(0.15, 0.65, 0.38, 0.85)  
+leg2.SetBorderSize(0)
+leg2.SetFillStyle(1001)
+leg2.SetFillColor(ROOT.kWhite) 
+leg2.AddEntry(graphSignalStrengthLimitExpected, "Expected",  "PL")
+leg2.AddEntry(graphSignalStrengthLimit68up, "68% Expected",  "F")
+leg2.AddEntry(graphSignalStrengthLimit95up, "95% Expected",  "F")
+leg2.Draw("same")
+signalStrengthLine10to20 = ROOT.TArrow(60, 5, 60, 150, 0.02, "<|")
+signalStrengthLine20to50 = ROOT.TArrow(300, 5, 300, 150, 0.02, "<|")
+signalStrengthLine50to100 = ROOT.TArrow(400, 5, 400, 150, 0.02, "<|")
+signalStrengthLine10to20.SetLineWidth(2)
+signalStrengthLine20to50.SetLineWidth(2)
+signalStrengthLine50to100.SetLineWidth(2)
+signalStrengthLine10to20.Draw()
+signalStrengthLine20to50.Draw()
+signalStrengthLine50to100.Draw()
+c2.SaveAs("signalStrength_{}.pdf".format(args.type))
 # Calculate the total distribution
-print("The total XS is {}".format(np.sum(limitExpected)))
+print("The total XS is {}".format(np.sum(xsLimitExpected)))

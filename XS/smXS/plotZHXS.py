@@ -16,11 +16,15 @@ def get_scale_factor(dataset):
 
 def cal_diff_xs(hist):
 	nBins = hist.GetNbinsX()
-	lumi = 59.83
+	nEvents = hist.GetEntries()
+	lumi = nEvents / 79.24
 	for i in range(1, nBins + 1):
 		binWidth = hist.GetBinWidth(i)
+		oldBinError = hist.GetBinError(i)
 		binDiffXS = hist.GetBinContent(i) / (lumi * binWidth)
 		hist.SetBinContent(i, binDiffXS)
+		newBinError = oldBinError / (lumi * binWidth)
+		hist.SetBinError(i, newBinError)
 	return hist
 
 def save_hist(*histList):
@@ -35,7 +39,7 @@ def save_hist(*histList):
 			c.SaveAs("genXSPt.pdf")
 		if "pfjets" in hist.GetTitle():
 			hist.GetXaxis().SetTitle("p_{T}^{Dijets}")
-			hist.GetYaxis().SetTitle("d #sigma / d p_{T} [fb/GeV]")
+			hist.GetYaxis().SetTitle("d #sigma / d p_{T} [fb/ N GeV]")
 			hist.SetTitle("recoHiggsXS")
 			hist.SetName("recoHiggsXS")
 			hist.Draw()
@@ -46,8 +50,8 @@ ROOT.gROOT.SetBatch()
 f = ROOT.TFile("./HiggsHist.root")
 h_dijet_genparticle_pt = f.Get("demo/h_dijet_genparticle_pt")
 h_dijet_pfjets_pt = f.Get("demo/h_dijet_pfjets_pt")
-h_dijet_genparticle_pt.Scale(get_scale_factor("ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8"))
-h_dijet_pfjets_pt.Scale(get_scale_factor("ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8"))
+#h_dijet_genparticle_pt.Scale(get_scale_factor("ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8"))
+#h_dijet_pfjets_pt.Scale(get_scale_factor("ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8"))
 
 genZHXS = cal_diff_xs(h_dijet_genparticle_pt)
 recoZHXS = cal_diff_xs(h_dijet_pfjets_pt)
