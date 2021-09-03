@@ -38,7 +38,7 @@ class Hist():
         return histEdge
     
     def getScaleFactor(self) -> float:
-        with open('MCInfo_IsoMu20_UL2018.json') as mcInfo:
+        with open('../../Database/MCInfo_UL2018.json') as mcInfo:
             mcInfoList = json.load(mcInfo)
         factor = 1
         for eachDataset in mcInfoList:
@@ -61,7 +61,7 @@ class Hist():
         else: return h
     
     def getCategoryOfMC(self) -> str:
-        matchDict = {'ZH_HToBB':'zh', 'TTTo':'tt', 'channel':'st', 'ZZ':'zz', 'QCD':'qcd', 'DYJetsToLL':'zjets'}
+        matchDict = {'ZH_HToBB':'zh', 'TTTo':'tt', 'channel':'st', 'ZZ':'zz', 'QCD':'qcd', 'JetsToLL':'zjets'}
         mcCategory = None
         for datasetName in matchDict.keys():
             if datasetName in self.dataset:

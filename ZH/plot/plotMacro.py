@@ -57,9 +57,12 @@ for select, kine in selectKineDict.items():
                     exec('{0}_{1}_{2}_{3} = ROOT.TH1F("{0}_{1}_{2}_{3}", "{0}_{1}_{2}_{3}", 21, edgeArray)'.format(
                         sample, phyObj, select, k))
 
+
+
 # open .root files
-fileList = plotHelper.open_root_files("./sideband")
-if args.type == 'srSideband':
+if args.type == 'mcData':
+    fileList = plotHelper.open_root_files("./sideband")
+elif args.type == 'srSideband':
     fileList = plotHelper.open_root_files("./sr")
     sidebandFileList = plotHelper.open_root_files("./sideband")
 
@@ -73,16 +76,20 @@ for file in fileList:
             for k in kine:
                 exec('h_{0}_{1}_{2} = plotConfig.Hist("{2}", "{0}", "{1}", "{3}", zhTree)'.format(
                     phyObj, select, k, datasetPrimaryName)) # get hist
+                #if k == 'Pt': exec('plotHelper.check_hist(h_{0}_{1}_{2})'.format(phyObj, select, k))
                 exec('htemp = h_{0}_{1}_{2}'.format(phyObj, select, k))
                 exec('{3}_{0}_{1}_{2} += h_{0}_{1}_{2}.hist'.format(phyObj,
                      select, k, htemp.mcCategory))# category hist
+
+for i in fileList:
+    i.Close()
 
 if args.type == 'mcData':
     # plot THStack
     for phyObj in phyObjList:
         for select, kine in selectKineDict.items():
             for k in kine:
-                exec('plotHelper.plot_hist(zh_{}_{}_{})'.format(phyObj, select, k)) # just for test
+                #exec('plotHelper.plot_hist(zh_{}_{}_{})'.format(phyObj, select, k)) # just for test
                 exec('plotHelper.plot_ratio("{0}", "{0}_{1}_{2}_{3}", zh_{1}_{2}_{3}, st_{1}_{2}_{3}, tt_{1}_{2}_{3}, zz_{1}_{2}_{3}, qcd_{1}_{2}_{3}, zjets_{1}_{2}_{3}, data_{1}_{2}_{3})'.format(
                     args.type, phyObj, select, k))
                 if args.w:
@@ -90,19 +97,22 @@ if args.type == 'mcData':
                     phyObj, select, k)) # this function leads to TH1::Merge
 elif args.type == 'srSideband':
     # sum up all sideband hists to the sumSideband_x_x_x hist
-    for file in sidebandFileList:
-        if not zhTree: continue
-        zhTree = file.Get("ZHCandidates")
-        if zhTree.GetEntries() == 0: continue
-        datasetPrimaryName = plotHelper.get_primary_name(file)
+
+    for sbFile in sidebandFileList:
+        zhTreeSB = sbFile.Get("ZHCandidates")
+        if zhTreeSB.GetEntries() == 0: continue
+        datasetPrimaryName = plotHelper.get_primary_name(sbFile)
         if "DoubleMuon" in datasetPrimaryName: continue
         for phyObj in phyObjList:
             for select, kine in selectKineDict.items():
                 for k in kine:
-                    exec('h_{0}_{1}_{2} = plotConfig.Hist("{2}", "{0}", "{1}", "{3}", zhTree)'.format(
-                    phyObj, select, k, datasetPrimaryName))
-                    exec(
-                        'sumSideband_{0}_{1}_{2} += h_{0}_{1}_{2}.hist'.format(phyObj, select, k))
+                    exec('sb_h_{0}_{1}_{2} = plotConfig.Hist("{2}", "{0}", "{1}", "{3}", zhTreeSB)'.format(phyObj, select, k, datasetPrimaryName))
+                    #if k == 'Pt': exec('plotHelper.check_hist(sb_h_{0}_{1}_{2})'.format(phyObj, select, k))
+                    exec('sumSideband_{0}_{1}_{2} += sb_h_{0}_{1}_{2}.hist'.format(phyObj, select, k))
+    
+    for sbFile in sidebandFileList:
+        sbFile.Close()
+
     # plot THStack
     for phyObj in phyObjList:
             for select, kine in selectKineDict.items():

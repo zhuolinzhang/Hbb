@@ -22,13 +22,20 @@ def get_primary_name(rootFile):
     return datasetName
 
 def plot_hist(hist):
-    # Plot histrograms for each category
+    # Plot histograms for each category
     if os.path.exists('./figure'): pass
     else: os.mkdir('./figure')
     c1 = ROOT.TCanvas()
     hist.SetTitle(hist.GetName())
     hist.Draw("HIST")
     c1.SaveAs("figure/{}.pdf".format(hist.GetName()))
+
+def check_hist(hist):
+    print("*" * 70)
+    print(hist.dataset, hist.phyObject)
+    print(hist.hist.GetName())
+    for i in range(1, hist.hist.GetNbinsX() + 1):
+        print("Bin {} ({}, {}): {}".format(i, hist.hist.GetXaxis().GetBinLowEdge(i), hist.hist.GetXaxis().GetBinUpEdge(i), hist.hist.GetBinContent(i)))
 
 def stack_fill(hist, stack):
     # Fill histograms to THStack
@@ -45,17 +52,17 @@ def stack_fill(hist, stack):
 def make_ratio(hist_pass, hist_total, option = 'pois'):
     # make Data/MC or Sideband/SR graph and set the style of the graph
     ratio = ROOT.TGraphAsymmErrors()
-    ratio.Divide(hist_pass, hist_total, option) # the defalut option in ROOT is 'cp'(Gauss case)
+    ratio.Divide(hist_pass, hist_total, option) # the default option in ROOT is 'cp'(Gauss case)
     ratio.Draw("AP")
     ratio.GetYaxis().SetNdivisions(505)
     ratio.SetMaximum(2.49)
     ratio.SetMinimum(0.01)
-    ratio.GetYaxis().SetTitleSize(0.08)
-    ratio.GetXaxis().SetTitleSize(0.1)
-    ratio.GetXaxis().SetLabelSize(0.08)
+    ratio.GetYaxis().SetTitleSize(0.13)
+    ratio.GetXaxis().SetTitleSize(0.13)
+    ratio.GetXaxis().SetLabelSize(0.13)
     ratio.GetXaxis().SetTitleOffset(1)
-    ratio.GetYaxis().SetLabelSize(0.08)
-    ratio.GetYaxis().SetTitleOffset(0.4)
+    ratio.GetYaxis().SetLabelSize(0.13)
+    ratio.GetYaxis().SetTitleOffset(0.35)
     return ratio
 
 def make_legend(legend, hist, errHist, sigHist):
@@ -77,6 +84,7 @@ def make_legend(legend, hist, errHist, sigHist):
     legend.AddEntry(sigHist, "ZH(b#bar{b}) x 500", "L")
     legend.SetNColumns(2)
     legend.SetBorderSize(0)
+    legend.SetTextSize(0.05)
     
 def plot_ratio(stackType, stackName, *hist):
     # Plot the stack histogram and Data/MC
@@ -155,9 +163,15 @@ def plot_ratio(stackType, stackName, *hist):
     hs.SetMinimum(1e-3)
     hs.SetMaximum(3e3)
     hs.GetYaxis().SetTitleOffset(1)
-    hs.GetYaxis().SetTitle("Events / {:.1f}".format(sumHist.GetXaxis().GetBinWidth(1)))
+    stackYTitle = "Events / {:.1f}".format(sumHist.GetXaxis().GetBinWidth(1))
+    if 'h_M' in stackName:
+        stackYTitle += " GeV"
     if '_Pt' in stackName:
-        hs.GetYaxis().SetTitle("Events")
+        stackYTitle = "Events"
+    hs.GetYaxis().SetTitle(stackYTitle)
+    hs.GetYaxis().SetTitleSize(0.06)
+    hs.GetYaxis().SetLabelSize(0.06)
+    hs.GetYaxis().SetTitleOffset(0.8)
 
     # Plot the MC Stat. Err. and set the style of MC Stat. Err.
     stackErr.SetFillStyle(3013)
@@ -187,26 +201,28 @@ def plot_ratio(stackType, stackName, *hist):
     dataHist.Draw("SAME E0")
 
     # Set the legend of THStack
-    leg = ROOT.TLegend(0.63, 0.70, 0.86, 0.87)
+    leg = ROOT.TLegend(0.47, 0.65, 0.86, 0.87)
     make_legend(leg, hist, stackErr, sigHist)
     leg.Draw("SAME")
 
     # Set the CMS label, collision energy and integrated luminosity
-    fig_lable = ROOT.TLatex()
-    fig_lable.SetTextSize(.03)
-    data_lumi = 0.271
-    fig_lable.DrawLatexNDC(.75, .91, "#font[42]{13 TeV (%s fb^{-1})}" % data_lumi)
+    figLabel1 = ROOT.TLatex()
+    figLabel2 = ROOT.TLatex()
+    figLabelLumi = ROOT.TLatex()
+    dataLumi = 0.271
+    figLabelLumi.DrawLatexNDC(.7, .91, "#font[42]{%s fb^{-1} (13 TeV)}" % dataLumi)
+    figLabel1.DrawLatexNDC(.13, .82, "#scale[1.2]{CMS}")
     if stackType == 'mcData':
-        fig_lable.DrawLatexNDC(.1, .91, "#scale[1.2]{CMS} #font[52]{Preliminary}")
+        figLabel2.DrawLatexNDC(.2, .82, "#font[52]{Work In Progress}")
     else:
-        fig_lable.DrawLatexNDC(.1, .91, "#scale[1.2]{CMS} #font[52]{Simulation Preliminary}")
+        figLabel2.DrawLatexNDC(.2, .82, "#font[52]{Simulation}")
 
     # Set the style of lower pad (MC relative Stat. Err. and Data/MC)
     lowerPad.cd() # active lower pad
     lowerPad.SetTicks(1, 1)
     lowerPad.SetGridy()
     lowerPad.SetTopMargin(0.)
-    lowerPad.SetBottomMargin(0.3)
+    lowerPad.SetBottomMargin(0.4)
     if stackType == 'mcData' or stackType == 'srSideband':
         ratio = make_ratio(dataHist, sumHist)
         ratio.GetXaxis().SetLimits(dataHist.GetXaxis().GetXmin(), dataHist.GetXaxis().GetXmax())
@@ -229,12 +245,12 @@ def plot_ratio(stackType, stackName, *hist):
         ratio.SetMaximum(2.49)
         ratio.SetMinimum(0.01)
         ratio.SetMarkerStyle(20)
-        ratio.GetYaxis().SetTitleSize(0.08)
-        ratio.GetXaxis().SetTitleSize(0.1)
-        ratio.GetXaxis().SetLabelSize(0.08)
+        ratio.GetYaxis().SetTitleSize(0.13)
+        ratio.GetXaxis().SetTitleSize(0.13)
+        ratio.GetXaxis().SetLabelSize(0.13)
         ratio.GetXaxis().SetTitleOffset(1)
-        ratio.GetYaxis().SetLabelSize(0.08)
-        ratio.GetYaxis().SetTitleOffset(0.4)
+        ratio.GetYaxis().SetLabelSize(0.13)
+        ratio.GetYaxis().SetTitleOffset(0.35)
     
     if "DiJet" in stackName:
         if '_M' in stackName:
