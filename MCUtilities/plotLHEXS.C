@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-void plotLHEXS(std::string inPath, double totalXs, std::string libPath="libExRootAnalysis.so")
+void plotLHEXS(std::string inPath, int nEvents, double totalXs, std::string libPath="libExRootAnalysis.so")
 {
 	using namespace std;
 	const char *libPathChar = libPath.c_str();
@@ -19,7 +19,6 @@ void plotLHEXS(std::string inPath, double totalXs, std::string libPath="libExRoo
 	const char *fOutPath = outPath.c_str();
 	TFile *f = TFile::Open(fInPath);
 	totalXs = totalXs * 1000;
-	double nEvents = 10000;
 	double lumi = nEvents / totalXs;
     double edge[22] = {0, 10, 20, 30, 40, 50, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 350, 400, 500};
 	TH1D *mgHiggsM = new TH1D("mgHiggsM", "mgHiggsM", 75, 50, 200);
