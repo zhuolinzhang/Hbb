@@ -16,8 +16,8 @@ def extractLHE(path):
 	xs = 0.
 	for i in xmlRoot.iter('MGRunCard'):
 		runCard = i.text.split()
-    	nEventsIndex = runCard.index('nevents') - 2
-    	nEvents = int(runCard[nEventsIndex])
+		nEventsIndex = runCard.index('nevents') - 2
+		nEvents = int(runCard[nEventsIndex])
 	for num in xmlRoot.iter('init'):
 		xs = float(num.text.split()[-4])
 	return nEvents, xs
@@ -66,5 +66,6 @@ print("*" * 70)
 if not(findExROOTFlag):
 	shutil.copy(newLHEPath.rstrip('.gz'), "../ExRootAnalysis")
 	os.system("../ExRootAnalysis/ExRootLHEFConverter ../ExRootAnalysis/{0}.lhe ../ExRootAnalysis/{0}.root".format(args.n))
-runROOTCommand = "root -q -b -l '../ExRootAnalysis/plotLHEXS.C(\"../ExRootAnalysis/{}.root\", {}, {},\"../ExRootAnalysis/libExRootAnalysis.so\")'".format(args.n, nEventXS[0], nEventXS[1])
-os.system(runROOTCommand)
+#plotHistCommand = "root -q -b -l '../ExRootAnalysis/plotLHEXS.C(\"../ExRootAnalysis/{}.root\", {}, {},\"../ExRootAnalysis/libExRootAnalysis.so\")'".format(args.n, nEventXS[0], nEventXS[1])
+plotHistCommand = "python ../ExRootAnalysis/plotLHEXS.py -i ../ExRootAnalysis/{}.root -events {} -xs {} -libpath ../ExRootAnalysis/libExRootAnalysis.so".format(args.n, nEventXS[0], nEventXS[1])
+os.system(plotHistCommand)
