@@ -9,7 +9,7 @@ parser.add_argument("-o", help="The path of output .json file")
 args = parser.parse_args()
 
 def writeJSONItem(name: str) -> dict:
-	datasetDict = {"primary_name": 0, "nevents": 0, "xsection": 0, "factor": 0, "factor_IsoMu20": 0, "dasname": 0}
+	datasetDict = {"primary_name": 0, "nevents": 1, "xsection": 0, "factor": 1, "factor_IsoMu20": 1, "dasname": 0}
 	primaryName = name.split('/')[1]
 	datasetDict["primary_name"] = primaryName
 	datasetDict["dasname"] = name
