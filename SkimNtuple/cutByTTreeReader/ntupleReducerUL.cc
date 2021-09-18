@@ -358,10 +358,13 @@ void cutTree(TString oldFileName, TString newDirPath, const char *oldTreeName, c
         }
         for (auto jetPair : oldJetPair)
         {
+            
             if (!(jetPair["jet1Pt"] > 20 && jetPair["jet2Pt"] > 20)) continue;
+            if (!(fabs(jetPair["jet1Eta"]) < 2.5 && fabs(jetPair["jet2Eta"]) < 2.5)) continue;
             if (!(jetPair["jet1bTag"] > 0.4168 && jetPair["jet2bTag"] > 0.4168)) continue;
             if (!(jetPair["jet1ID"] == 1 && jetPair["jet2ID"] == 1)) continue;
             if (!(jetPair["HiggsM"] >= 50 && jetPair["HiggsM"] <= 200)) continue;
+            
             cutJetPair.push_back(jetPair);
         }
         if (cutMuPair.size() > 0 && cutJetPair.size() > 0)

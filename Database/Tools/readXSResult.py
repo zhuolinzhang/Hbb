@@ -42,7 +42,7 @@ for i in xsecLogFileList:
 	if xs != 0: print("Read {}".format(primaryName))
 	for datasetDict in datasetList:
 		if primaryName in datasetDict.values():
-			datasetDict["xsection"] = xs
+			datasetDict["xs"] = xs
 			break
 with open(outPutPath, 'w') as fOut:
 	json.dump(datasetList, fOut, indent=4)

@@ -31,35 +31,36 @@ with open(args.i, 'r') as databaseJson:
 print('*' * 60)
 for datasetDict in databaseList:
     newDatasetDict = datasetDict
-    nEvents = datasetDict["nevents"]
-    print("Read {}".format(datasetDict["primary_name"]))
+    nEvents = datasetDict["nEvents"]
+    print("Read {}".format(datasetDict["primaryName"]))
     for key, value in datasetDict.items():
-        if key == "primary_name":
-            newPrimaryName = datasetDict["dasname"].split('/')[1]
+        if key == "primaryName":
+            newPrimaryName = datasetDict["dasName"].split('/')[1]
             if value == newPrimaryName: pass
             else: 
                 print("The primary_name is wrong. Correct it!")
-                newDatasetDict["primary_name"] = newPrimaryName
-        if key == "nevents":
-            if value == nEvents:
-                factor = args.lumi / ((nEvents / datasetDict["xsection"]) / 1000)
-                if datasetDict[args.t] == factor: continue
-                else:
-                    print("The scale factor to {} /fb is wrong!\tnow = {}\tcalculate = {}".format(args.lumi, datasetDict[args.t], factor))
-                    newDatasetDict[args.t] = factor
-        if key == "dasname":
+                newDatasetDict["primaryName"] = newPrimaryName
+        if key == "dasName":
             f = os.popen('dasgoclient -query="summary dataset={}"'.format(value))
             dasSummary = f.readline()
             dasSummaryList = dasSummary.split(",")
             for i in dasSummaryList:
                 if "nevents" in i:
                     nEvents = int(i.split(":")[-1])
-            if datasetDict["nevents"] == nEvents:
+            if datasetDict["nEvents"] == nEvents:
                 continue
             else:
-                print("The nevnets is wrong!\tlocal = {}\tdas = {}".format(datasetDict["nevents"], nEvents))
-                newDatasetDict["nevents"] = nEvents
-                newDatasetDict[args.t] = args.lumi / ((nEvents / datasetDict["xsection"]) / 1000)
+                print("The nevnets is wrong!\tlocal = {}\tdas = {}".format(datasetDict["nEvents"], nEvents))
+                newDatasetDict["nEvents"] = nEvents
+                newDatasetDict[args.t] = args.lumi / ((nEvents / datasetDict["xs"]) / 1000)
+        if key == "nEvents":
+            if value == nEvents:
+                factor = args.lumi / ((nEvents / datasetDict["xs"]) / 1000)
+                if datasetDict[args.t] == factor: continue
+                else:
+                    print("The scale factor to {} /fb is wrong!\tnow = {}\tcalculate = {}".format(args.lumi, datasetDict[args.t], factor))
+                    newDatasetDict[args.t] = factor
+        
     newDatabaseList.append(newDatasetDict)
     print('*' * 60)
         

@@ -1,0 +1,30 @@
+[
+    {
+        "primary_name": "DoubleMuon2017B",
+        "dasname": "/DoubleMuon/Run2017B-UL2017_MiniAODv2-v1/MINIAOD"
+    },
+    {
+        "primary_name": "DoubleMuon2017C",
+        "dasname": "/DoubleMuon/Run2017C-UL2017_MiniAODv2-v1/MINIAOD"
+    },
+    {
+        "primary_name": "DoubleMuon2017D",
+        "dasname": "/DoubleMuon/Run2017D-UL2017_MiniAODv2-v1/MINIAOD"
+    },
+    {
+        "primary_name": "DoubleMuon2017E",
+        "dasname": "/DoubleMuon/Run2017E-UL2017_MiniAODv2-v2/MINIAOD"
+    },
+    {
+        "primary_name": "DoubleMuon2017F",
+        "dasname": "/DoubleMuon/Run2017F-UL2017_MiniAODv2-v1/MINIAOD"
+    },
+    {
+        "primary_name": "DoubleMuon2017G",
+        "dasname": "/DoubleMuon/Run2017G-UL2017_MiniAODv2-v1/MINIAOD"
+    },
+    {
+        "primary_name": "DoubleMuon2017H",
+        "dasname": "/DoubleMuon/Run2017H-UL2017_MiniAODv2-v1/MINIAOD"
+    }
+]
