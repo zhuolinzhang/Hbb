@@ -1,8 +1,13 @@
 import json
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-i", help="The path of json file")
+args = parser.parse_args()
 
 # load json database
 origin_database = []
-with open("MCInfo.json", "r") as database_json:
+with open(args.i, "r") as database_json:
     origin_database = json.load(database_json)
 
 # modify items or add items in the json file

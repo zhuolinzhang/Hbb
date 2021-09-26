@@ -20,12 +20,23 @@ def checkCampaign(dasName : str) -> str:
 	else: legacy = 'ReReco'
 	return year + legacy
 
+def readDatasetCategory(name: str) -> str:
+	category = 'none'
+	matchDict = {'ZH_HToBB':'zh', 'TTTo':'tt', 'channel':'st', 'ZZ':'zz', 'QCD':'qcd', 'JetsToLL':'zjets'}
+	for key, value in matchDict.items():
+		if key in name:
+			category = value
+			continue
+	return category
+
 def writeJSONItem(name: str) -> dict:
-	datasetDict = {"primaryName": 0, "dasName": 0, "campaign": 0, "nEvents": 1, "xs": 0, "factor": 1, "factorIsoMu20": 1}
+	datasetDict = {"primaryName": 0, "dasName": 0, "campaign": 0, "category": 0, "nEvents": 1, "xs": 0, "factor": 1, "factorIsoMu20": 1}
 	primaryName = name.split('/')[1]
 	datasetDict["primaryName"] = primaryName
 	datasetDict["dasName"] = name
 	datasetDict["campaign"] = checkCampaign(name)
+	datasetDict["category"] = readDatasetCategory(name)
+	if datasetDict["category"] == 'none': raise SystemExit("This dataset can't be categorized, please check the name of dataset or s this script.")
 	return datasetDict
 
 jsonList = []

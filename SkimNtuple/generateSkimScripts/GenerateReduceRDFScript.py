@@ -40,7 +40,7 @@ def returnMCCampaign(mcList: list, jsonList: list) -> dict:
         for mcDict in jsonList:
             for names in mcDict.values():
                 if sample == names:
-                    fullName = mcDict['dasname']
+                    fullName = mcDict['dasName']
                     break
         if 'Summer20UL' in fullName or 'Summer19UL' in fullName:
             camp = 'UL'
