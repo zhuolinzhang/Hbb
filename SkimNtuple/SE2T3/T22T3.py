@@ -16,6 +16,7 @@ parser.add_argument("-s", "--dataset", type=str, default=None, help="Dataset lis
 parser.add_argument("--isData", action="store_true", help="The custom dataset is DATA")
 parser.add_argument("-p", "--save", type=str, default="/publicfs/cms/user/zhangzhuolin/CRABResult", help='''The home path of save query result
 The default path is /publicfs/cms/user/zhangzhuolin/CRABResult''')
+parser.add_argument("-y", default="2018", help="The year of dataset")
 args = parser.parse_args()
 
 # Check VO is activated. But if the VO is invalid, this function doesn't work. I will update to fix this
@@ -23,7 +24,7 @@ args = parser.parse_args()
 CheckResults.checkVO()
 resultPath = '/publicfs/cms/user/zhangzhuolin/CRABResult'
 if args.mode in range(1, 5):
-    resultTuple = CheckResults.checkCRABResults(resultPath, args.task, args.date, args.dataset, args.isData)
+    resultTuple = CheckResults.checkCRABResults(resultPath, args.task, args.date, args.y, args.dataset, args.isData)
     mcDict = resultTuple[0]
     dataDict = resultTuple[1]
     if args.mode in range(2, 5):

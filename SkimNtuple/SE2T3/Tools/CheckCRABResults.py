@@ -4,6 +4,7 @@
 import os
 import argparse
 import json
+from typing import Tuple
 
 # Check VO is activated. But if the VO is invalid, this function doesn't work. I will update to fix this
 # bug in the future.
@@ -58,7 +59,7 @@ def checkOutput(path: str) -> None:
         os.mkdir(path)
 
 # The main function
-def checkCRABResults(resultPath: str, taskName: str, taskDate: str, years: str, datasetListPath=None, customDatasetPathData=False) -> tuple[dict]:
+def checkCRABResults(resultPath: str, taskName: str, taskDate: str, years: str, datasetListPath=None, customDatasetPathData=False) -> Tuple[dict]:
     resultSavePath = resultPath + '/' + taskName + "_" + taskDate # The folder that saves the .txt file which include primary names of dataset
     checkOutput(resultSavePath)
     noOutputMCList = []
