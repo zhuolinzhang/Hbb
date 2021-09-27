@@ -18,31 +18,32 @@ parser.add_argument("-p", "--save", type=str, default="/publicfs/cms/user/zhangz
 The default path is /publicfs/cms/user/zhangzhuolin/CRABResult''')
 args = parser.parse_args()
 
-# Check VO is activated. But if the VO is invaild, this function doesn't work. I will update to fix this
-# bug in the furture.
+# Check VO is activated. But if the VO is invalid, this function doesn't work. I will update to fix this
+# bug in the future.
 CheckResults.checkVO()
 resultPath = '/publicfs/cms/user/zhangzhuolin/CRABResult'
 if args.mode in range(1, 5):
-    resultTuple = CheckResults.checkCRABResluts(resultPath, args.task, args.date, args.dataset, args.isData)
-    mcList = resultTuple[0]
-    dataList = resultTuple[1]
+    resultTuple = CheckResults.checkCRABResults(resultPath, args.task, args.date, args.dataset, args.isData)
+    mcDict = resultTuple[0]
+    dataDict = resultTuple[1]
     if args.mode in range(2, 5):
         t3Directory = '/publicfs/cms/user/zhangzhuolin/target_files/{}_{}'.format(args.task, args.date)
-        for datasetName in mcList:
-            jobName = datasetName + "_" + args.task + "_" + args.date
-            CopyFiles.copyFiles(t3Directory, jobName, datasetName, 'mc')
-            if args.mode in range (3, 5):
-                scriptSavePath = resultPath + '/' + args.task + "_" + args.date + "/" + "mcJobSubmit"
-                Hadd.generateScripts(scriptSavePath, os.getcwd() + '/Tools', jobName, mcList.index(datasetName), 'mc')
-                if args.mode == 4:
-                    Hadd.haddFiles(t3Directory, jobName, datasetName, args.clean)
-        for datasetName in dataList:
+        for campaign, dataset in mcDict.items():
+            for datasetName in dataset:
+                jobName = datasetName + "_" + args.task + "_" + args.date
+                CopyFiles.copyFiles(t3Directory, jobName, datasetName, 'mc', campaign)
+                if args.mode in range (3, 5):
+                    scriptSavePath = resultPath + '/' + args.task + "_" + args.date + "/" + "mcJobSubmit"
+                    Hadd.generateScripts(scriptSavePath, os.getcwd() + '/Tools', jobName, mcDict.index(datasetName), 'mc', campaign)
+                    if args.mode == 4:
+                        Hadd.haddFiles(t3Directory, jobName, datasetName, args.clean, campaign)
+        for datasetName in dataDict:
             jobName = datasetName + "_" + args.task + "_" + args.date
             CopyFiles.copyFiles(t3Directory, jobName, datasetName, 'data')
             if args.mode in range (3, 5):
                 scriptSavePath = resultPath + '/' + args.task + "_" + args.date + "/" + "dataJobSubmit"
-                Hadd.generateScripts(scriptSavePath, os.getcwd() + '/Tools', jobName, dataList.index(datasetName), 'data')
+                Hadd.generateScripts(scriptSavePath, os.getcwd() + '/Tools', jobName, dataDict.index(datasetName), 'data', campaign)
                 if args.mode == 4:
-                    Hadd.haddFiles(t3Directory, jobName, datasetName, args.clean)
+                    Hadd.haddFiles(t3Directory, jobName, datasetName, args.clean, campaign)
 else: 
     raise SystemError("The mode number is wrong! Please execute the script again!")
