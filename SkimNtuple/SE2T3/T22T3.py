@@ -35,16 +35,17 @@ if args.mode in range(1, 5):
                 CopyFiles.copyFiles(t3Directory, jobName, datasetName, 'mc', campaign)
                 if args.mode in range (3, 5):
                     scriptSavePath = resultPath + '/' + args.task + "_" + args.date + "/" + "mcJobSubmit"
-                    Hadd.generateScripts(scriptSavePath, os.getcwd() + '/Tools', jobName, mcDict.index(datasetName), 'mc', campaign)
+                    Hadd.generateScripts(scriptSavePath, os.getcwd() + '/Tools', jobName, dataset.index(datasetName), 'mc', campaign)
                     if args.mode == 4:
                         Hadd.haddFiles(t3Directory, jobName, datasetName, args.clean, campaign)
-        for datasetName in dataDict:
-            jobName = datasetName + "_" + args.task + "_" + args.date
-            CopyFiles.copyFiles(t3Directory, jobName, datasetName, 'data')
-            if args.mode in range (3, 5):
-                scriptSavePath = resultPath + '/' + args.task + "_" + args.date + "/" + "dataJobSubmit"
-                Hadd.generateScripts(scriptSavePath, os.getcwd() + '/Tools', jobName, dataDict.index(datasetName), 'data', campaign)
-                if args.mode == 4:
-                    Hadd.haddFiles(t3Directory, jobName, datasetName, args.clean, campaign)
+        for campagin, dataset in dataDict.items():
+            for datasetName in dataset:
+                jobName = datasetName + "_" + args.task + "_" + args.date
+                CopyFiles.copyFiles(t3Directory, jobName, datasetName, 'data')
+                if args.mode in range (3, 5):
+                    scriptSavePath = resultPath + '/' + args.task + "_" + args.date + "/" + "dataJobSubmit"
+                    Hadd.generateScripts(scriptSavePath, os.getcwd() + '/Tools', jobName, dataset.index(datasetName), 'data', campaign)
+                    if args.mode == 4:
+                        Hadd.haddFiles(t3Directory, jobName, datasetName, args.clean, campaign)
 else: 
     raise SystemError("The mode number is wrong! Please execute the script again!")
