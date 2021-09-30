@@ -5,6 +5,7 @@ import os
 import argparse
 import json
 from typing import Tuple
+import copy
 
 # Check VO is activated. But if the VO is invalid, this function doesn't work. I will update to fix this
 # bug in the future.
@@ -77,23 +78,25 @@ def checkCRABResults(resultPath: str, taskName: str, taskDate: str, years: str, 
             mcInputDict = readLocalList(datasetListPath)
             dataInputDict = []
 
-    mcT2Dict = mcInputDict
-    dataT2Dict = dataInputDict
+    mcT2Dict = copy.deepcopy(mcInputDict)
+    dataT2Dict = copy.deepcopy(dataInputDict)
     # Get MC list and data list in T2
     for campagin, datasetList in mcInputDict.items():
         for i in datasetList:
             mcFindFlag = getFileFlag(i, taskName, taskDate, 'mc')
             if mcFindFlag:
-                mcT2Dict[campagin].remove(i)
+                pass
             else:
                 noOutputMCList.append(i)
-    for datasetList in dataInputDict.values():
+                mcT2Dict[campagin].remove(i)
+    for campagin, datasetList in dataInputDict.items():
         for i in datasetList:
             dataFindFlag = getFileFlag(i, taskName, taskDate, 'data')
             if dataFindFlag:
-                dataT2Dict[campagin].remove(i)
+                pass
             else:
                 noOutputDataList.append(i)
+                dataT2Dict[campagin].remove(i)
     if len(noOutputDataList) == 0 and len(noOutputMCList) == 0:
         print('*' * 70)
         print("All CRAB jobs have output!")

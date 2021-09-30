@@ -7,7 +7,7 @@ import shutil
 def generateScripts(savePath: str, sourcePath: str, jobName: str, scriptNum: str, datasetType: str, campaign: str) -> None:
     if os.path.exists(savePath): pass
     else: os.mkdir(savePath)
-    fileName = 'haddJobSubmit_' + str(scriptNum) + '.sh'
+    fileName = 'haddJobSubmit_{}_{}.sh'.format(campaign, scriptNum)
     with open(savePath +"/" + fileName, 'w') as f:
         f.write('export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/\n')
         f.write('source $VO_CMS_SW_DIR/cmsset_default.sh\n')
