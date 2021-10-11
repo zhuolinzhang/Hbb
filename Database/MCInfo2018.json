@@ -55,9 +55,9 @@
         "campaign": "2018ReReco",
         "category": "zjets",
         "nEvents": 1939010,
-        "xs": 54.18,
-        "factor": 1.6717754936797644,
-        "factorIsoMu20": 0.007583941124831744
+        "xs": 54.16,
+        "factor": 1.6711583746344785,
+        "factorIsoMu20": 0.007581141589532803
     },
     {
         "primaryName": "DYJetsToLL_M-4to50_HT-400to600_TuneCP5_PSweights_13TeV-madgraphMLM-pythia8",
@@ -65,9 +65,9 @@
         "campaign": "2018ReReco",
         "category": "zjets",
         "nEvents": 2008779,
-        "xs": 5.721,
-        "factor": 0.17039576279919294,
-        "factorIsoMu20": 0.0007729934060376975
+        "xs": 5.723,
+        "factor": 0.170455331323157,
+        "factorIsoMu20": 0.000773263636209359
     },
     {
         "primaryName": "DYJetsToLL_M-4to50_HT-600toInf_TuneCP5_PSWeights_13TeV-madgraphMLM-pythia8",
@@ -221,23 +221,23 @@
     },
     {
         "primaryName": "DYBJetsToLL_M-50_Zpt-100to200_TuneCP5_13TeV-madgraphMLM-pythia8",
-        "dasName": "/DYBJetsToLL_M-50_Zpt-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM",
-        "campaign": "2018ReReco",
+        "dasName": "/DYBJetsToLL_M-50_Zpt-100to200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM",
+        "campaign": "2018UL",
         "category": "zjets",
-        "nEvents": 19917076,
+        "nEvents": 18192981,
         "xs": 3.206,
-        "factor": 0.009630679724272779,
-        "factorIsoMu20": 4.36891845209608e-05
+        "factor": 0.010543350757085932,
+        "factorIsoMu20": 4.782947931853499e-05
     },
     {
         "primaryName": "DYBJetsToLL_M-50_Zpt-200toInf_TuneCP5_13TeV-madgraphMLM-pythia8",
-        "dasName": "/DYBJetsToLL_M-50_Zpt-200toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM",
-        "campaign": "2018ReReco",
+        "dasName": "/DYBJetsToLL_M-50_Zpt-200toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v1/MINIAODSIM",
+        "campaign": "2018UL",
         "category": "zjets",
-        "nEvents": 1748080,
+        "nEvents": 1885219,
         "xs": 0.3304,
-        "factor": 0.011308310832456182,
-        "factorIsoMu20": 5.12996894014004e-05
+        "factor": 0.010485695295878093,
+        "factorIsoMu20": 4.756792767779235e-05
     },
     {
         "primaryName": "DYJetsToLL_BGenFilter_Zpt-100to200_M-50_TuneCP5_13TeV-madgraphMLM-pythia8",
@@ -255,8 +255,8 @@
         "campaign": "2018ReReco",
         "category": "zjets",
         "nEvents": 2043053,
-        "xs": 0.3949,
-        "factor": 0.011564490495351808,
-        "factorIsoMu20": 5.246183796029765e-05
+        "xs": 0.3951,
+        "factor": 0.011570347416342112,
+        "factorIsoMu20": 5.24884076427288e-05
     }
 ]
