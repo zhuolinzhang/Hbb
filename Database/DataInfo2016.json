@@ -1,0 +1,20 @@
+[
+    {
+        "primaryName": "DoubleMuon2016F",
+        "dasName": "/DoubleMuon/Run2016F-21Feb2020_UL2016-v1/MINIAOD",
+        "campaign": "2016UL",
+        "category": "data"
+    },
+    {
+        "primaryName": "DoubleMuon2016G",
+        "dasName": "/DoubleMuon/Run2016G-21Feb2020_UL2016-v1/MINIAOD",
+        "campaign": "2016UL",
+        "category": "data"
+    },
+    {
+        "primaryName": "DoubleMuon2016H",
+        "dasName": "/DoubleMuon/Run2016H-21Feb2020_UL2016-v1/MINIAOD",
+        "campaign": "2016UL",
+        "category": "data"
+    }
+]

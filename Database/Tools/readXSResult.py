@@ -39,10 +39,11 @@ xsecLogFileList = glob.glob("xsec_*.log")
 for i in xsecLogFileList:
 	xs = readXS(i)
 	primaryName = readPrimaryName(i)
-	if xs != 0: print("Read {}".format(primaryName))
-	for datasetDict in datasetList:
-		if primaryName in datasetDict.values():
-			datasetDict["xs"] = xs
-			break
+	if xs != 0: 
+		print("Read {}".format(primaryName))
+		for datasetDict in datasetList:
+			if primaryName in datasetDict.values():
+				datasetDict["xs"] = xs
+				break
 with open(outPutPath, 'w') as fOut:
 	json.dump(datasetList, fOut, indent=4)
