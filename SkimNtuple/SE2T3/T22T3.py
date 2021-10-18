@@ -41,7 +41,7 @@ if args.mode in range(1, 5):
         for campagin, dataset in dataDict.items():
             for datasetName in dataset:
                 jobName = datasetName + "_" + args.task + "_" + args.date
-                CopyFiles.copyFiles(t3Directory, jobName, datasetName, 'data')
+                CopyFiles.copyFiles(t3Directory, jobName, datasetName, 'data', campagin)
                 if args.mode in range (3, 5):
                     scriptSavePath = resultPath + '/' + args.task + "_" + args.date + "/" + "dataJobSubmit"
                     Hadd.generateScripts(scriptSavePath, os.getcwd() + '/Tools', jobName, dataset.index(datasetName), 'data', campaign)
