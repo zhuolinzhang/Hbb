@@ -17,6 +17,7 @@ def checkOutPut(path: str):
 
 start = time.time()
 checkOutPut(args.o)
+ROOT.ROOT.EnableImplicitMT()
 d = ROOT.RDataFrame("demo/ZHCollection", args.i)
 jetID = {"2018UL": {"jetEta": 2.6, "jetCEMF": 0.8, "jetCHM": 0, "jetCHF": 0, "jetNumConst": 1, "jetNEMF": 0.9, "jetMUF": 0.8, "jetNHF": 0.9},
 		"2018ReReco": {"jetEta": 2.6, "jetCEMF": 0.8, "jetCHM": 0, "jetCHF": 0, "jetNumConst": 1, "jetNEMF": 0.9, "jetMUF": 0.8, "jetNHF": 0.9},
