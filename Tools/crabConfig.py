@@ -15,6 +15,6 @@ config.Data.publication = False
 config.Data.outputDatasetTag = 'ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8_ZHTree_210511'
 #config.Data.splitting = 'Automatic'
 config.Data.splitting = 'FileBased'
-config.Data.unitsPerJob = 10
+config.Data.unitsPerJob = 15
 
 config.Site.storageSite = 'T2_CN_Beijing'

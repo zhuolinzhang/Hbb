@@ -92,6 +92,7 @@ print("The Nevents before cut: {}".format(dInitCount.GetValue()))
 print("The Nevents after cut: {}".format(dFinalCount.GetValue()))
 branchList = ROOT.vector('string')(("z_pt", "z_eta", "z_phi", "z_mass", "higgs_pt", "higgs_eta", "higgs_phi", "higgs_mass"))
 # branchList = ROOT.vector('string')(("mu1_pt", "mu1_eta", "mu1_phi", "mu1_mass", "mu2_pt", "mu2_eta", "mu2_phi", "mu2_mass", "jet1_pt", "jet1_eta", "jet1_phi", "jet1_mass", "jet1_bTag", "jet1_id", "jet2_pt", "jet2_eta", "jet2_phi", "jet2_mass", "jet2_bTag", "jet2_id", "z_pt", "z_eta", "z_phi", "z_mass", "higgs_pt", "higgs_eta", "higgs_phi", "higgs_mass"))
-dFinal.Snapshot("ZHCandidates", args.o, branchList) 
+if dFinal.Count().GetValue() > 0:
+	dFinal.Snapshot("ZHCandidates", args.o, branchList) 
 end = time.time()
 print("Spend time: {} s".format(end - start))
