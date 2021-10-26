@@ -1,31 +1,37 @@
 [
     {
-        "primaryName": "DoubleMuon2016B",
-        "dasName": "/DoubleMuon/Run2016B-21Feb2020_ver2_UL2016_HIPM-v1/MINIAOD",
+        "primaryName": "DoubleMuon2016Bver1",
+        "dasName": "/DoubleMuon/Run2016B-ver1_HIPM_UL2016_MiniAODv2-v1/MINIAOD",
+        "campaign": "2016APVUL",
+        "category": "data"
+    },
+    {
+        "primaryName": "DoubleMuon2016Bver2",
+        "dasName": " /DoubleMuon/Run2016B-ver2_HIPM_UL2016_MiniAODv2-v1/MINIAOD",
         "campaign": "2016APVUL",
         "category": "data"
     },
     {
         "primaryName": "DoubleMuon2016C",
-        "dasName": "/DoubleMuon/Run2016C-21Feb2020_UL2016_HIPM-v1/MINIAOD",
+        "dasName": "/DoubleMuon/Run2016C-HIPM_UL2016_MiniAODv2-v1/MINIAOD",
         "campaign": "2016APVUL",
         "category": "data"
     },
     {
         "primaryName": "DoubleMuon2016D",
-        "dasName": "/DoubleMuon/Run2016D-21Feb2020_UL2016_HIPM-v1/MINIAOD",
+        "dasName": "/DoubleMuon/Run2016D-HIPM_UL2016_MiniAODv2-v1/MINIAOD",
         "campaign": "2016APVUL",
         "category": "data"
     },
     {
         "primaryName": "DoubleMuon2016E",
-        "dasName": "/DoubleMuon/Run2016E-21Feb2020_UL2016_HIPM-v1/MINIAOD",
+        "dasName": "/DoubleMuon/Run2016E-HIPM_UL2016_MiniAODv2-v1/MINIAOD",
         "campaign": "2016APVUL",
         "category": "data"
     },
     {
         "primaryName": "DoubleMuon2016F",
-        "dasName": "/DoubleMuon/Run2016F-21Feb2020_UL2016_HIPM-v1/MINIAOD",
+        "dasName": "/DoubleMuon/Run2016F-HIPM_UL2016_MiniAODv2-v1/MINIAOD",
         "campaign": "2016APVUL",
         "category": "data"
     }

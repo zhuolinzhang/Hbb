@@ -1,25 +1,25 @@
 [
     {
         "primaryName": "DoubleMuon2018A",
-        "dasName": "/DoubleMuon/Run2018A-12Nov2019_UL2018-v2/MINIAOD",
+        "dasName": "/DoubleMuon/Run2018A-UL2018_MiniAODv2-v1/MINIAOD",
         "campaign": "2018UL",
         "category": "data"
     },
     {
         "primaryName": "DoubleMuon2018B",
-        "dasName": "/DoubleMuon/Run2018B-12Nov2019_UL2018-v2/MINIAOD",
+        "dasName": "/DoubleMuon/Run2018B-UL2018_MiniAODv2-v1/MINIAOD",
         "campaign": "2018UL",
         "category": "data"
     },
     {
         "primaryName": "DoubleMuon2018C",
-        "dasName": "/DoubleMuon/Run2018C-12Nov2019_UL2018-v2/MINIAOD",
+        "dasName": "/DoubleMuon/Run2018C-UL2018_MiniAODv2-v1/MINIAOD",
         "campaign": "2018UL",
         "category": "data"
     },
     {
         "primaryName": "DoubleMuon2018D",
-        "dasName": "/DoubleMuon/Run2018D-12Nov2019_UL2018-v3/MINIAOD",
+        "dasName": "/DoubleMuon/Run2018D-UL2018_MiniAODv2-v1/MINIAOD",
         "campaign": "2018UL",
         "category": "data"
     }

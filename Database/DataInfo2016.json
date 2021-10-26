@@ -1,19 +1,19 @@
 [
     {
         "primaryName": "DoubleMuon2016F",
-        "dasName": "/DoubleMuon/Run2016F-21Feb2020_UL2016-v1/MINIAOD",
+        "dasName": "/DoubleMuon/Run2016F-UL2016_MiniAODv2-v1/MINIAOD",
         "campaign": "2016UL",
         "category": "data"
     },
     {
         "primaryName": "DoubleMuon2016G",
-        "dasName": "/DoubleMuon/Run2016G-21Feb2020_UL2016-v1/MINIAOD",
+        "dasName": "/DoubleMuon/Run2016G-UL2016_MiniAODv2-v1/MINIAOD",
         "campaign": "2016UL",
         "category": "data"
     },
     {
         "primaryName": "DoubleMuon2016H",
-        "dasName": "/DoubleMuon/Run2016H-21Feb2020_UL2016-v1/MINIAOD",
+        "dasName": "/DoubleMuon/Run2016H-UL2016_MiniAODv2-v2/MINIAOD",
         "campaign": "2016UL",
         "category": "data"
     }
