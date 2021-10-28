@@ -11,38 +11,43 @@ args = parse.parse_args()
 
 def checkOutPut(path: str):
 	pathList = path.split('/')
-	folderPath = '/'.join(pathList[:-1])
-	if os.path.exists(folderPath): pass
-	else: os.mkdir(folderPath)
+	if len(pathList) > 1:
+		folderPath = '/'.join(pathList[:-1])
+		if os.path.exists(folderPath): pass
+		else: os.mkdir(folderPath)
 
 start = time.time()
 checkOutPut(args.o)
 ROOT.ROOT.EnableImplicitMT()
 d = ROOT.RDataFrame("demo/ZHCollection", args.i)
-jetID = {"2018UL": {"jetEta": 2.6, "jetCEMF": 0.8, "jetCHM": 0, "jetCHF": 0, "jetNumConst": 1, "jetNEMF": 0.9, "jetMUF": 0.8, "jetNHF": 0.9},
-		"2018ReReco": {"jetEta": 2.6, "jetCEMF": 0.8, "jetCHM": 0, "jetCHF": 0, "jetNumConst": 1, "jetNEMF": 0.9, "jetMUF": 0.8, "jetNHF": 0.9},
-		"2017UL": {"jetEta": 2.6, "jetCEMF": 0.8, "jetCHM": 0, "jetCHF": 0, "jetNumConst": 1, "jetNEMF": 0.9, "jetMUF": 0.8, "jetNHF": 0.9},
-		"2017ReReco": {"jetEta": 2.7, "jetCEMF": 0.8, "jetCHM": 0, "jetCHF": 0, "jetNumConst": 1, "jetNEMF": 0.9, "jetMUF": 0.8, "jetNHF": 0.9},
-		"2016UL": {"jetEta": 2.4, "jetCEMF": 0.8, "jetCHM": 0, "jetCHF": 0, "jetNumConst": 1, "jetNEMF": 0.9, "jetMUF": 0.8, "jetNHF": 0.9},
-		"2016APVUL": {"jetEta": 2.4, "jetCEMF": 0.8, "jetCHM": 0, "jetCHF": 0, "jetNumConst": 1, "jetNEMF": 0.9, "jetMUF": 0.8, "jetNHF": 0.9},
-		"2016ReReco": {"jetEta": 2.4, "jetCEMF": 0.9, "jetCHM": 0, "jetCHF": 0, "jetNumConst": 1, "jetNEMF": 0.9, "jetMUF": 0.8, "jetNHF": 0.9}}
 bTagWP = {"2018UL": 0.4168, "2018ReReco": 0.4184, "2017UL": 0.4506, "2017ReReco": 0.4941, "2016UL": 0.5847, "2016APVUL": 0.5847, "2016ReReco": 0.6324}
+jetID = {"2018UL": "jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.6 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0",
+		"2018ReReco": "jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.6 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0",
+		"2017UL": "jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.6 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0",
+		"2017ReReco": "(jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0))",
+		"2016UL": "(jetNEMF[i] < 0.99 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0 && jetNumConst[i] > 1 && jetMUF[i] < 0.8))",
+		"2016APVUL": "(jetNEMF[i] < 0.9 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0 && jetNumConst[i] > 1 && jetMUF[i] < 0.8))",
+		"2016ReReco": "(jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.9 && jetCHM[i] > 0 && jetCHF[i] > 0))"}
 
-ROOT.gInterpreter.Declare("""
-using floats = const ROOT::RVec<float>&;
+makeJetId = '''
 using bool_T = ROOT::RVec<bool>;
-using bools = const ROOT::RVec<bool>&;
-using ints = const ROOT::RVec<int>&;
-
+using floats = const ROOT::RVec<float>&;
 bool_T makeJetId(floats jetEta, floats jetCEMF, floats jetCHM, floats jetCHF, floats jetNumConst, floats jetNEMF, floats jetMUF, floats jetNHF)
 {{
 	bool_T jetIDVec;
 		for (size_t i = 0; i < jetEta.size(); i++)
 		{{
-			jetIDVec.push_back(jetEta[i] <= {} && jetCEMF[i] < {} && jetCHM[i] > {} && jetCHF[i] > {} && jetNumConst[i] > {} && jetNEMF[i] < {} && jetMUF[i] < {} && jetNHF[i] < {});
+			bool jetID = {};
+			jetIDVec.push_back(jetID);
 		}}
 	return jetIDVec;
 }}
+'''.format(jetID[args.c])
+
+findGoodParticles = '''
+using floats = const ROOT::RVec<float>&;
+using bools = const ROOT::RVec<bool>&;
+using ints = const ROOT::RVec<int>&;
 
 int findGoodMuonIdx(floats mu1Pt, floats mu2Pt, bools mu1Tight, bools mu2Tight, floats mu1Eta, floats mu2Eta, floats mu1Iso, floats mu2Iso, floats ZM)
 {{
@@ -71,8 +76,11 @@ int findGoodJetIdx(floats jet1Pt, floats jet2Pt, floats jet1Eta, floats jet2Eta,
 		}}
 	return idx;
 }}
+'''.format(bTagWP[args.c], bTagWP[args.c])
 
-""".format(jetID[args.c]["jetEta"], jetID[args.c]["jetCEMF"], jetID[args.c]["jetCHM"], jetID[args.c]["jetCHF"], jetID[args.c]["jetNumConst"], jetID[args.c]["jetNEMF"], jetID[args.c]["jetMUF"], jetID[args.c]["jetNHF"], bTagWP[args.c], bTagWP[args.c]))
+ROOT.gInterpreter.Declare(makeJetId)
+ROOT.gInterpreter.Declare(findGoodParticles)
+
 dInitCount = d.Count()
 dFull = d.Define("jet1ID", "makeJetId(jet1Eta, jet1CEMF, jet1CHM, jet1CHF, jet1NumConst, jet1NEMF, jet1MUF, jet1NHF)").Define("jet2ID", "makeJetId(jet2Eta, jet2CEMF, jet2CHM, jet2CHF, jet2NumConst, jet2NEMF, jet2MUF, jet2NHF)")
 dCut = dFull.Define("goodMuonId", "findGoodMuonIdx(mu1Pt, mu2Pt, mu1Tight, mu2Tight, mu1Eta, mu2Eta, mu1Iso, mu2Iso, ZM)").Define("goodJetId", "findGoodJetIdx(jet1Pt, jet2Pt, jet1Eta, jet2Eta, jet1bTag, jet2bTag, jet1ID, jet2ID, HiggsM)")

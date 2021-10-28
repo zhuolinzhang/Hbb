@@ -15,28 +15,6 @@ def readDatabase(jsonPath: str, category: str) -> List[dict]:
 			datasetList.append(dataset)
 	return datasetList
 
-def categoryH(categoryHist, categoryList: List[dict], sourcePath: str) -> None:
-	category, phyObj, kinematic = categoryHist.GetName().split('_')
-	for dataset in categoryList:
-		if dataset["category"] == category:
-			f = ROOT.TFile("{}/{}_{}.root".format(sourcePath, dataset["primaryName"], dataset["campagin"]), "read")
-			tree = f.Get("ZHCandidates")
-			histRange = ''
-			if kinematic == "mass":
-				if phyObj == 'z': histRange = "30, 75, 105"
-				if phyObj == "higgs": histRange = "75, 50, 200"
-			if kinematic == "pt": histRange = "50, 0, 500"
-			if kinematic == "eta": histRange = "60, -6, 6"
-			if kinematic == "phi": histRange = "40, -4, 4"
-			tree.Draw("{0}_{1} >> h_{0}_{1}({2})".format(phyObj, kinematic, histRange))
-			h = ROOT.gROOT.FindObject("h_{}_{}".format(phyObj, kinematic))
-			h.Scale(dataset["factor"])
-			if kinematic == "pt":
-				edgeArray = array('d', [0, 10, 20, 30, 40, 50, 60, 80, 100, 120,
-                              	140, 160, 180, 200, 220, 240, 260, 280, 300, 350, 400, 500])
-				h.Rebin(21, "h_{}_{}".format(phyObj, kinematic), edgeArray)
-			categoryHist += h
-
 def plotHistFromRDF(dataframe, branchName: str, scaleFactor: float):
 	edgeArray = array('d', [0, 10, 20, 30, 40, 50, 60, 80, 100, 120,
 	                  140, 160, 180, 200, 220, 240, 260, 280, 300, 350, 400, 500])
@@ -83,7 +61,13 @@ def categoryHistFromTree(category: str, campaignList: List[str], kinematicList: 
 		if d.Count().GetValue() == 0: continue
 		for kinematic in kinematicList:
 			if category == "data": factor = 1
-			else: factor = dataset["factorIsoMu20"]
+			else: 
+				if dataset["campaign"] == "2016UL" or dataset["campaign"] == "2016ReReco":
+					factor = dataset["factorMu17Mu8"]
+				elif dataset["campaign"] == "2016APVUL" or dataset["campaign"] == "2016APVReReco":
+					factor = dataset["factorMu17"]
+				else: factor = dataset["factorIsoMu20"]
+
 			if kinematic == "mass":
 				hZMass += plotHistFromRDF(d, "z_mass", factor)
 				hHiggsMass += plotHistFromRDF(d, "higgs_mass", factor) 

@@ -81,15 +81,16 @@ def make_legend(legend, hist, errHist, sigHist):
                 if 'zh' in i.GetName(): continue
                 legend.AddEntry(i, value, "F")
     legend.AddEntry(errHist, "MC Stat. Error", "F")
-    legend.AddEntry(sigHist, "ZH(b#bar{b}) x 500", "L")
+    legend.AddEntry(sigHist, "ZH(b#bar{b}) x 200", "L")
     legend.SetNColumns(2)
     legend.SetBorderSize(0)
     legend.SetTextSize(0.05)
     
-def plot_ratio(stackType, stackName, *hist):
+def plot_ratio(stackType: str, stackName: str, years: str, *hist):
     # Plot the stack histogram and Data/MC
     # Sum MC samples and create MC Stat. Err. graphs
     for i in hist:
+        i.Print()
         if 'zh' in i.GetName():
             sigHist = i.Clone() # If we don't use TH1::Clone, the legend of signal stack will be wrong.
     sumHist = sigHist
@@ -180,7 +181,7 @@ def plot_ratio(stackType, stackName, *hist):
     stackErr.SetLineColor(ROOT.kBlack)
     stackErr.Draw("2")
     
-    sigHist.Scale(500)
+    sigHist.Scale(200)
     sigHist.SetLineColor(ROOT.kRed)
     sigHist.SetMarkerColor(ROOT.kRed)
     sigHist.SetLineWidth(2)
@@ -210,8 +211,14 @@ def plot_ratio(stackType, stackName, *hist):
     figLabel1 = ROOT.TLatex()
     figLabel2 = ROOT.TLatex()
     figLabelLumi = ROOT.TLatex()
-    dataLumi = 0.271
-    figLabelLumi.DrawLatexNDC(.7, .91, "#font[42]{%s fb^{-1} (13 TeV)}" % dataLumi)
+    figLableYear = ROOT.TLatex()
+    dataLumi = {"2018": 0.271, "2017": 0.929, "2016": 0.388, "2016APV": 0.259, "run2": 1.848}
+    #dataLumi = 1.489
+    figLabelLumi.DrawLatexNDC(.65, .91, "#font[42]{%s fb^{-1}}" % dataLumi[years])
+    if years == "run2":
+        figLableYear.DrawLatexNDC(.75, .91, "#font[42]{(13 TeV, %s)}" % "Run 2")
+    else:
+        figLableYear.DrawLatexNDC(.75, .91, "#font[42]{(13 TeV, %s)}" % years)
     figLabel1.DrawLatexNDC(.13, .82, "#scale[1.2]{CMS}")
     if stackType == 'mcData':
         figLabel2.DrawLatexNDC(.2, .82, "#font[52]{Work In Progress}")
@@ -271,8 +278,8 @@ def plot_ratio(stackType, stackName, *hist):
             ratio.GetXaxis().SetTitle("#eta_{DiMuon}")
         if 'Phi' in stackName:
             ratio.GetXaxis().SetTitle("#phi_{DiMuon}")
-
-    c.SaveAs("stack/{}.pdf".format(stackName))
+    checkFolder("stack{}".format(years))
+    c.SaveAs("stack{}/{}.pdf".format(years, stackName))
 
 def write_to_root(objName, kiniName, *hist):
     sumBkgHist = ROOT.TH1F()
@@ -296,3 +303,7 @@ def write_to_root(objName, kiniName, *hist):
     sigHist.Write()
     sumBkgHist.Write()
     f.Close()
+
+def checkFolder(path: str) -> None:
+    if os.path.exists(path): pass
+    else: os.mkdir(path)

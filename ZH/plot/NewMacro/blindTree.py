@@ -5,17 +5,22 @@ def cutTree(treeName: str, fileName: str, sbPath: str, srPath: str) -> None:
 	# add check output path funciton here!!!
 	ROOT.ROOT.EnableImplicitMT()
 	print("Read {}".format(fileName))
-	exitFlag = False
-	d = ROOT.RDataFrame(treeName, fileName)
-	if d.Count().GetValue() == 0: exitFlag = True
-	if not exitFlag:
-		dSideBand = d.Filter("higgs_mass < 90 || higgs_mass > 150")
-		branchList = d.GetColumnNames()
-		dSideBand.Snapshot("ZHCandidates", sbPath, branchList)
-		if "DoubleMuon" in fileName: pass
-		else:
-			dSR = d.Filter("higgs_mass >= 90 && higgs_mass <= 150")
-			dSR.Snapshot("ZHCandidates", srPath, branchList)
+	try:
+		exitFlag = False
+		d = ROOT.RDataFrame(treeName, fileName)
+		if d.Count().GetValue() == 0: exitFlag = True
+		if not exitFlag:
+			dSideBand = d.Filter("higgs_mass < 90 || higgs_mass > 150")
+			branchList = d.GetColumnNames()
+			if dSideBand.Count().GetValue() > 0:
+				dSideBand.Snapshot("ZHCandidates", sbPath, branchList)
+			if "DoubleMuon" in fileName: pass
+			else:
+				dSR = d.Filter("higgs_mass >= 90 && higgs_mass <= 150")
+				if dSR.Count().GetValue() > 0:
+					dSR.Snapshot("ZHCandidates", srPath, branchList)
+	except:
+		print("This file is empty!")
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()

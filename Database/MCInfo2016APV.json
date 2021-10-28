@@ -10,6 +10,26 @@
         "factorMu17": 8.235439568148556e-05
     },
     {
+        "primaryName": "DYJetsToLL_BGenFilter_Zpt-100to200_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8",
+        "dasName": "/DYJetsToLL_BGenFilter_Zpt-100to200_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM",
+        "campaign": "2016APVReReco",
+        "category": "zjets",
+        "nEvents": 4709245,
+        "xs": 3.414,
+        "factor": 0.014151160111652718,
+        "factorMu17": 0.00018778519872293757
+    },
+    {
+        "primaryName": "DYJetsToLL_BGenFilter_Zpt-200toInf_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8",
+        "dasName": "/DYJetsToLL_BGenFilter_Zpt-200toInf_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM",
+        "campaign": "2016APVReReco",
+        "category": "zjets",
+        "nEvents": 2902645,
+        "xs": 0.5084,
+        "factor": 0.003418939622309996,
+        "factorMu17": 4.5369160643482056e-05
+    },
+    {
         "primaryName": "DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8",
         "dasName": "/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM",
         "campaign": "2016APVUL",
@@ -158,5 +178,35 @@
         "xs": 12.14,
         "factor": 0.18484617784711388,
         "factorMu17": 0.0024528996892355694
+    },
+    {
+        "primaryName": "ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8",
+        "dasName": "/ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v1/MINIAODSIM",
+        "campaign": "2016APVReReco",
+        "category": "zz",
+        "nEvents": 15462693,
+        "xs": 3.705,
+        "factor": 0.0046771671661592195,
+        "factorMu17": 6.206577827031811e-05
+    },
+    {
+        "primaryName": "ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8",
+        "dasName": "/ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM",
+        "campaign": "2016APVReReco",
+        "category": "zh",
+        "nEvents": 1979860,
+        "xs": 0.07924,
+        "factor": 0.00078124958330387,
+        "factorMu17": 1.03671435483317e-05
+    },
+    {
+        "primaryName": "ggZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8",
+        "dasName": "/ggZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8/RunIISummer16MiniAODv3-PUMoriond17_94X_mcRun2_asymptotic_v3-v2/MINIAODSIM",
+        "campaign": "2016APVReReco",
+        "category": "zh",
+        "nEvents": 250000,
+        "xs": 0.006185,
+        "factor": 0.00048292480000000003,
+        "factorMu17": 6.408388345600001e-06
     }
 ]
