@@ -1,0 +1,17 @@
+imax    1 number of bins
+jmax    1 number of processes minus 1
+kmax    * number of nuisance parameters
+--------------------------------------------------
+--------------------------------------------------
+bin          bin1
+observation  74.48051948051948
+--------------------------------------------------
+bin		bin1	bin1
+process		signal	bkg
+process		0	1
+rate		0.4023986547090589	134.9742061785518
+--------------------------------------------------
+lumi13TeV_2018	lnN	1.023	1.023
+BR_hbb	lnN	1.005	-
+pdf_Higgs_qqbar	lnN	1.01	-
+* autoMCStats 0
