@@ -17,23 +17,26 @@ def checkVO() -> None:
             os.system("voms-proxy-init -voms cms")
 
 # Copy files from T2 to T3
-def copyFiles(targetDirectory: str, jobName: str, dataset: str, mcOrData: str, campaign: str) -> None:
+def copyFiles(targetDirectory: str, jobName: str, dataset: str, category: str, campaign: str) -> None:
     SEPath = "gsiftp://ccsrm.ihep.ac.cn/dpm/ihep.ac.cn/home/cms/store/user/zhuolinz" # my new T2 path
-    if mcOrData == "mc":
+    if category != "data":
         jobDateFile = os.popen("gfal-ls {}/{}/{}".format(SEPath, dataset, jobName))
-        datasetPath = SEPath + '/' + dataset + '/' + jobName
-    elif mcOrData == "data":
+        datasetPath = "{}/{}/{}".format(SEPath, dataset, jobName)
+    elif category == "data":
         jobDateFile = os.popen("gfal-ls {}/DoubleMuon/{}".format(SEPath, jobName))
-        datasetPath = SEPath + "/DoubleMuon/" + jobName
+        datasetPath = "{}/DoubleMuon/{}".format(SEPath, jobName)
     jobDate = jobDateFile.readline().rstrip()
     fileAutoSaveFile = os.popen("gfal-ls {}".format(datasetPath))
     fileAutoSaveList = [i.rstrip() for i in fileAutoSaveFile.readlines()]
     if len(fileAutoSaveList) == 1:
-        os.system('gfal-copy -rf {}/{}/0000 {}/{}_{}'.format(datasetPath, jobDate, targetDirectory, jobName, campaign))
+        primaryNameList = jobName.split("_")
+        primaryName = '_'.join(primaryNameList[:-2])
+        os.system('gfal-copy -rf {}/{}/0000 {}/{}_{}'.format(datasetPath, jobDate, targetDirectory, primaryName, campaign)) # jobName.split('_')[0] == dataset primary name
     else: 
         print("Warning: the auto save of files is larger than 1!")
         for i in fileAutoSaveList:
-            os.system('gfal-copy -rf {}/{}/{} {}/{}_{}'.format(datasetPath, jobDate, i, targetDirectory, jobName, campaign, i))
+            os.mkdir("{}/{}_{}".format(targetDirectory, jobName, campaign))
+            os.system('gfal-copy -rf {}/{}/{} {}/{}_{}/{}'.format(datasetPath, jobDate, i, targetDirectory, jobName.split('_')[0], campaign, i))
 
 # Tar root files. This function isn't suggested to use. Because some files are NOT merged in this stage.
 def tarFiles(directory: str, name: str, date: str) -> None:
@@ -71,15 +74,3 @@ if __name__ == '__main__':
     args = parser.parse_args()
     checkVO()
     main(args)
-
-'''
-# Compress all output .root files, print the path
-os.chdir(t3Directory)
-os.system('tar -zcvf {}_{}.tar.gz *.root'.format(taskName, taskFullDate))
-print("************************************")
-print("The path of output file is {}/{}_{}.tar.gz".format(t3Directory, taskName, taskFullDate))
-
-if noOutputList != []:
-    print("************************************")
-    print("There are some MC samples which didn't have output files: ", noOutputList)
-'''

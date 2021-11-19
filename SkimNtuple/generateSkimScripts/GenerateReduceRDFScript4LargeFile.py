@@ -10,34 +10,15 @@ parser.add_argument("-dataset", default="TTToSemiLeptonic_TuneCP5_13TeV-powheg-p
 parser.add_argument("-c", default="2018UL", help="The campagin of large dataset, e.g. 2018UL")
 args = parser.parse_args()
 
-def generateScriptOneFile(scriptSavePath: str, skimTTreeSaveFolder: str, dataset: str, campaign: str, macroPath: str, originTTreeFolder: str, task: str, date: str) -> None:
-    scanFolder = glob.glob("{}/{}_{}_{}_{}/*.root".format(originTTreeFolder, dataset, task, date, campaign))
-    if os.path.exists("{}/{}_{}".format(skimTTreeSaveFolder, dataset, campaign)):
-        pass
-    else:
-        os.mkdir("{}/{}_{}".format(skimTTreeSaveFolder, dataset, campaign))
-    with open(scriptSavePath, 'w') as f:
-        f.write('export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/\n')
-        f.write('source $VO_CMS_SW_DIR/cmsset_default.sh\n')
-        f.write('source /cvmfs/sft.cern.ch/lcg/app/releases/ROOT/6.24.06/x86_64-centos7-gcc48-opt/bin/thisroot.sh\n')
-        for rootFile in scanFolder:
-            skimTTreeSavePath = "{}/{}_{}/{}".format(skimTTreeSaveFolder, dataset, campaign, rootFile.split('/')[-1])
-            f.write('python3 {} -i {} -o {} -c {}\n'.format(macroPath, rootFile, skimTTreeSavePath, campaign))
-    os.chmod(scriptSavePath, 0o755)
-    print("Script {} is generated!".format(scriptSavePath))
+def checkFolder(path: str) -> None:
+    if os.path.exists(path): pass
+    else: os.mkdir(path)
 
-def generateScript(crabResultFolder: str, skimTTreeSaveFolder: str, dataset: str, campaign: str, macroPath: str, scanFolder: list) -> None:
-    scriptSaveFolder = "{}/{}".format(crabResultFolder, dataset)
-    if os.path.exists("{}/{}_{}".format(skimTTreeSaveFolder, dataset, campaign)):
-        pass
-    else:
-        os.mkdir("{}/{}_{}".format(skimTTreeSaveFolder, dataset, campaign))
-    if os.path.exists(scriptSaveFolder):
-        pass
-    else:
-        os.mkdir(scriptSaveFolder)
+def generateScripts(skimScriptSaveFolder: str, skimTTreeSaveFolder: str, dataset: str, campaign: str, macroPath: str, originTTreeFolder: list) -> int:
+    checkFolder("{}/{}_{}".format(skimTTreeSaveFolder, dataset, campaign)) # check output skimmed TTree folder
+    scanFolder = glob.glob("{}/*.root".format(originTTreeFolder))
     for rootFile in scanFolder:
-        scriptSavePath = "{}/reduce_{}.sh".format(scriptSaveFolder, scanFolder.index(rootFile))
+        scriptSavePath = "{}/reduce_{}.sh".format(skimScriptSaveFolder, scanFolder.index(rootFile))
         with open(scriptSavePath, 'w') as f:
             f.write('export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/\n')
             f.write('source $VO_CMS_SW_DIR/cmsset_default.sh\n')
@@ -46,6 +27,7 @@ def generateScript(crabResultFolder: str, skimTTreeSaveFolder: str, dataset: str
             f.write('python3 {} -i {} -o {} -c {}\n'.format(macroPath, rootFile, skimTTreeSavePath, campaign))
         os.chmod(scriptSavePath, 0o755)
         print("Script {} is generated!".format(scriptSavePath))
+    return len(scanFolder)
 
 def generateMergeScript(scriptPath: str, skimTTreeSaveFolder: str, dataset: str, campaign: str) -> None:
     scanFolder = glob.glob("{}/{}_{}/*.root".format(skimTTreeSaveFolder, dataset, campaign))
@@ -55,20 +37,23 @@ def generateMergeScript(scriptPath: str, skimTTreeSaveFolder: str, dataset: str,
     with open(scriptPath, 'w') as f:
         f.write(haddCommand)
 
-t3OriginPath = '/publicfs/cms/user/zhangzhuolin/target_files'
-t3SkimPath = '/publicfs/cms/user/zhangzhuolin/TTreeReducer'
-macroName = '/ntupleSkimmerForCondor.py'
-macroPath = t3SkimPath + macroName
-taskFilePath = t3OriginPath + '/' + args.task + "_" + args.date
-skimFolderPath = t3SkimPath + '/' + args.task + "_" + args.date
-checkResultPath = args.path + "/" + args.task + "_" + args.date
+if __name__ == '__main__':
+    t3OriginPath = '/publicfs/cms/user/zhangzhuolin/target_files'
+    t3SkimPath = '/publicfs/cms/user/zhangzhuolin/TTreeReducer'
+    macroName = '/ntupleSkimmerForCondor.py'
+    macroPath = t3SkimPath + macroName
+    taskFilePath = t3OriginPath + '/' + args.task + "_" + args.date
+    skimFolderPath = t3SkimPath + '/' + args.task + "_" + args.date
+    checkResultPath = args.path + "/" + args.task + "_" + args.date
+    noCutTreePath = "{}/{}_{}/{}_{}".format(t3OriginPath, args.task, args.date, args.dataset, args.c)
 
-#reduceScriptSavePath = checkResultPath + "/" + "reduceScript{}.sh".format(args.dataset)
-mergeScriptSavePath = checkResultPath + "/" + "mergeScript{}.sh".format(args.dataset)
-scanNtupleFolder = glob.glob("{}/{}_{}_{}_{}/*.root".format(taskFilePath, args.dataset, args.task, args.date, args.c))
-generateScript(checkResultPath, skimFolderPath, args.dataset, args.c, macroPath, scanNtupleFolder)
-generateMergeScript(mergeScriptSavePath, skimFolderPath, args.dataset, args.c)
+    skimScriptParentFolder = "{}/SkimInCondor".format(checkResultPath)
+    checkFolder(skimScriptParentFolder)
+    skimScriptDatasetFolder = "{}/{}".format(skimScriptParentFolder, args.dataset)
+    checkFolder(skimScriptDatasetFolder)
+    mergeScriptSavePath = checkResultPath + "/" + "mergeScript{}.sh".format(args.dataset)
+    times = generateScripts(skimScriptDatasetFolder, skimFolderPath, args.dataset, args.c, macroPath, noCutTreePath)
+    #generateMergeScript(mergeScriptSavePath, skimFolderPath, args.dataset, args.c)
 
-print("HTCondor Command: hep_sub {}/{}/reduce_\"%{{ProcId}}\".sh -n {}".format(checkResultPath, args.dataset, len(scanNtupleFolder)))
-#print("The skimming script path: {}".format(reduceScriptSavePath))
-print("The merge script path: {}".format(mergeScriptSavePath))
+    print("HTCondor Command: hep_sub {}/{}/reduce_\"%{{ProcId}}\".sh -n {}".format(checkResultPath, args.dataset, times))
+    print("The merge script path: {}".format(mergeScriptSavePath))

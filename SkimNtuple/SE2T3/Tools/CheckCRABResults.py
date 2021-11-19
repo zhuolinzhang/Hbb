@@ -4,8 +4,7 @@
 import os
 import argparse
 import json
-from typing import Tuple
-import copy
+from typing import Dict, List, Tuple
 
 # Check VO is activated. But if the VO is invalid, this function doesn't work. I will update to fix this
 # bug in the future.
@@ -17,23 +16,20 @@ def checkVO() -> None:
         while not(os.path.exists("/tmp/x509up_u12918")):
             os.system("voms-proxy-init -voms cms")
 
-# Read MC Samples and Data list from .txt file. 
-# We can modify the .txt file to decide which MC sample of data is needed to check.
-def readLocalList(listFilePath: str) -> dict:
+# Read MC Samples and Data list from .json file. 
+# We can modify the .json file to decide which MC sample of data is needed to check.
+def readDatabaseList(listFilePath: str) -> List[Dict]:
     jsonList = []
-    datasetCampaignList = []
-    datasetDict = {}
+    datasetInputList = []
     with open(listFilePath, 'r') as f:
         jsonList = json.load(f)
     for dataset in jsonList:
-        datasetCampaignList.append(dataset["campaign"])
-    datasetCampaignSet = set(datasetCampaignList)
-    # create the dataset dict {campaign: [dataset1, dataset2, ...]}
-    for cate in datasetCampaignSet:
-        datasetDict[cate] = []
-    for dataset in jsonList:
-        datasetDict[dataset["campaign"]].append(dataset["primaryName"])
-    return datasetDict
+        skimDatasetDict = {}
+        skimDatasetDict["primaryName"] = dataset["primaryName"]
+        skimDatasetDict["category"] = dataset["category"]
+        skimDatasetDict["campaign"] = dataset["campaign"]
+        datasetInputList.append(skimDatasetDict)
+    return datasetInputList
 
 # Return the result whether the dataset is found in the CRAB results.
 # return a bool value
@@ -59,6 +55,28 @@ def checkOutput(path: str) -> None:
     else:
         os.mkdir(path)
 
+def queryCRABResults(resultPath: str, taskName: str, taskDate: str, datasetListPath: List[str]) -> Dict[str, Dict[str, List[str]]]:
+    resultSavePath = "{}/{}_{}".format(resultPath, taskName, taskDate)
+    checkOutput(resultSavePath)
+    inputList = []
+    queryResult = {"mc": {}, "data": {}} # e.g. {"mc": {"2018UL": ["DYJets...", ...], "2018ReReco": ["ZH_HToBB_ZToLL", ...]}, "data": {...}}
+    for datasetFile in datasetListPath:
+        inputList += readDatabaseList(datasetFile)
+    for dataset in inputList:
+        if dataset["category"] == "data":
+            datasetTag = "data"
+        else: datasetTag = "mc"
+        if getFileFlag(dataset["primaryName"], taskName, taskDate, datasetTag):
+            print("Find dataset Name: {}, Campaign: {}, Category: {}".format(dataset["primaryName"], dataset["campaign"], datasetTag))
+            if dataset["campaign"] in queryResult[datasetTag]:
+                queryResult[datasetTag][dataset["campaign"]].append(dataset["primaryName"])
+            else:
+                queryResult[datasetTag][dataset["campaign"]] = [dataset["primaryName"]]
+    with open("{}/QueryResult.json".format(resultSavePath), 'w') as f:
+        json.dump(queryResult, f, indent=4)
+    return queryResult
+
+'''
 # The main function
 def checkCRABResults(resultPath: str, taskName: str, taskDate: str, years: str, datasetListPath=None, customDatasetPathData=False) -> Tuple[dict]:
     resultSavePath = resultPath + '/' + taskName + "_" + taskDate # The folder that saves the .txt file which include primary names of dataset
@@ -117,7 +135,7 @@ def checkCRABResults(resultPath: str, taskName: str, taskDate: str, years: str, 
     with open(resultSavePath + '/DataList.json', 'w') as f: # Save data which have output in a .txt file
         json.dump(dataT2Dict, f, indent=4)
     return mcT2Dict, dataT2Dict # return a tuple
-
+'''
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-d", help="The date of CRAB job (YYMMDD)")
@@ -126,4 +144,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     checkVO()
     resultPath = '/publicfs/cms/user/zhangzhuolin/CRABResult'
-    resultTuple = checkCRABResults(resultPath, args.t, args.d, args.y)
+    #resultTuple = checkCRABResults(resultPath, args.t, args.d, args.y)

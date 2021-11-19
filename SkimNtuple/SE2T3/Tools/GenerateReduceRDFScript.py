@@ -1,9 +1,10 @@
 import os
 import argparse
 import json
+import glob
 from typing import List, Dict
 
-def generateScript(scriptSavePath: str, skimTTreeSaveFolder: str, datasetList: Dict[str, Dict[str, List[str]]], macroPath: str, originTTreeFolder: str) -> None:
+def generateScriptInOne(scriptSavePath: str, skimTTreeSaveFolder: str, datasetList: Dict[str, Dict[str, List[str]]], macroPath: str, originTTreeFolder: str) -> None:
     with open(scriptSavePath, 'w') as f:
         f.write('export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/\n')
         f.write('source $VO_CMS_SW_DIR/cmsset_default.sh\n')
@@ -17,11 +18,24 @@ def generateScript(scriptSavePath: str, skimTTreeSaveFolder: str, datasetList: D
                                                                     originTTreePath, skimTTreeSavePath, campaign))
                 else: print("{} is not existed! Please check the path!".format(originTTreePath))
     os.chmod(scriptSavePath, 0o755)
-    print("Script {} is generated!".format(scriptSavePath))
+    print("Skim Command: sh {}".format(scriptSavePath))
 
-def readJson(jsonFile: str) -> Dict[str, Dict[str, List[str]]]:
+def readJson(jsonFile: str) -> list:
     with open(jsonFile) as f:
         return json.load(f)
+
+def generateScripts(skimScriptSaveFolder: str, skimTTreeSaveFolder: str, dataset: str, campaign: str, macroPath: str, originTTreeFolder: list) -> None:
+    scanFolder = glob.glob("{}/*.root".format(originTTreeFolder))
+    for rootFile in scanFolder:
+        scriptSavePath = "{}/reduce_{}.sh".format(skimScriptSaveFolder, scanFolder.index(rootFile))
+        with open(scriptSavePath, 'w') as f:
+            f.write('export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/\n')
+            f.write('source $VO_CMS_SW_DIR/cmsset_default.sh\n')
+            f.write('source /cvmfs/sft.cern.ch/lcg/app/releases/ROOT/6.24.06/x86_64-centos7-gcc48-opt/bin/thisroot.sh\n')
+            skimTTreeSavePath = "{}/{}_{}/{}".format(skimTTreeSaveFolder, dataset, campaign, rootFile.split('/')[-1])
+            f.write('python3 {} -i {} -o {} -c {}\n'.format(macroPath, rootFile, skimTTreeSavePath, campaign))
+        os.chmod(scriptSavePath, 0o755)
+        print("Script {} is generated!".format(scriptSavePath))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -42,7 +56,7 @@ if __name__ == "__main__":
         resultListPath = args.f
     resultList = readJson(resultListPath)
     skimScriptSavePath = checkResultPath + "/" + "ReduceScript.sh"
-    generateScript(resultListPath, skimFolderPath, resultList, macroPath, taskFilePath)
+    generateScriptInOne(resultListPath, skimFolderPath, resultList, macroPath, taskFilePath)
     if len(resultList) > 0:
         print("*" * 60)
         print("The skimming script path: {}".format(resultListPath))
