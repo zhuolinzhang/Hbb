@@ -4,19 +4,17 @@ import json
 import glob
 from typing import List, Dict
 
-def generateScriptInOne(scriptSavePath: str, skimTTreeSaveFolder: str, datasetList: Dict[str, Dict[str, List[str]]], macroPath: str, originTTreeFolder: str) -> None:
+def generateScriptInOne(scriptSavePath: str, skimTTreeSaveFolder: str, queryList: Dict[str, Dict[str, List[str]]], macroPath: str, originTTreeFolder: str) -> None:
     with open(scriptSavePath, 'w') as f:
         f.write('export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/\n')
         f.write('source $VO_CMS_SW_DIR/cmsset_default.sh\n')
         f.write('source /cvmfs/sft.cern.ch/lcg/app/releases/ROOT/6.24.06/x86_64-centos7-gcc48-opt/bin/thisroot.sh\n')
-        for campaignDict in datasetList.values():
-            for campaign, dataset in campaignDict.items():
-                originTTreePath = "{}/{}_{}.root".format(originTTreeFolder, dataset, campaign)
-                if os.path.exists(originTTreePath):
+        for campaignDict in queryList.values():
+            for campaign, datasetList in campaignDict.items():
+                for dataset in datasetList:
+                    originTTreePath = "{}/{}_{}.root".format(originTTreeFolder, dataset, campaign)
                     skimTTreeSavePath = "{}/{}_{}.root".format(skimTTreeSaveFolder, dataset, campaign)
-                    f.write('python3 {} -i {} -o {} -c {}\n'.format(macroPath,
-                                                                    originTTreePath, skimTTreeSavePath, campaign))
-                else: print("{} is not existed! Please check the path!".format(originTTreePath))
+                    f.write('python3 {} -i {} -o {} -c {}\n'.format(macroPath, originTTreePath, skimTTreeSavePath, campaign))
     os.chmod(scriptSavePath, 0o755)
     print("Skim Command: sh {}".format(scriptSavePath))
 
@@ -25,9 +23,8 @@ def readJson(jsonFile: str) -> list:
         return json.load(f)
 
 def generateScripts(skimScriptSaveFolder: str, skimTTreeSaveFolder: str, dataset: str, campaign: str, macroPath: str, originTTreeFolder: list) -> None:
-    scanFolder = glob.glob("{}/*.root".format(originTTreeFolder))
-    for rootFile in scanFolder:
-        scriptSavePath = "{}/reduce_{}.sh".format(skimScriptSaveFolder, scanFolder.index(rootFile))
+    for rootFile in originTTreeFolder:
+        scriptSavePath = "{}/reduce_{}.sh".format(skimScriptSaveFolder, originTTreeFolder.index(rootFile))
         with open(scriptSavePath, 'w') as f:
             f.write('export VO_CMS_SW_DIR=/cvmfs/cms.cern.ch/\n')
             f.write('source $VO_CMS_SW_DIR/cmsset_default.sh\n')

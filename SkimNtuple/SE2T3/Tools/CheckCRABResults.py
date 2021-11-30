@@ -72,6 +72,7 @@ def queryCRABResults(resultPath: str, taskName: str, taskDate: str, datasetListP
                 queryResult[datasetTag][dataset["campaign"]].append(dataset["primaryName"])
             else:
                 queryResult[datasetTag][dataset["campaign"]] = [dataset["primaryName"]]
+        else: print("!!! Can't find dataset Name: {}, Campaign: {}, Category: {}".format(dataset["primaryName"], dataset["campaign"], datasetTag))
     with open("{}/QueryResult.json".format(resultSavePath), 'w') as f:
         json.dump(queryResult, f, indent=4)
     return queryResult

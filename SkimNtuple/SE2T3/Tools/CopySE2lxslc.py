@@ -26,15 +26,18 @@ def copyFiles(targetDirectory: str, jobName: str, dataset: str, category: str, c
         jobDateFile = os.popen("gfal-ls {}/DoubleMuon/{}".format(SEPath, jobName))
         datasetPath = "{}/DoubleMuon/{}".format(SEPath, jobName)
     jobDate = jobDateFile.readline().rstrip()
-    fileAutoSaveFile = os.popen("gfal-ls {}".format(datasetPath))
-    fileAutoSaveList = [i.rstrip() for i in fileAutoSaveFile.readlines()]
-    if len(fileAutoSaveList) == 1:
+    timeStampFile = os.popen("gfal-ls {}".format(datasetPath))
+    timeStampList = [i.rstrip() for i in timeStampFile.readlines()]
+    if len(timeStampList) == 1:
         primaryNameList = jobName.split("_")
         primaryName = '_'.join(primaryNameList[:-2])
-        os.system('gfal-copy -rf {}/{}/0000 {}/{}_{}'.format(datasetPath, jobDate, targetDirectory, primaryName, campaign)) # jobName.split('_')[0] == dataset primary name
+        autoSaveFile = os.popen("gfal-ls {}/{}".format(datasetPath, timeStampList[0]))
+        autoSaveList = [i.rstrip() for i in autoSaveFile.readlines()]
+        for autoSaveCircle in autoSaveList:
+            os.system('gfal-copy -r {}/{}/{} {}/{}_{}'.format(datasetPath, jobDate, autoSaveCircle, targetDirectory, primaryName, campaign)) # jobName.split('_')[0] == dataset primary name
     else: 
         print("Warning: the auto save of files is larger than 1!")
-        for i in fileAutoSaveList:
+        for i in timeStampList:
             os.mkdir("{}/{}_{}".format(targetDirectory, jobName, campaign))
             os.system('gfal-copy -rf {}/{}/{} {}/{}_{}/{}'.format(datasetPath, jobDate, i, targetDirectory, jobName.split('_')[0], campaign, i))
 
