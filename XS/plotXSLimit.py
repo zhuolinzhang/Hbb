@@ -140,8 +140,8 @@ mgXS.Draw("APC")
 
 #mgXS.GetYaxis().SetTitle(
 #	"#sigma(pp#rightarrow ZH)#times BR(Z#rightarrow #mu#mu)#times BR(H#rightarrow b#bar{b}). [pb]")
-mgXS.GetYaxis().SetTitle("d#sigma(ZH)#timesBR(Z#rightarrowl^{+}l^{-}) / dp_{T} [fb/ N GeV]")
-mgXS.GetYaxis().SetTitleSize(0.05)
+mgXS.GetYaxis().SetTitle("95% CL Limit on d#sigma(ZH)#timesBR(Z#rightarrowl^{+}l^{-}) / dp_{T} [fb/ N GeV]")
+mgXS.GetYaxis().SetTitleSize(0.04)
 mgXS.GetXaxis().SetTitle("{}[GeV]".format(label))
 mgXS.GetXaxis().SetTitleSize(0.05)
 mgXS.GetYaxis().SetTitleOffset(1.0)
@@ -159,7 +159,9 @@ cmsTag2.SetTextAlign(11)
 #cmsTag.SetTextFont(61)
 cmsTag2.Draw()
 
-labelDict = {"run2": "#scale[0.9]{#bf{137.64 fb^{-1} (13 TeV, Run 2)}}", "2018": "#scale[0.9]{#bf{59.83 fb^{-1} (13 TeV, 2018)}}", "2017": "#scale[0.9]{#bf{41.48 fb^{-1} (13 TeV, 2017)}}", "2016": "#scale[0.9]{#bf{16.81 fb^{-1} (13 TeV, 2016)}}", "2016APV": "#scale[0.9]{#bf{19.52 fb^{-1} (13 TeV, 2016APV)}}"}
+#labelDict = {"run2": "#scale[0.9]{#bf{137.64 fb^{-1} (13 TeV, Run 2)}}", "2018": "#scale[0.9]{#bf{59.83 fb^{-1} (13 TeV, 2018)}}", "2017": "#scale[0.9]{#bf{41.48 fb^{-1} (13 TeV, 2017)}}", "2016": "#scale[0.9]{#bf{16.81 fb^{-1} (13 TeV, 2016)}}", "2016APV": "#scale[0.9]{#bf{19.52 fb^{-1} (13 TeV, 2016APV)}}"}
+labelDict = {"run2": "#scale[0.9]{#bf{137.64 fb^{-1} (13 TeV, Run 2)}}", "2018": "#scale[0.9]{#bf{59.83 fb^{-1} (13 TeV, 2018)}}",
+        "2017": "#scale[0.9]{#bf{41.48 fb^{-1} (13 TeV, 2017)}}", "2016": "#scale[0.9]{#bf{36.33 fb^{-1} (13 TeV, 2016)}}", "2016APV": "#scale[0.9]{#bf{19.52 fb^{-1} (13 TeV, 2016APV)}}"}
 cmsTag3 = ROOT.TLatex(0.90, 0.917, "{}".format(labelDict[args.y]))
 cmsTag3.SetNDC()
 cmsTag3.SetTextAlign(31)
@@ -172,9 +174,9 @@ xsLine50to100 = ROOT.TArrow(400, 0, 400, 10, 0.02, "<|")
 xsLine10to20.SetLineWidth(2)
 xsLine20to50.SetLineWidth(2)
 xsLine50to100.SetLineWidth(2)
-xsLine10to20.Draw()
-xsLine20to50.Draw()
-xsLine50to100.Draw()
+#xsLine10to20.Draw()
+#xsLine20to50.Draw()
+#xsLine50to100.Draw()
 
 leg1 = ROOT.TLegend(0.65, 0.65, 0.88, 0.85)  
 leg1.SetBorderSize(0)
@@ -190,8 +192,11 @@ c1.SaveAs("xs_pt_{}.pdf".format(args.y))
 
 c2 = ROOT.TCanvas("c2", "c2", 800, 600)
 c2.SetBottomMargin(.15)
-mgSignalStrength.GetYaxis().SetRangeUser(0, 29)
-mgSignalStrength.GetYaxis().SetTitle("Signal Strength")
+
+#sumExpectedUpperLimits = signalStrengthLimitExpected + signalStrengthLimitExpected95up + signalStrengthLimitExpected68up
+#upperRangeInYaxis = np.amax(sumExpectedUpperLimits) * 1.5
+mgSignalStrength.GetYaxis().SetRangeUser(0, 50)
+mgSignalStrength.GetYaxis().SetTitle("95% CL Limit on Signal Strength")
 mgSignalStrength.GetYaxis().SetTitleSize(0.05)
 mgSignalStrength.GetXaxis().SetTitle("{}[GeV]".format(label))
 mgSignalStrength.GetXaxis().SetTitleSize(0.05)
@@ -201,7 +206,9 @@ mgSignalStrength.Draw("APC")
 cmsTag.Draw()
 cmsTag2.Draw()
 cmsTag3.Draw()
-leg2 = ROOT.TLegend(0.65, 0.65, 0.88, 0.85)  
+
+leg2 = ROOT.TLegend(0.15, 0.65, 0.38, 0.85)  
+#leg2 = ROOT.TLegend(0.65, 0.65, 0.88, 0.85)  
 leg2.SetBorderSize(0)
 leg2.SetFillStyle(1001)
 leg2.SetFillColor(ROOT.kWhite) 
@@ -215,9 +222,9 @@ signalStrengthLine50to100 = ROOT.TArrow(400, 0.01, 400, 10, 0.02, "<|")
 signalStrengthLine10to20.SetLineWidth(2)
 signalStrengthLine20to50.SetLineWidth(2)
 signalStrengthLine50to100.SetLineWidth(2)
-signalStrengthLine10to20.Draw()
-signalStrengthLine20to50.Draw()
-signalStrengthLine50to100.Draw()
+#signalStrengthLine10to20.Draw()
+#signalStrengthLine20to50.Draw()
+#signalStrengthLine50to100.Draw()
 c2.SaveAs("signal_strength_pt_{}.pdf".format(args.y))
 # Calculate the total distribution
 print("The total XS is {}".format(np.sum(xsLimitExpected)))

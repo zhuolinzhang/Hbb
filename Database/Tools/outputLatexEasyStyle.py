@@ -14,10 +14,10 @@ with open(args.i, 'r') as f:
 
 for datasetDict in inputList:
     rowList = []
-    rowList.append(datasetDict["dasname"].replace("_", "\_"))
-    rowList.append("{:.2f}".format(datasetDict["nevents"] * datasetDict["factor_IsoMu20"]))
-    rowList.append(datasetDict["xsection"])
-    outPutDict[datasetDict["primary_name"]] = rowList
+    rowList.append(datasetDict["dasName"].replace("_", "\_"))
+    rowList.append("{:.2f}".format(datasetDict["nEvents"] * datasetDict["factorMu17"]))
+    rowList.append(datasetDict["xs"])
+    outPutDict[datasetDict["primaryName"]] = rowList
     
 with open(args.o, 'w') as fout:
     for key, value in outPutDict.items():

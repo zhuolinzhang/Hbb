@@ -2,7 +2,7 @@ import ROOT
 import json
 
 def get_scale_factor(dataset):
-	with open('../../Database/MCInfo_UL2018.json') as mcInfo:
+	with open('../../Database/MCInfo2018.json') as mcInfo:
             mcInfoList = json.load(mcInfo)
 	factor = 1
 	for eachDataset in mcInfoList:
@@ -47,7 +47,7 @@ def save_hist(*histList):
 		print("{} Total XS: {} fb".format(hist.GetTitle(), hist.Integral("width")))
 
 ROOT.gROOT.SetBatch()
-f = ROOT.TFile("./HiggsHist.root")
+f = ROOT.TFile("./newHiggsHist.root")
 h_dijet_genparticle_pt = f.Get("demo/h_dijet_genparticle_pt")
 h_dijet_pfjets_pt = f.Get("demo/h_dijet_pfjets_pt")
 #h_dijet_genparticle_pt.Scale(get_scale_factor("ZH_HToBB_ZToLL_M125_13TeV_powheg_pythia8"))

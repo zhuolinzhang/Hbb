@@ -1,7 +1,8 @@
+source /cvmfs/cms.cern.ch/common/crab-setup.sh
 dir=.
 filelist=$(ls $dir | grep "crabConfig_*")
 
 for file in $filelist
 do
-    crab submit $file
+    python $file
 done

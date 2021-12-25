@@ -29,12 +29,13 @@ def scanFolderSize(path: str) -> str:
     if len(pathList) == 1:
         print("{} only have one .root file, copy it to parent folder!")
         return "tiny"
-    elif sum(os.path.getsize("{}".format(f)) * 1e-9 for f in pathList) > 50: # large than 50 GB
+    elif sum(os.path.getsize("{}".format(f)) * 1e-9 for f in pathList) > 15: # large than 50 GB
         return "huge"
     else: return "normal"
 
 def runT22T3(queryResultPath: str, skimTTreePath: str, taskName: str, taskDate: str, modeNum: int, jsonFileList: List[str]) -> None:
-    commandsList = []
+    haddReduceCommandsList = []
+    hugeFileReduceCommandList = []
     haddScriptSavePath = "{}/{}_{}/{}".format(queryResultPath, taskName, taskDate, "mergeJobsSubmit")
     haddJobCounter = 0
     hugeFolderList = []
@@ -67,7 +68,7 @@ def runT22T3(queryResultPath: str, skimTTreePath: str, taskName: str, taskDate: 
                                 haddJobCounter += 1
     else: raise SystemError("The mode number is wrong! Please execute the script and correct the mode number!")
     if haddJobCounter > 0:
-        commandsList.append("hep_sub {}/haddJobSubmit_\"%{{ProcId}}\".sh -n {}\n".format(haddScriptSavePath, haddJobCounter))
+        haddReduceCommandsList.append("hep_sub {}/haddJobSubmit_\"%{{ProcId}}\".sh -n {}\n".format(haddScriptSavePath, haddJobCounter))
     if modeNum in range(4, 5):
         skimScripSavePath = "{}/{}_{}/{}".format(
             queryResultPath, taskName, taskDate, "ReduceScript.sh")
@@ -75,7 +76,7 @@ def runT22T3(queryResultPath: str, skimTTreePath: str, taskName: str, taskDate: 
         skimMacroPath = "{}/ntupleSkimmer.py".format(skimTTreePath)
         GenSkim.generateScriptInOne(
             skimScripSavePath, skimTargetPath, queryResult, skimMacroPath, t3Directory)
-        commandsList.append("sh {}\n".format(skimScripSavePath))
+        haddReduceCommandsList.append("sh {}\n".format(skimScripSavePath))
         if len(hugeFolderList) > 0:
             for hugeDataset in hugeFolderList:
                 skimScriptParentFolder = "{}/{}_{}/{}".format(queryResultPath, taskName, taskDate, "SkimInCondor")
@@ -87,10 +88,13 @@ def runT22T3(queryResultPath: str, skimTTreePath: str, taskName: str, taskDate: 
                 CheckResults.checkOutput(skimScriptDatasetFolder)
                 CheckResults.checkOutput(skimTargetPath)
                 GenSkim.generateScripts(skimScriptDatasetFolder, skimTargetPath, hugeDataset["primaryName"], hugeDataset["campaign"], skimMacroPath, noCutTrees)
-                commandsList.append("hep_sub {}/reduce_\"%{{ProcId}}\".sh -n {}\n".format(skimScriptDatasetFolder, len(noCutTrees)))
-    if len(commandsList) > 0:
+                hugeFileReduceCommandList.append("hep_sub {}/reduce_\"%{{ProcId}}\".sh -n {}\n".format(skimScriptDatasetFolder, len(noCutTrees)))
+    if len(haddReduceCommandsList) > 0:
         with open("{}/{}_{}/scripts.txt".format(queryResultPath, taskName, taskDate), 'w') as f:
-            f.writelines(commandsList)
+            f.writelines(haddReduceCommandsList)
+    if len(hugeFileReduceCommandList) > 0:
+        with open("{}/{}_{}/reduceHuge.sh".format(queryResultPath, taskName, taskDate), 'w') as f:
+            f.writelines(hugeFileReduceCommandList)
 
 def readDatabasePath(txtPath: str) -> List[str]:
     databasePaths = []

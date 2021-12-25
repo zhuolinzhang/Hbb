@@ -53,7 +53,7 @@ if __name__ == "__main__":
         resultListPath = args.f
     resultList = readJson(resultListPath)
     skimScriptSavePath = checkResultPath + "/" + "ReduceScript.sh"
-    generateScriptInOne(resultListPath, skimFolderPath, resultList, macroPath, taskFilePath)
+    generateScriptInOne(skimScriptSavePath, skimFolderPath, resultList, macroPath, taskFilePath)
     if len(resultList) > 0:
         print("*" * 60)
-        print("The skimming script path: {}".format(resultListPath))
+        print("The skimming script path: {}".format(skimScriptSavePath))

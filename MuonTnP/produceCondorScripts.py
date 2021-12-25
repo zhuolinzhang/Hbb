@@ -5,18 +5,18 @@ parser = argparse.ArgumentParser()
 parser.add_argument("-f", help="The name of input root file name w/o index number")
 args = parser.parse_args()
 
-def produceCondorScript(totalBinNum: int) -> None:
-	with open("condor_fit_{}.sub".format(binNum), 'w') as fOut:
-		fOut.write("executable = condor_fit_$(ProcId).sh\n".format(binNum))
+def produceCondorScript(etaBinNum: int, totalPtBinNum: int) -> None:
+	with open("condor_fit_{}.sub".format(etaBinNum), 'w') as fOut:
+		fOut.write("executable = condor_fit_{}_$(ProcId).sh\n".format(etaBinNum))
 		fOut.write("output                = $(ClusterId).$(ProcId).out\n")
 		fOut.write("error                 = $(ClusterId).$(ProcId).err\n")
 		fOut.write("log                   = $(ClusterId).log\n")
 		fOut.write("on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)\n")
 		fOut.write("+JobFlavour=\"tomorrow\"\n")
-		fOut.write("queue {}".format(totalBinNum))
+		fOut.write("queue {}".format(totalPtBinNum))
 
-def produceExecuteScript(binNum: int, binLowerEdge: float, binUpperEdge: float, inputName: str) -> None:
-	with open("condor_fit_{}.sh".format(binNum), 'w') as fOut:
+def produceExecuteScript(ptBinNum: int, etaBinNum: int, inputName: str, **kwargs) -> None:
+	with open("condor_fit_{}_{}.sh".format(etaBinNum, ptBinNum), 'w') as fOut:
 		fOut.write("#!/bin/sh\n")
 		fOut.write("ulimit -s unlimited\n")
 		fOut.write("set -e\n")
@@ -25,16 +25,21 @@ def produceExecuteScript(binNum: int, binLowerEdge: float, binUpperEdge: float, 
 		fOut.write("source /cvmfs/cms.cern.ch/cmsset_default.sh\n")
 		fOut.write("eval `scramv1 runtime -sh`\n")
 		fOut.write("cd /afs/cern.ch/work/z/zhuolinz/MuonTnPTest/CMSSW_10_6_27/src/MuonAnalysis/TagAndProbe/test/zmumu\n")
-		fOut.write("cmsRun fitMuonID_MyAnalysis_MC_arg.py binNum={0} binLower={1} binUpper={2} inputFile={3}_{0}.root".format(binNum, binLowerEdge, binUpperEdge, inputName))
-	os.chmod("condor_fit_{}.sh".format(binNum), 0o775)
+		fOut.write("cmsRun fitMuonID_MyAnalysis_MC_arg.py ptBinNum={0} ptBinLower={1} ptBinUpper={2} etaBinNum={3} etaBinLower={4} etaBinUpper={5} inputFile={6}_{3}_{0}.root".format(ptBinNum, kwargs["ptBinLower"], kwargs["ptBinUpper"], etaBinNum, kwargs["etaBinLower"], kwargs["etaBinUpper"], inputName))
+	os.chmod("condor_fit_{}_{}.sh".format(etaBinNum, ptBinNum), 0o775)
 
-edgeList = [0, 45, 80, 120, 200, 350, 450, 600]
+ptEdgeList = [15, 20, 25, 30, 40, 50, 60, 120]
+absEtaEdgeList = [0, 0.9, 1.2, 2.1, 2.4]
 
-for index, histEdge in enumerate(edgeList):
-	if histEdge != 600:
-		binLow = histEdge
-		binUp = edgeList[index + 1]
-		produceExecuteScript(index, binLow, binUp, args.f)
+for etaIndex, etaHistEdge in enumerate(absEtaEdgeList):
+	if etaHistEdge != 2.4:
+		etaBinLow = etaHistEdge
+		etaBinUp = absEtaEdgeList[etaIndex + 1]
 	else: break
-
-produceCondorScript(len(edgeList) - 1)
+	for ptIndex, ptHistEdge in enumerate(ptEdgeList):
+		if ptHistEdge != 120:
+			ptBinLow = ptHistEdge
+			ptBinUp = ptEdgeList[ptIndex + 1]
+			produceExecuteScript(ptIndex, etaIndex, args.f, ptBinLower=ptBinLow, ptBinUpper=ptBinUp, etaBinLower=etaBinLow, etaBinUpper=etaBinUp)
+		else: break
+	produceCondorScript(etaIndex, len(ptHistEdge) - 1)
