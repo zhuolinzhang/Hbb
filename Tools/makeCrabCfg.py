@@ -3,18 +3,14 @@ import argparse
 import os
 import tarfile
 import copy
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-i", type=str, help="input .txt file json path list or .json file lists datasets")
+parser.add_argument("input", type=str, help="input .txt file json path list or .json file lists datasets")
+parser.add_argument("inputConfig", type=str, help="input json path recording the configuration of the CRAB cfg")
 parser.add_argument("-o", type=str, default="./output", help="output path, default = ./output")
-parser.add_argument("-n", type=str, help="task name e.g. ZHTree, if %%year in task name, will fill the year of dataset automatically")
-parser.add_argument("-d", "--date", type=str, help="date (YYMMDD)")
-parser.add_argument("-pset", help="The path of config.JobType.psetName (cfg.py) e.g. ZHAnalysis_cfg.py")
-parser.add_argument("-psetList", action="extend", nargs="+", type=str, help="The list of config.JobType.psetName (cfg.py) e.g. ZHAnalysis_cfg.py, [UL, ReReco, data]")
 parser.add_argument("--temp", type=str, default="crabSkeleton.py", help="the template of carbConfig, default = crabSkeleton.py")
 parser.add_argument("-tar", action="store_true", help="Compress all output files as .tar.gz")
-parser.add_argument("-pyCfg", default=None, help="The path of .json recording the config.JobType.pyCfgParams for datasets")
 args = parser.parse_args()
 
 def tarFiles(taskName: str, taskDate: str, outputPath: str) -> None:
@@ -47,22 +43,6 @@ def modifySkeleton(skeletonPath: str, taskDate: str) -> List[str]:
         newSkeleton.append(line)
     return newSkeleton
 
-def readCfgArgs(argsFile: str, **kwargs) -> List[str]:
-    argsDict = {}
-    with open(argsFile, 'r') as f:
-        argsDict = json.load(f)
-    if argsDict["type"] == "campaign":
-        return argsDict[kwargs["campaign"]]
-    elif argsDict["type"] == "dbs":
-        return argsDict[kwargs["datasetFullName"]]
-    elif argsDict["type"] == "dataset":
-        return argsDict[kwargs["primaryName"]]
-    elif argsDict["type"] == "category":
-        return argsDict[kwargs["category"]]
-    elif argsDict["type"] == "categoryAndCampaign":
-        return argsDict[kwargs["category"]][kwargs["campaign"]]
-    else: raise SystemError("Your input args json file is wrong! The type name in json file is necessary!")
-
 def generateDatasetCrabLines(taskName: str, datasetPrimaryName: str, datasetDBS: str, psetPath: str, **kwargs) -> List[str]:
     if "%year" in taskName:
         year = kwargs["campaign"].rstrip("ReReco").rstrip("UL")
@@ -71,29 +51,69 @@ def generateDatasetCrabLines(taskName: str, datasetPrimaryName: str, datasetDBS:
     inputDataset = "    config.Data.inputDataset = '{}'\n".format(datasetDBS)
     outputTag = "    config.Data.outputDatasetTag = config.General.requestName\n"
     pset = "    config.JobType.psetName = '{}'\n".format(psetPath)
-    if kwargs["args"] != None:
-        if kwargs["isData"]: argsCategory = "data"
-        else: argsCategory = "mc"
-        args = "    config.JobType.pyCfgParams={}\n".format(readCfgArgs(kwargs["args"], campaign=kwargs["campaign"], datasetFullName=datasetDBS, primaryName=datasetPrimaryName, category=argsCategory))
+    if "args" in kwargs:
+        args = "    config.JobType.pyCfgParams={}\n".format(kwargs["args"])
     submit = "    crabCommand('submit', config = config)\n"
     emptyLine = "\n"
     datasetList = [requestName, inputDataset, outputTag, pset, submit, emptyLine]
-    if kwargs["args"] != None:
+    if "args" in kwargs:
         datasetList = [requestName, inputDataset, outputTag, pset, args, submit, emptyLine]
-    if kwargs["isData"]:
+    if "lumiMask" in kwargs:
         lumi = "    config.Data.lumiMask = '{}'\n".format(kwargs["lumiMask"])
         datasetList = [requestName, inputDataset, outputTag, pset, lumi, submit, emptyLine]
         if kwargs["args"] != None:
             datasetList = [requestName, inputDataset, outputTag, pset, args, lumi, submit, emptyLine]
     return datasetList
 
-def produceDatasetCrabBlock(datasetsList: List[str], psetFile: str, lumiMaskDict: Dict[str, str], **kwargs) -> List[str]:
-    for dataset in datasetsList:
-        if dataset["category"] == "data":
-            datasetBlock = generateDatasetCrabLines(args.n, dataset["primaryName"], dataset["dasName"], psetFile, isData=True, lumiMask=lumiMaskDict[dataset["campaign"]], campaign=dataset["campaign"], args=kwargs["argsList"])
-        else: 
-            datasetBlock = generateDatasetCrabLines(args.n, dataset["primaryName"], dataset["dasName"], psetFile, isData=False, campaign=dataset["campaign"], args=kwargs["argsList"])
-    return datasetBlock
+def readNameAndDate(crabCfg: dict) -> Tuple[str, str]:
+    return crabCfg["name"], crabCfg["date"]
+
+def produceCrabBlockByCategoryAndCampaign(crabCfg: dict, datasetList: list) -> None:
+    taskName, taskDate = readNameAndDate(crabCfg)
+    skeletonList = modifySkeleton(args.temp, taskDate)
+    skeletonDict = {}
+    for category, campaignPsetCfg in crabCfg["config"].items():
+        if category == "type": continue
+        if category == "data":
+            for campaign, psetCfgPair in campaignPsetCfg.items():
+                skeletonDict["{}_{}".format(category, campaign)] = copy.deepcopy(skeletonList)
+                for dataset in datasetList:
+                    if dataset["category"] == "data" and dataset["campaign"] == campaign:
+                        if crabCfg["config"]["type"] == "psetCfg":
+                            datasetBlock = generateDatasetCrabLines(taskName, dataset["primaryName"], dataset["dasName"], psetCfgPair["pset"], lumiMask=lumiMaskDict[dataset["campaign"]], campaign=dataset["campaign"], args=psetCfgPair["pyCfg"])
+                        elif crabCfg["config"]["type"] == "pset":
+                            datasetBlock = generateDatasetCrabLines(taskName, dataset["primaryName"], dataset["dasName"], psetCfgPair["pset"], lumiMask=lumiMaskDict[dataset["campaign"]], campaign=dataset["campaign"])
+                        else: raise SystemError("The type in config is wrong!")
+                        skeletonDict["{}_{}".format(category, campaign)] += datasetBlock
+        if category == "mc":
+            for campaign, psetCfgPair in campaignPsetCfg.items():
+                skeletonDict["{}_{}".format(category, campaign)] = copy.deepcopy(skeletonList)
+                for dataset in datasetList:
+                    if dataset["category"] != "data" and dataset["campaign"] == campaign:
+                        if crabCfg["config"]["type"] == "psetCfg":
+                            datasetBlock = generateDatasetCrabLines(taskName, dataset["primaryName"], dataset["dasName"], psetCfgPair["pset"], campaign=dataset["campaign"], args=psetCfgPair["pyCfg"])
+                        elif crabCfg["config"]["type"] == "pset":
+                            datasetBlock = generateDatasetCrabLines(taskName, dataset["primaryName"], dataset["dasName"], psetCfgPair["pset"], campaign=dataset["campaign"])
+                        else: raise SystemError("The type in config is wrong!")
+                        skeletonDict["{}_{}".format(category, campaign)] += datasetBlock
+    for categoryAndCampaign, cfgList in skeletonDict.items():
+        writeCRABCfg(args.o, cfgList, taskName, taskDate, categoryCampaign=categoryAndCampaign)
+
+def readCRABCfgJson(path: str, databaseList: list) -> None:
+    cfgDict = {}
+    with open(path, 'r') as f:
+        cfgDict = json.load(f)
+    if cfgDict["type"] == "categoryAndCampaign":
+        produceCrabBlockByCategoryAndCampaign(cfgDict, databaseList)
+    if args.tar:
+       tarFiles(cfgDict["name"], cfgDict["date"], args.o) 
+
+def writeCRABCfg(outputFolder: str, cfgList: List[str], name: str, date: str, **kwargs) -> None:
+    fileName = "crabConfig_{}_{}.py".format(name.rstrip("%year"), date)
+    if "categoryCampaign" in kwargs:
+        fileName = "crabConfig_{}_{}_{}.py".format(name.rstrip("%year"), date, kwargs["categoryCampaign"])
+    with open("{}/{}".format(outputFolder, fileName), 'w') as fOut:
+        fOut.writelines(cfgList)
 
 # if output path is not existed, create the path
 if os.path.exists(args.o): pass
@@ -106,64 +126,5 @@ lumiMaskDict = {"2018UL": "/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/C
                 "2016APVUL": "/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Legacy_2016/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt",
                 "2016UL": "/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Legacy_2016/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt"}
 
-sampleList = readJsonList(args.i)
-skeletonList = modifySkeleton(args.temp, args.date)
-if args.pyCfg != None:
-    skeletonDict = {}
-    doubleDict = False
-    with open(args.pyCfg, 'r') as f:
-        skeletonDict = json.load(f)
-    if skeletonDict["type"] == "categoryAndCampaign":
-        doubleDict = True
-        del skeletonDict["type"]
-        for key, campaignDict in skeletonDict.items():
-            for campaign, pyCfgArgs in campaignDict.items():
-                skeletonDict[key][campaign] = copy.deepcopy(skeletonList)
-    else:
-        for key in skeletonDict.items():
-            skeletonDict[key] = skeletonList
-            del skeletonDict["type"]
-    
-    if doubleDict:
-        for dataset in sampleList:
-            pset = args.pset
-            if dataset["category"] == "data":
-                datasetBlock = generateDatasetCrabLines(args.n, dataset["primaryName"], dataset["dasName"], pset, isData=True, lumiMask=lumiMaskDict[dataset["campaign"]], campaign=dataset["campaign"], args=args.pyCfg)
-                argsCategory = "data"
-            else: 
-                datasetBlock = generateDatasetCrabLines(args.n, dataset["primaryName"], dataset["dasName"], pset, isData=False, campaign=dataset["campaign"], args=args.pyCfg)
-                argsCategory = "mc"
-            skeletonDict[argsCategory][dataset["campaign"]] += datasetBlock
-        for key, campaignDict in skeletonDict.items():
-            for campaign in campaignDict.keys():
-                crabFileName = "crabConfig_{}_{}_{}_{}.py".format(args.n.rstrip("%year"), args.date, key, campaign)
-                with open(args.o + '/' + crabFileName, 'w') as crabCfg:
-                    crabCfg.writelines(skeletonDict[key][campaign])
-
-'''
-for dataset in sampleList:
-    pset = args.pset
-    if args.psetList != None:
-        if 'data' == dataset["category"]: 
-            pset = args.psetList[2]
-        elif 'UL' in dataset["campaign"]: 
-            pset = args.psetList[0]
-        elif 'ReReco' in dataset["campaign"]: 
-            pset = args.psetList[1]
-        if dataset["category"] == "data":
-            datasetBlock = generateDatasetCrabLines(args.n, dataset["primaryName"], dataset["dasName"], pset, isData=True, lumiMask=lumiMaskDict[dataset["campaign"]], campaign=dataset["campaign"], args=args.pyCfg)
-        else: 
-            datasetBlock = generateDatasetCrabLines(args.n, dataset["primaryName"], dataset["dasName"], pset, isData=False, campaign=dataset["campaign"], args=args.pyCfg)
-    if dataset["category"] == "data":
-        datasetBlock = generateDatasetCrabLines(args.n, dataset["primaryName"], dataset["dasName"], pset, isData=True, lumiMask=lumiMaskDict[dataset["campaign"]], campaign=dataset["campaign"], args=args.pyCfg)
-    else: 
-        datasetBlock = generateDatasetCrabLines(args.n, dataset["primaryName"], dataset["dasName"], pset, isData=False, campaign=dataset["campaign"], args=args.pyCfg)
-    skeletonList += datasetBlock
-
-crabFileName = "crabConfig_{}_{}.py".format(args.n.rstrip("%year"), args.date)
-print("Generate {}".format(crabFileName))
-with open(args.o + '/' + crabFileName, 'w') as crabCfg:
-    crabCfg.writelines(skeletonList)
-'''
-if args.tar:
-    tarFiles(args.n, args.date, args.o)
+sampleList = readJsonList(args.input)
+readCRABCfgJson(args.inputConfig, sampleList)

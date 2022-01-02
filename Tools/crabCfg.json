@@ -1,0 +1,19 @@
+{
+	"name": "ZH%year",
+	"date": "210102",
+	"type": "categoryAndCampaign",
+	"config":
+		{
+			"type": "psetCfg",
+			"data":
+			{
+				"2018UL": {"pset": "../test/ZHAnalysis_cfg.py", "pyCfg": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2018UL.txt"]},
+				"2017UL": {"pset": "../test/ZHAnalysis_cfg.py", "pyCfg": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2017UL.txt"]}
+			},
+			"mc":
+			{
+				"2017UL": {"pset": "../test/ZHAnalysis_cfg.py", "pyCfg": ["globalTag=106X_mc2017_realistic_v8", "isData=0", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2017UL.txt"]},
+				"2017ReReco": {"pset": "../test/ZHAnalysis_cfg.py", "pyCfg": ["globalTag=94X_mc2017_realistic_v12", "isData=0", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2017.txt"]}
+			}
+		}
+}
