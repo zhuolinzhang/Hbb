@@ -18,7 +18,6 @@ def checkOutPut(path: str):
 
 start = time.time()
 checkOutPut(args.o)
-ROOT.ROOT.EnableImplicitMT()
 d = ROOT.RDataFrame("demo/ZHCollection", args.i)
 bTagWPMedium = {"2018UL": 0.4168, "2018ReReco": 0.4184, "2017UL": 0.4506, "2017ReReco": 0.4941, "2016UL": 0.5847, "2016APVUL": 0.6001, "2016ReReco": 0.6321}
 bTagWPLoose = {"2018UL": 0.1208, "2018ReReco": 0.1241, "2017UL": 0.1355, "2017ReReco": 0.1522, "2016UL": 0.1918, "2016APVUL": 0.2027, "2016ReReco": 0.2217}
@@ -97,7 +96,7 @@ ROOT.gInterpreter.Declare(findGoodParticles)
 dInitCount = d.Count()
 dFull = d.Define("jet1ID", "makeJetId(jet1Eta, jet1CEMF, jet1CHM, jet1CHF, jet1NumConst, jet1NEMF, jet1MUF, jet1NHF)").Define("jet2ID", "makeJetId(jet2Eta, jet2CEMF, jet2CHM, jet2CHF, jet2NumConst, jet2NEMF, jet2MUF, jet2NHF)")
 dCut = dFull.Define("goodMuonId", "findGoodMuonIdx(mu1Pt, mu2Pt, mu1Loose, mu2Loose, mu1Eta, mu2Eta, mu1Iso, mu2Iso, ZM)").Define("goodJetId", "findGoodJetIdx(jet1Pt, jet2Pt, jet1Eta, jet2Eta, jet1bTag, jet2bTag, jet1ID, jet2ID, HiggsM)")
-#dFinal = dCut.Filter("goodMuonId != -1").Filter("goodJetId != -1").Define("z_pt", "ZPt[goodMuonId]").Define("z_eta", "ZEta[goodMuonId]").Define("z_phi", "ZPhi[goodMuonId]").Define("z_mass", "ZM[goodMuonId]").Define("higgs_pt", "HiggsPt[goodJetId]").Define("higgs_eta", "HiggsEta[goodJetId]").Define("higgs_phi", "HiggsPhi[goodJetId]").Define("higgs_mass", "HiggsM[goodJetId]")
+dFinal = dCut.Filter("goodMuonId != -1").Filter("goodJetId != -1").Define("z_pt", "ZPt[goodMuonId]").Define("z_eta", "ZEta[goodMuonId]").Define("z_phi", "ZPhi[goodMuonId]").Define("z_mass", "ZM[goodMuonId]").Define("higgs_pt", "HiggsPt[goodJetId]").Define("higgs_eta", "HiggsEta[goodJetId]").Define("higgs_phi", "HiggsPhi[goodJetId]").Define("higgs_mass", "HiggsM[goodJetId]")
 dFinal = dCut.Filter("goodMuonId != -1").Filter("goodJetId != -1")\
                 .Define("mu1_charge", "mu1Charge[goodMuonId]").Define("mu1_pt", "mu1Pt[goodMuonId]").Define("mu1_eta", "mu1Eta[goodMuonId]").Define("mu1_phi", "mu1Phi[goodMuonId]").Define("mu1_mass", "mu1M[goodMuonId]")\
                 .Define("mu2_charge", "mu2Charge[goodMuonId]").Define("mu2_pt", "mu2Pt[goodMuonId]").Define("mu2_eta", "mu2Eta[goodMuonId]").Define("mu2_phi", "mu2Phi[goodMuonId]").Define("mu2_mass", "mu2M[goodMuonId]")\

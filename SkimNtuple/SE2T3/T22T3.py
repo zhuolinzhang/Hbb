@@ -6,6 +6,7 @@ import Tools.haddFiles as Hadd
 import Tools.GenerateReduceRDFScript as GenSkim
 import argparse
 import os
+import copy
 parser = argparse.ArgumentParser(formatter_class=argparse.RawTextHelpFormatter,
                                  description="This script can query and copy the result of CRAB jobs if you specify a .json file which recorded all submitted datasets.", epilog="If you use -s to specify a .json file, this script can only find MC samples or DATA once.")
 parser.add_argument("-m", "--mode", type=int, help='''1 - Only check results
@@ -41,6 +42,7 @@ def runT22T3(queryResultPath: str, skimTTreePath: str, taskName: str, taskDate: 
     hugeFolderList = []
     if modeNum in range(1, 5):
         queryResult = CheckResults.queryCRABResults(queryResultPath, taskName, taskDate, jsonFileList)
+        finalQueryResult = copy.deepcopy(queryResult)
         if modeNum in range(2, 5):
             t3Directory = '/publicfs/cms/user/zhangzhuolin/target_files/{}_{}'.format(taskName, taskDate)
             for category, campaignDict in queryResult.items():
@@ -62,7 +64,7 @@ def runT22T3(queryResultPath: str, skimTTreePath: str, taskName: str, taskDate: 
                                     hugeDict["campaign"] = campaign
                                     hugeFolderList.append(hugeDict)
                                     print("{} is huge!".format(datasetName))
-                                    queryResult[category][campaign].remove(datasetName)
+                                    finalQueryResult[category][campaign].remove(datasetName)
                                     continue
                                 Hadd.generateScripts(haddScriptSavePath, mergeSourcePath, mergedPath, haddJobCounter)
                                 haddJobCounter += 1
@@ -75,7 +77,7 @@ def runT22T3(queryResultPath: str, skimTTreePath: str, taskName: str, taskDate: 
         skimTargetPath = "{}/{}_{}".format(skimTTreePath, taskName, taskDate)
         skimMacroPath = "{}/ntupleSkimmer.py".format(skimTTreePath)
         GenSkim.generateScriptInOne(
-            skimScripSavePath, skimTargetPath, queryResult, skimMacroPath, t3Directory)
+            skimScripSavePath, skimTargetPath, finalQueryResult, skimMacroPath, t3Directory)
         haddReduceCommandsList.append("sh {}\n".format(skimScripSavePath))
         if len(hugeFolderList) > 0:
             for hugeDataset in hugeFolderList:

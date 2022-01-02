@@ -61,9 +61,10 @@ def makeSFTH2(path: str) -> None:
 	sfHist.Draw("TEXT COLZ")
 	sfHist.GetXaxis().SetTitle("Probe Muon |#eta|")
 	sfHist.GetYaxis().SetTitle("Probe Muon p_{T}")
+	sfHist.GetZaxis().SetLabelSize(0.027)
 	numName = sfName.split('_')[1]
 	denName = sfName.split('_')[3]
 	c.SaveAs("./ratio_th2_{}_{}.pdf".format(numName, denName))
 
 makeSFTH2("./result_ID.json")
-makeSFTH2("./result_Iso.json")
+#makeSFTH2("./result_Iso.json")

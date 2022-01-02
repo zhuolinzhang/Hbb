@@ -14,7 +14,7 @@ parser.add_argument("-pset", help="The path of config.JobType.psetName (cfg.py) 
 parser.add_argument("-psetList", action="extend", nargs="+", type=str, help="The list of config.JobType.psetName (cfg.py) e.g. ZHAnalysis_cfg.py, [UL, ReReco, data]")
 parser.add_argument("--temp", type=str, default="crabSkeleton.py", help="the template of carbConfig, default = crabSkeleton.py")
 parser.add_argument("-tar", action="store_true", help="Compress all output files as .tar.gz")
-parser.add_argument("-pyCfg", default=None, help="The config.JobType.pyCfgParams for datasets")
+parser.add_argument("-pyCfg", default=None, help="The path of .json recording the config.JobType.pyCfgParams for datasets")
 args = parser.parse_args()
 
 def tarFiles(taskName: str, taskDate: str, outputPath: str) -> None:

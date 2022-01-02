@@ -1,0 +1,8 @@
+#/Users/zhangzhuolin/Hbb/Database/MCInfo2016.json
+#/Users/zhangzhuolin/Hbb/Database/MCInfo2016APV.json
+/Users/zhangzhuolin/Hbb/Database/MCInfo2017.json
+#/Users/zhangzhuolin/Hbb/Database/MCInfo2018.json
+#/Users/zhangzhuolin/Hbb/Database/DataInfo2016APV.json
+#/Users/zhangzhuolin/Hbb/Database/DataInfo2016.json
+/Users/zhangzhuolin/Hbb/Database/DataInfo2017.json
+#/Users/zhangzhuolin/Hbb/Database/DataInfo2018.json

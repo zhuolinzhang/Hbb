@@ -1,0 +1,11 @@
+executable = /afs/cern.ch/work/z/zhuolinz/MC/genproductions/Utilities/calculateXSectionAndFilterEfficiency/calculateXSectionAndFilterEfficiency.sh
+arguments = -f /afs/cern.ch/work/z/zhuolinz/MC/genproductions/Utilities/calculateXSectionAndFilterEfficiency/condor/dataset_$(ProcID).txt -c RunII -d MINIAODSIM
+output = $(ClusterID).$(ProcID).out
+error = $(ClusterID).$(ProcID).err
+log = $(ClusterID).$(ProcID).log
+Proxy_filename = x509up_u132269
+Proxy_path = /afs/cern.ch/user/z/zhuolinz/private/$(Proxy_filename)
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+transfer_input_files = $(Proxy_path) /afs/cern.ch/work/z/zhuolinz/MC/genproductions/Utilities/calculateXSectionAndFilterEfficiency/condor/dataset_$(ProcID).txt
+queue 1
