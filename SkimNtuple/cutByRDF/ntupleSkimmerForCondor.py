@@ -54,7 +54,7 @@ int findGoodMuonIdx(floats mu1Pt, floats mu2Pt, bools mu1Loose, bools mu2Loose, 
 	int idx = -1;
 	for (size_t i = 0; i < mu1Pt.size(); i++)
 	{{
-		if (mu1Pt[i] > 20 && mu2Pt[i] > 20 && mu1Loose[i] && mu2Loose[i] && fabs(mu1Eta[i]) < 2.4 && fabs(mu2Eta[i]) < 2.4 && mu1Iso[i] < 0.15 && mu2Iso[i] < 0.15 && ZM[i] >= 75 && ZM[i] <= 105)
+		if (mu1Pt[i] > 20 && mu2Pt[i] > 20 && mu1Loose[i] && mu2Loose[i] && fabs(mu1Eta[i]) < 2.4 && fabs(mu2Eta[i]) < 2.4 && mu1Iso[i] < 0.15 && mu2Iso[i] < 0.25 && ZM[i] >= 75 && ZM[i] <= 105)
 		{{
 			idx = i;
 			break;
