@@ -4,14 +4,14 @@
 	{
 		"2018UL": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2018UL.txt"],
 		"2017UL": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2017UL.txt"],
-		"2016UL": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_Mu17Mu8_v*", "roccorPath=ZH/Tree/data/RoccoR2016bUL.txt"],
+		"2016UL": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_Mu17_Mu8_v*", "roccorPath=ZH/Tree/data/RoccoR2016bUL.txt"],
 		"2016APVUL": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_Mu17_v*", "roccorPath=ZH/Tree/data/RoccoR2016aUL.txt"]
 	},
 	"mc":
 	{
 		"2018UL": ["globalTag=106X_upgrade2018_realistic_v15_L1v1", "isData=0", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2018UL.txt"],
 		"2017UL": ["globalTag=106X_mc2017_realistic_v8", "isData=0", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2017UL.txt"],
-		"2016UL": ["globalTag=106X_mcRun2_asymptotic_v17", "isData=0", "hltPath=HLT_Mu17Mu8_v*", "roccorPath=ZH/Tree/data/RoccoR2016bUL.txt"],
+		"2016UL": ["globalTag=106X_mcRun2_asymptotic_v17", "isData=0", "hltPath=HLT_Mu17_Mu8_v*", "roccorPath=ZH/Tree/data/RoccoR2016bUL.txt"],
 		"2016APVUL": ["globalTag=106X_mcRun2_asymptotic_preVFP_v11", "isData=0", "hltPath=HLT_Mu17_v*", "roccorPath=ZH/Tree/data/RoccoR2016aUL.txt"],
 		"2018ReReco": ["globalTag=102X_upgrade2018_realistic_v15", "isData=0", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2018.txt"],
 		"2017ReReco": ["globalTag=94X_mc2017_realistic_v12", "isData=0", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2017.txt"],
