@@ -19,15 +19,16 @@ def checkOutPut(path: str):
 start = time.time()
 checkOutPut(args.o)
 d = ROOT.RDataFrame("demo/ZHCollection", args.i)
-bTagWPMedium = {"2018UL": 0.4168, "2018ReReco": 0.4184, "2017UL": 0.4506, "2017ReReco": 0.4941, "2016UL": 0.5847, "2016APVUL": 0.6001, "2016ReReco": 0.6321}
-bTagWPLoose = {"2018UL": 0.1208, "2018ReReco": 0.1241, "2017UL": 0.1355, "2017ReReco": 0.1522, "2016UL": 0.1918, "2016APVUL": 0.2027, "2016ReReco": 0.2217}
+bTagWPMedium = {"2018UL": 0.4168, "2018ReReco": 0.4184, "2017UL": 0.4506, "2017ReReco": 0.4941, "2016UL": 0.5847, "2016APVUL": 0.6001, "2016ReReco": 0.6321, "2016APVReReco": 0.6321}
+bTagWPLoose = {"2018UL": 0.1208, "2018ReReco": 0.1241, "2017UL": 0.1355, "2017ReReco": 0.1522, "2016UL": 0.1918, "2016APVUL": 0.2027, "2016ReReco": 0.2217, "2016APVReReco": 0.2217}
 jetID = {"2018UL": "jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.6 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0",
 		"2018ReReco": "jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.6 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0",
 		"2017UL": "jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.6 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0",
 		"2017ReReco": "(jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0))",
 		"2016UL": "(jetNEMF[i] < 0.99 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0 && jetNumConst[i] > 1 && jetMUF[i] < 0.8))",
 		"2016APVUL": "(jetNEMF[i] < 0.9 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0 && jetNumConst[i] > 1 && jetMUF[i] < 0.8))",
-		"2016ReReco": "(jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.9 && jetCHM[i] > 0 && jetCHF[i] > 0))"}
+		"2016ReReco": "(jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.9 && jetCHM[i] > 0 && jetCHF[i] > 0))",
+		"2016APVReReco": "(jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.9 && jetCHM[i] > 0 && jetCHF[i] > 0))"}
 
 makeJetId = '''
 using bool_T = ROOT::RVec<bool>;
