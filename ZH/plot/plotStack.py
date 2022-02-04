@@ -4,11 +4,12 @@ import argparse
 
 parse = argparse.ArgumentParser()
 parse.add_argument("-sbPath", default="SBcategorizedTree", help="The path of categorized sideband TTrees")
+parse.add_argument("-sbForHM", default="SBcategorizedHiggsMass", help="The path of categorized sideband TTrees ONLY FOR PLOT Higgs Mass")
 parse.add_argument("-srPath", default="SRcategorizedTree", help="The path of categorized signal region TTrees")
 parse.add_argument("-y", default="run2", help="The year you want to plot")
 args = parse.parse_args()
 
-def getMcData(kinematic: str, phyObj: str, path: str) -> None:
+def getMcData(kinematic: str, phyObj: str, path: str, year: str) -> None:
 	zh = ROOT.TFile("./{}/zh.root".format(path), "read")
 	zjets = ROOT.TFile("./{}/zjets.root".format(path), "read")
 	tt = ROOT.TFile("./{}/tt.root".format(path), "read")
@@ -25,12 +26,18 @@ def getMcData(kinematic: str, phyObj: str, path: str) -> None:
 	zzH = zz.Get("zz{}{}".format(phyObj, kinematic))
 	dataH = data.Get("data{}{}".format(phyObj, kinematic))
 
+	'''
 	if not qcdH:
 		qcdH = ROOT.TH1D()
 		qcdH.SetName("qcd{}{}".format(phyObj, kinematic))
-	plotHelper.plot_ratio("mcData", "mcData_{}_{}".format(phyObj, kinematic), args.y, zhH, stH, ttH, zzH, qcdH, zjetsH, dataH)
+	plotHelper.plotRatio("mcData", "mcData_{}_{}".format(phyObj, kinematic), year, zhH, stH, ttH, zzH, qcdH, zjetsH, dataH)
+	'''
+	if not qcdH:
+		plotHelper.plotRatio("mcData", "mcData_{}_{}".format(phyObj, kinematic), year, zhH, stH, ttH, zzH, zjetsH, dataH)
+	else:
+		plotHelper.plotRatio("mcData", "mcData_{}_{}".format(phyObj, kinematic), year, zhH, stH, ttH, zzH, qcdH, zjetsH, dataH)
 
-def getSRSB(kinematic: str, phyObj: str, sbPath: str, srPath: str):
+def getSRSB(kinematic: str, phyObj: str, sbPath: str, srPath: str, year: str) -> None:
 	zh = ROOT.TFile("./{}/zh.root".format(srPath), "read")
 	zjets = ROOT.TFile("./{}/zjets.root".format(srPath), "read")
 	tt = ROOT.TFile("./{}/tt.root".format(srPath), "read")
@@ -58,17 +65,23 @@ def getSRSB(kinematic: str, phyObj: str, sbPath: str, srPath: str):
 	stHSB = stSB.Get("st{}{}".format(phyObj, kinematic))
 	qcdHSB = qcdSB.Get("qcd{}{}".format(phyObj, kinematic))
 	zzHSB = zzSB.Get("zz{}{}".format(phyObj, kinematic))
-	sumH = zhHSB + zjetsHSB + ttHSB + stHSB + qcdHSB + zzHSB
+	if not qcdHSB:
+		sumH = zhHSB + zjetsHSB + ttHSB + stHSB + zzHSB
+	else:
+		sumH = zhHSB + zjetsHSB + ttHSB + stHSB + qcdHSB + zzHSB
 	sumH.SetName("sumSideband")
 
 	if not qcdH:
-		plotHelper.plot_ratio("srSideband", "srSideband_{}_{}".format(phyObj, kinematic), args.y, zhH, stH, ttH, zzH, zjetsH, sumH)
+		plotHelper.plotRatio("srSideband", "srSideband_{}_{}".format(phyObj, kinematic), year, zhH, stH, ttH, zzH, zjetsH, sumH)
 	else:
-		plotHelper.plot_ratio("srSideband", "srSideband_{}_{}".format(phyObj, kinematic), args.y, zhH, stH, ttH, zzH, qcdH, zjetsH, sumH)
+		plotHelper.plotRatio("srSideband", "srSideband_{}_{}".format(phyObj, kinematic), year, zhH, stH, ttH, zzH, qcdH, zjetsH, sumH)
 
 kinematicList = ["Mass", "Pt", "Eta", "Phi"]
 phyObjList = ["Z", "Higgs"]
 for k in kinematicList:
 	for p in phyObjList:
-		getMcData(k, p, args.sbPath)
-		getSRSB(k, p, args.sbPath, args.srPath)
+		if k == "Mass" and p == "Higgs":
+			getMcData(k, p, args.sbForHM, args.y)
+		else:
+			getMcData(k, p, args.sbPath, args.y)
+		getSRSB(k, p, args.sbPath, args.srPath, args.y)

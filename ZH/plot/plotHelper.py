@@ -37,7 +37,7 @@ def check_hist(hist):
     for i in range(1, hist.hist.GetNbinsX() + 1):
         print("Bin {} ({}, {}): {}".format(i, hist.hist.GetXaxis().GetBinLowEdge(i), hist.hist.GetXaxis().GetBinUpEdge(i), hist.hist.GetBinContent(i)))
 
-def stack_fill(hist, stack):
+def stackFill(hist, stack):
     # Fill histograms to THStack
     color_dict = {'st': ROOT.kAzure + 8, 'tt': ROOT.kAzure + 4, 'zz': ROOT.kSpring + 2, 'qcd': ROOT.kViolet - 4, 'zjets': ROOT.kOrange - 2}
     findHist = False
@@ -49,7 +49,7 @@ def stack_fill(hist, stack):
         hist.SetLineColor(ROOT.kBlack)
         stack.Add(hist)
 
-def make_ratio(hist_pass, hist_total, option = 'pois'):
+def makeRatio(hist_pass, hist_total, option = 'pois'):
     # make Data/MC or Sideband/SR graph and set the style of the graph
     ratio = ROOT.TGraphAsymmErrors()
     ratio.Divide(hist_pass, hist_total, option) # the default option in ROOT is 'cp'(Gauss case)
@@ -65,7 +65,7 @@ def make_ratio(hist_pass, hist_total, option = 'pois'):
     ratio.GetYaxis().SetTitleOffset(0.35)
     return ratio
 
-def make_legend(legend, hist, errHist, sigHist):
+def makeLegend(legend, hist, errHist, sigHist):
     # Make the legend in THStack.
     # The sigHist is provided when we need to plot the signal sample on the THStack after scaling.
     histLegDict = {'st': "Single top", 'tt': "t#bar{t}", 'zz': "ZZ", 'qcd': "QCD", 'zjets': "Z+jets", 'zh': 'ZH(b#bar{b})'}
@@ -81,15 +81,16 @@ def make_legend(legend, hist, errHist, sigHist):
                 if 'zh' in i.GetName(): continue
                 legend.AddEntry(i, value, "F")
     legend.AddEntry(errHist, "MC Stat. Error", "F")
-    legend.AddEntry(sigHist, "ZH(b#bar{b}) x 500", "L")
+    legend.AddEntry(sigHist, "ZH(b#bar{b}) x 200", "L")
     legend.SetNColumns(2)
     legend.SetBorderSize(0)
     legend.SetTextSize(0.05)
     
-def plot_ratio(stackType, stackName, *hist):
+def plotRatio(stackType: str, stackName: str, years: str, *hist):
     # Plot the stack histogram and Data/MC
     # Sum MC samples and create MC Stat. Err. graphs
     for i in hist:
+        i.Print()
         if 'zh' in i.GetName():
             sigHist = i.Clone() # If we don't use TH1::Clone, the legend of signal stack will be wrong.
     sumHist = sigHist
@@ -158,15 +159,16 @@ def plot_ratio(stackType, stackName, *hist):
     hs = ROOT.THStack("hs","")
     for i in hist:
         if 'zh' in i.GetName(): continue
-        stack_fill(i, hs)
+        stackFill(i, hs)
     hs.Draw("HIST")
     hs.SetMinimum(1e-3)
-    hs.SetMaximum(3e3)
+    hs.SetMaximum(8e4)
+    #hs.SetMaximum(30)
     hs.GetYaxis().SetTitleOffset(1)
     stackYTitle = "Events / {:.1f}".format(sumHist.GetXaxis().GetBinWidth(1))
-    if 'h_M' in stackName:
+    if 'Mass' in stackName:
         stackYTitle += " GeV"
-    if '_Pt' in stackName:
+    if 'Pt' in stackName:
         stackYTitle = "Events"
     hs.GetYaxis().SetTitle(stackYTitle)
     hs.GetYaxis().SetTitleSize(0.06)
@@ -179,7 +181,7 @@ def plot_ratio(stackType, stackName, *hist):
     stackErr.SetLineColor(ROOT.kBlack)
     stackErr.Draw("2")
     
-    sigHist.Scale(500)
+    sigHist.Scale(200)
     sigHist.SetLineColor(ROOT.kRed)
     sigHist.SetMarkerColor(ROOT.kRed)
     sigHist.SetLineWidth(2)
@@ -202,18 +204,24 @@ def plot_ratio(stackType, stackName, *hist):
 
     # Set the legend of THStack
     leg = ROOT.TLegend(0.47, 0.65, 0.86, 0.87)
-    make_legend(leg, hist, stackErr, sigHist)
+    makeLegend(leg, hist, stackErr, sigHist)
     leg.Draw("SAME")
 
     # Set the CMS label, collision energy and integrated luminosity
     figLabel1 = ROOT.TLatex()
     figLabel2 = ROOT.TLatex()
     figLabelLumi = ROOT.TLatex()
-    dataLumi = 0.271
-    figLabelLumi.DrawLatexNDC(.7, .91, "#font[42]{%s fb^{-1} (13 TeV)}" % dataLumi)
+    figLableYear = ROOT.TLatex()
+    dataLumi = {"2018": 0.271, "2017": 0.929, "2016": 0.388, "2016APV": 0.259, "run2": 1.848}
+    #dataLumi = 1.489
+    figLabelLumi.DrawLatexNDC(.65, .91, "#font[42]{%s fb^{-1}}" % dataLumi[years])
+    if years == "run2":
+        figLableYear.DrawLatexNDC(.75, .91, "#font[42]{(13 TeV, %s)}" % "Run 2")
+    else:
+        figLableYear.DrawLatexNDC(.75, .91, "#font[42]{(13 TeV, %s)}" % years)
     figLabel1.DrawLatexNDC(.13, .82, "#scale[1.2]{CMS}")
     if stackType == 'mcData':
-        figLabel2.DrawLatexNDC(.2, .82, "#font[52]{Work In Progress}")
+        figLabel2.DrawLatexNDC(.2, .82, "#font[52]{Work in progress}")
     else:
         figLabel2.DrawLatexNDC(.2, .82, "#font[52]{Simulation}")
 
@@ -224,7 +232,7 @@ def plot_ratio(stackType, stackName, *hist):
     lowerPad.SetTopMargin(0.)
     lowerPad.SetBottomMargin(0.4)
     if stackType == 'mcData' or stackType == 'srSideband':
-        ratio = make_ratio(dataHist, sumHist)
+        ratio = makeRatio(dataHist, sumHist)
         ratio.GetXaxis().SetLimits(dataHist.GetXaxis().GetXmin(), dataHist.GetXaxis().GetXmax())
         ratio.GetYaxis().SetTitle("Sideband/SR")
         ratio.SetMarkerStyle(24)
@@ -252,8 +260,8 @@ def plot_ratio(stackType, stackName, *hist):
         ratio.GetYaxis().SetLabelSize(0.13)
         ratio.GetYaxis().SetTitleOffset(0.35)
     
-    if "DiJet" in stackName:
-        if '_M' in stackName:
+    if "Higgs" in stackName:
+        if 'Mass' in stackName:
             ratio.GetXaxis().SetTitle("m_{DiJet} [GeV]")
         if 'Pt' in stackName:
             ratio.GetXaxis().SetTitle("p_{T}^{DiJet} [GeV]")
@@ -261,8 +269,8 @@ def plot_ratio(stackType, stackName, *hist):
             ratio.GetXaxis().SetTitle("#eta_{DiJet}")
         if 'Phi' in stackName:
             ratio.GetXaxis().SetTitle("#phi_{DiJet}")
-    elif "DiMuon" in stackName:
-        if '_M' in stackName:
+    elif "Z" in stackName:
+        if 'Mass' in stackName:
             ratio.GetXaxis().SetTitle("m_{DiMuon} [GeV]")
         if 'Pt' in stackName:
             ratio.GetXaxis().SetTitle("p_{T}^{DiMuon} [GeV]")
@@ -270,8 +278,8 @@ def plot_ratio(stackType, stackName, *hist):
             ratio.GetXaxis().SetTitle("#eta_{DiMuon}")
         if 'Phi' in stackName:
             ratio.GetXaxis().SetTitle("#phi_{DiMuon}")
-
-    c.SaveAs("stack/{}.pdf".format(stackName))
+    checkFolder("stack{}".format(years))
+    c.SaveAs("stack{}/{}.pdf".format(years, stackName))
 
 def write_to_root(objName, kiniName, *hist):
     sumBkgHist = ROOT.TH1F()
@@ -295,3 +303,7 @@ def write_to_root(objName, kiniName, *hist):
     sigHist.Write()
     sumBkgHist.Write()
     f.Close()
+
+def checkFolder(path: str) -> None:
+    if os.path.exists(path): pass
+    else: os.mkdir(path)

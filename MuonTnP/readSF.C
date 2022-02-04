@@ -1,6 +1,7 @@
 #include "TH2.h"
 #include "ROOT/RDataFrame.hxx"
 #include "TFile.h"
+#include "TMath.h"
 
 #include <math.h>
 #include <string>
@@ -15,14 +16,34 @@ void calculateULSF(TH2F* idHist, TH2F* isoHist, std::string datasetPath, std::st
 		int idHistPt = idHist->GetYaxis()->FindBin(muPt);
 		int isoHistAbsEta = isoHist->GetXaxis()->FindBin(std::fabs(muEta));
 		int isoHistPt = isoHist->GetYaxis()->FindBin(muPt);
-		float idSF;
-		float isoSF;
-		if (idHistAbsEta == 0 || idHistPt > idHist->GetNbinsY() || idHistPt == 0) idSF = 1;
-		else idSF = idHist->GetBinContent(idHistAbsEta, idHistPt);
-		if (isoHistAbsEta == 0 || isoHistPt > isoHist->GetNbinsY() || isoHistPt == 0) isoSF = 1;
-		else isoSF = isoHist->GetBinContent(isoHistAbsEta, isoHistPt);
+		float idSF = 1;
+		float isoSF = 1;
+		if (!(idHistPt > idHist->GetNbinsY() || idHistPt == 0)) idSF = idHist->GetBinContent(idHistAbsEta, idHistPt);
+		if (!(isoHistPt > isoHist->GetNbinsY() || isoHistPt == 0)) isoSF = isoHist->GetBinContent(isoHistAbsEta, isoHistPt);
 		float finalSF = idSF * isoSF;
 		return finalSF;
+		}, {"mu1_pt", "mu1_eta"})
+		.Define("mu1_sf_err", [&](float muPt, float muEta){
+		int idHistAbsEta = idHist->GetXaxis()->FindBin(std::fabs(muEta));
+		int idHistPt = idHist->GetYaxis()->FindBin(muPt);
+		int isoHistAbsEta = isoHist->GetXaxis()->FindBin(std::fabs(muEta));
+		int isoHistPt = isoHist->GetYaxis()->FindBin(muPt);
+		float idSFSystErr = 0;
+		float isoSFSystErr = 0;
+		float idSF = 1;
+		float isoSF = 1;
+		if (!(idHistPt > idHist->GetNbinsY() || idHistPt == 0)) 
+		{
+			idSFSystErr = idHist->GetBinError(idHistAbsEta, idHistPt);
+			idSF = idHist->GetBinContent(idHistAbsEta, idHistPt);
+		}
+		if (!(isoHistPt > isoHist->GetNbinsY() || isoHistPt == 0)) 
+		{
+			isoSFSystErr = isoHist->GetBinError(isoHistAbsEta, isoHistPt);
+			isoSF = isoHist->GetBinContent(isoHistAbsEta, isoHistPt);
+		}
+		float finalSFSystErr = std::sqrt(isoSF * isoSF * idSFSystErr * idSFSystErr + idSF * idSF * isoSFSystErr * isoSFSystErr);
+		return finalSFSystErr;
 		}, {"mu1_pt", "mu1_eta"})
 		.Define("mu2_sf", [&](float muPt, float muEta){
 		int idHistAbsEta = idHist->GetXaxis()->FindBin(std::fabs(muEta));
@@ -37,7 +58,31 @@ void calculateULSF(TH2F* idHist, TH2F* isoHist, std::string datasetPath, std::st
 		else isoSF = isoHist->GetBinContent(isoHistAbsEta, isoHistPt);
 		float finalSF = idSF * isoSF;
 		return finalSF;
-		}, {"mu2_pt", "mu2_eta"}).Define("z_sf", "mu1_sf * mu2_sf");
+		}, {"mu2_pt", "mu2_eta"})
+		.Define("mu2_sf_err", [&](float muPt, float muEta){
+		int idHistAbsEta = idHist->GetXaxis()->FindBin(std::fabs(muEta));
+		int idHistPt = idHist->GetYaxis()->FindBin(muPt);
+		int isoHistAbsEta = isoHist->GetXaxis()->FindBin(std::fabs(muEta));
+		int isoHistPt = isoHist->GetYaxis()->FindBin(muPt);
+		float idSFSystErr = 0;
+		float isoSFSystErr = 0;
+		float idSF = 1;
+		float isoSF = 1;
+		if (!(idHistPt > idHist->GetNbinsY() || idHistPt == 0)) 
+		{
+			idSFSystErr = idHist->GetBinError(idHistAbsEta, idHistPt);
+			idSF = idHist->GetBinContent(idHistAbsEta, idHistPt);
+		}
+		if (!(isoHistPt > isoHist->GetNbinsY() || isoHistPt == 0)) 
+		{
+			isoSFSystErr = isoHist->GetBinError(isoHistAbsEta, isoHistPt);
+			isoSF = isoHist->GetBinContent(isoHistAbsEta, isoHistPt);
+		}
+		float finalSFSystErr = std::sqrt(isoSF * isoSF * idSFSystErr * idSFSystErr + idSF * idSF * isoSFSystErr * isoSFSystErr);
+		return finalSFSystErr;
+		}, {"mu2_pt", "mu2_eta"})
+		.Define("z_sf", "mu1_sf * mu2_sf").Define("z_sf_err", "TMath::Sqrt(mu2_sf * mu2_sf * mu1_sf_err * mu1_sf_err + mu1_sf * mu1_sf * mu2_sf_err * mu2_sf_err)")
+		.Define("z_sf_up", "z_sf + z_sf_err").Define("z_sf_down", "z_sf - z_sf_err");
 	dSF.Snapshot("ZHCandidates", outputPath, dSF.GetColumnNames());
 }
 
@@ -49,14 +94,34 @@ void calculateReReco1718SF(TH2F* idHist, TH2F* isoHist, std::string datasetPath,
 		int idHistPt = idHist->GetXaxis()->FindBin(muPt);
 		int isoHistAbsEta = isoHist->GetYaxis()->FindBin(std::fabs(muEta));
 		int isoHistPt = isoHist->GetXaxis()->FindBin(muPt);
-		float idSF;
-		float isoSF;
-		if (idHistPt > idHist->GetNbinsX() || idHistPt == 0) idSF = 1;
-		else idSF = idHist->GetBinContent(idHistPt, idHistAbsEta);
-		if (isoHistPt > isoHist->GetNbinsX() || isoHistPt == 0) isoSF = 1;
-		else isoSF = isoHist->GetBinContent(isoHistPt, isoHistAbsEta);
+		float idSF = 1;
+		float isoSF = 1;
+		if (!(idHistPt > idHist->GetNbinsX() || idHistPt == 0)) idSF = idHist->GetBinContent(idHistPt, idHistAbsEta);
+		if (!(isoHistPt > isoHist->GetNbinsX() || isoHistPt == 0)) isoSF = isoHist->GetBinContent(isoHistPt, isoHistAbsEta);
 		float finalSF = idSF * isoSF;
 		return finalSF;
+		}, {"mu1_pt", "mu1_eta"})
+		.Define("mu1_sf_err", [&](float muPt, float muEta){
+		int idHistAbsEta = idHist->GetYaxis()->FindBin(std::fabs(muEta));
+		int idHistPt = idHist->GetXaxis()->FindBin(muPt);
+		int isoHistAbsEta = isoHist->GetYaxis()->FindBin(std::fabs(muEta));
+		int isoHistPt = isoHist->GetXaxis()->FindBin(muPt);
+		float idSF = 1;
+		float idSFSystErr = 0;
+		float isoSF = 1;
+		float isoSFSystErr = 0;
+		if (!(idHistPt > idHist->GetNbinsX() || idHistPt == 0)) 
+		{
+			idSF = idHist->GetBinContent(idHistPt, idHistAbsEta);
+			idSFSystErr = idHist->GetBinError(idHistPt, idHistAbsEta);
+		}
+		if (!(isoHistPt > isoHist->GetNbinsX() || isoHistPt == 0)) 
+		{
+			isoSF = isoHist->GetBinContent(isoHistPt, isoHistAbsEta);
+			isoSFSystErr = isoHist->GetBinError(isoHistPt, isoHistAbsEta);
+		}
+		float finalSFSystErr = std::sqrt(isoSF * isoSF * idSFSystErr * idSFSystErr + idSF * idSF * isoSFSystErr * isoSFSystErr);
+		return finalSFSystErr;
 		}, {"mu1_pt", "mu1_eta"})
 		.Define("mu2_sf", [&](float muPt, float muEta){
 		int idHistAbsEta = idHist->GetYaxis()->FindBin(std::fabs(muEta));
@@ -71,7 +136,31 @@ void calculateReReco1718SF(TH2F* idHist, TH2F* isoHist, std::string datasetPath,
 		else isoSF = isoHist->GetBinContent(isoHistPt, isoHistAbsEta);
 		float finalSF = idSF * isoSF;
 		return finalSF;		
-		}, {"mu2_pt", "mu2_eta"}).Define("z_sf", "mu1_sf * mu2_sf");
+		}, {"mu2_pt", "mu2_eta"})
+		.Define("mu2_sf_err", [&](float muPt, float muEta){
+		int idHistAbsEta = idHist->GetYaxis()->FindBin(std::fabs(muEta));
+		int idHistPt = idHist->GetXaxis()->FindBin(muPt);
+		int isoHistAbsEta = isoHist->GetYaxis()->FindBin(std::fabs(muEta));
+		int isoHistPt = isoHist->GetXaxis()->FindBin(muPt);
+		float idSF = 1;
+		float idSFSystErr = 0;
+		float isoSF = 1;
+		float isoSFSystErr = 0;
+		if (!(idHistPt > idHist->GetNbinsX() || idHistPt == 0)) 
+		{
+			idSF = idHist->GetBinContent(idHistPt, idHistAbsEta);
+			idSFSystErr = idHist->GetBinError(idHistPt, idHistAbsEta);
+		}
+		if (!(isoHistPt > isoHist->GetNbinsX() || isoHistPt == 0)) 
+		{
+			isoSF = isoHist->GetBinContent(isoHistPt, isoHistAbsEta);
+			isoSFSystErr = isoHist->GetBinError(isoHistPt, isoHistAbsEta);
+		}
+		float finalSFSystErr = std::sqrt(isoSF * isoSF * idSFSystErr * idSFSystErr + idSF * idSF * isoSFSystErr * isoSFSystErr);
+		return finalSFSystErr;
+		}, {"mu2_pt", "mu2_eta"})
+		.Define("z_sf", "mu1_sf * mu2_sf").Define("z_sf_err", "TMath::Sqrt(mu2_sf * mu2_sf * mu1_sf_err * mu1_sf_err + mu1_sf * mu1_sf * mu2_sf_err * mu2_sf_err)")
+		.Define("z_sf_up", "z_sf + z_sf_err").Define("z_sf_down", "z_sf - z_sf_err");
 	dSF.Snapshot("ZHCandidates", outputPath, dSF.GetColumnNames());
 }
 
@@ -83,14 +172,34 @@ void calculateReReco16SF(TH2F* idHist, TH2F* isoHist, std::string datasetPath, s
 		int idHistPt = idHist->GetYaxis()->FindBin(muPt);
 		int isoHistEta = isoHist->GetXaxis()->FindBin(std::fabs(muEta));
 		int isoHistPt = isoHist->GetYaxis()->FindBin(muPt);
-		float idSF;
-		float isoSF;
-		if (idHistPt > idHist->GetNbinsY() || idHistPt == 0) idSF = 1;
-		else idSF = idHist->GetBinContent(idHistEta, idHistPt);
-		if (isoHistPt > isoHist->GetNbinsY() || isoHistPt == 0) isoSF = 1;
-		else isoSF = isoHist->GetBinContent(isoHistEta, isoHistPt);
+		float idSF = 1;
+		float isoSF = 1;
+		if (!(idHistPt > idHist->GetNbinsY() || idHistPt == 0)) idSF = idHist->GetBinContent(idHistEta, idHistPt);
+		if (!(isoHistPt > isoHist->GetNbinsY() || isoHistPt == 0)) isoSF = isoHist->GetBinContent(isoHistEta, isoHistPt);
 		float finalSF = idSF * isoSF;
 		return finalSF;
+		}, {"mu1_pt", "mu1_eta"})
+		.Define("mu1_sf_err", [&](float muPt, float muEta){
+		int idHistEta = idHist->GetXaxis()->FindBin(std::fabs(muEta));
+		int idHistPt = idHist->GetYaxis()->FindBin(muPt);
+		int isoHistEta = isoHist->GetXaxis()->FindBin(std::fabs(muEta));
+		int isoHistPt = isoHist->GetYaxis()->FindBin(muPt);
+		float idSF = 1;
+		float idSFSystErr = 0;
+		float isoSF = 1;
+		float isoSFSystErr = 0;
+		if (!(idHistPt > idHist->GetNbinsY() || idHistPt == 0)) 
+		{
+			idSF = idHist->GetBinContent(idHistEta, idHistPt);
+			idSFSystErr = idHist->GetBinError(idHistEta, idHistPt);
+		}
+		if (!(isoHistPt > isoHist->GetNbinsY() || isoHistPt == 0))
+		{
+			isoSF = isoHist->GetBinContent(isoHistEta, isoHistPt);
+			isoSFSystErr = isoHist->GetBinError(isoHistEta, isoHistPt);
+		}
+		float finalSFSystErr = std::sqrt(isoSF * isoSF * idSFSystErr * idSFSystErr + idSF * idSF * isoSFSystErr * isoSFSystErr);
+		return finalSFSystErr;
 		}, {"mu1_pt", "mu1_eta"})
 		.Define("mu2_sf", [&](float muPt, float muEta){
 		int idHistEta = idHist->GetXaxis()->FindBin(std::fabs(muEta));
@@ -105,7 +214,31 @@ void calculateReReco16SF(TH2F* idHist, TH2F* isoHist, std::string datasetPath, s
 		else isoSF = isoHist->GetBinContent(isoHistEta, isoHistPt);
 		float finalSF = idSF * isoSF;
 		return finalSF;
-		}, {"mu2_pt", "mu2_eta"}).Define("z_sf", "mu1_sf * mu2_sf");
+		}, {"mu2_pt", "mu2_eta"})
+		.Define("mu2_sf_err", [&](float muPt, float muEta){
+		int idHistEta = idHist->GetXaxis()->FindBin(std::fabs(muEta));
+		int idHistPt = idHist->GetYaxis()->FindBin(muPt);
+		int isoHistEta = isoHist->GetXaxis()->FindBin(std::fabs(muEta));
+		int isoHistPt = isoHist->GetYaxis()->FindBin(muPt);
+		float idSF = 1;
+		float idSFSystErr = 0;
+		float isoSF = 1;
+		float isoSFSystErr = 0;
+		if (!(idHistPt > idHist->GetNbinsY() || idHistPt == 0)) 
+		{
+			idSF = idHist->GetBinContent(idHistEta, idHistPt);
+			idSFSystErr = idHist->GetBinError(idHistEta, idHistPt);
+		}
+		if (!(isoHistPt > isoHist->GetNbinsY() || isoHistPt == 0))
+		{
+			isoSF = isoHist->GetBinContent(isoHistEta, isoHistPt);
+			isoSFSystErr = isoHist->GetBinError(isoHistEta, isoHistPt);
+		}
+		float finalSFSystErr = std::sqrt(isoSF * isoSF * idSFSystErr * idSFSystErr + idSF * idSF * isoSFSystErr * isoSFSystErr);
+		return finalSFSystErr;
+		}, {"mu2_pt", "mu2_eta"})
+		.Define("z_sf", "mu1_sf * mu2_sf").Define("z_sf_err", "TMath::Sqrt(mu2_sf * mu2_sf * mu1_sf_err * mu1_sf_err + mu1_sf * mu1_sf * mu2_sf_err * mu2_sf_err)")
+		.Define("z_sf_up", "z_sf + z_sf_err").Define("z_sf_down", "z_sf - z_sf_err");
 	dSF.Snapshot("ZHCandidates", outputPath, dSF.GetColumnNames());
 }
 

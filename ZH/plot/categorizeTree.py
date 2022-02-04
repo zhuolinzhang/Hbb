@@ -15,37 +15,52 @@ def readDatabase(jsonPath: str, category: str) -> List[dict]:
 			datasetList.append(dataset)
 	return datasetList
 
-def plotHistFromRDF(dataframe, branchName: str, scaleFactor: float):
-	edgeArray = array('d', [0, 10, 20, 30, 40, 50, 60, 80, 100, 120,
-	                  140, 160, 180, 200, 220, 240, 260, 280, 300, 350, 400, 500])
+def plotHistFromRDF(dataframe, branchName: str, scaleFactor: float, sfFlag: bool = False):
+	#edgeArray = array('d', [0, 10, 20, 30, 40, 50, 60, 80, 100, 120,
+	#                  140, 160, 180, 200, 220, 240, 260, 280, 300, 350, 400, 500])
+	edgeArray = array('d', [0, 45, 80, 120, 200, 350, 450, 600])
 	if "mass" in branchName:
 		if "higgs" in branchName:
-			hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 75, 50, 200), branchName)
+			if sfFlag:
+				hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 30, 50, 200), branchName, "z_sf")
+			else:
+				hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 30, 50, 200), branchName)
 		if "z" in branchName:
-			hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 60, 75, 105), branchName)
+			if sfFlag:
+				hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 30, 75, 105), branchName, "z_sf")
+			else:
+				hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 30, 75, 105), branchName)
 	elif "pt" in branchName:
-		hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 21, edgeArray), branchName)
+		if sfFlag:
+			hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 7, edgeArray), branchName, "z_sf")
+		else:
+			hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 7, edgeArray), branchName)
 	elif "eta" in branchName:
-		hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 60, -6, 6), branchName)
+		if sfFlag:
+			hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 60, -6, 6), branchName, "z_sf")
+		else:
+			hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 60, -6, 6), branchName)
 	elif "phi" in branchName:
-		hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 40, -4, 4), branchName)
+		if sfFlag:
+			hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 40, -4, 4), branchName, "z_sf")
+		else:
+			hist = dataframe.Histo1D(ROOT.RDF.TH1DModel("", "", 40, -4, 4), branchName)
 	if scaleFactor != 1: hist.Scale(scaleFactor)
 	return hist.Clone()
 	
-def categoryHistFromTree(category: str, campaignList: List[str], kinematicList: List[str], sourcePath: str, outputPath: str) -> None:
+def categoryHistFromTree(category: str, campaignList: List[str], kinematicList: List[str], sourcePath: str, outputPath: str, sfFlag: bool) -> None:
 	print("Categorize {}".format(category))
 	infoName = "MCInfo"
 	if category == "data": infoName = "DataInfo"
 	datasetInfoList = []
 	yearList = []
-	edgeArray = array('d', [0, 10, 20, 30, 40, 50, 60, 80, 100, 120,
-	                  140, 160, 180, 200, 220, 240, 260, 280, 300, 350, 400, 500])
-	hZMass = ROOT.TH1D("{}ZMass".format(category), "", 60, 75, 105)
-	hZPt = ROOT.TH1D("{}ZPt".format(category), "", 21, edgeArray)
+	edgeArray = array('d', [0, 45, 80, 120, 200, 350, 450, 600])
+	hZMass = ROOT.TH1D("{}ZMass".format(category), "", 30, 75, 105)
+	hZPt = ROOT.TH1D("{}ZPt".format(category), "", 7, edgeArray)
 	hZEta = ROOT.TH1D("{}ZEta".format(category), "", 60, -6, 6)
 	hZPhi = ROOT.TH1D("{}ZPhi".format(category), "", 40, -4, 4)
-	hHiggsMass = ROOT.TH1D("{}HiggsMass".format(category), "", 75, 50, 200)
-	hHiggsPt = ROOT.TH1D("{}HiggsPt".format(category), "", 21, edgeArray)
+	hHiggsMass = ROOT.TH1D("{}HiggsMass".format(category), "", 30, 50, 200)
+	hHiggsPt = ROOT.TH1D("{}HiggsPt".format(category), "", 7, edgeArray)
 	hHiggsEta = ROOT.TH1D("{}HiggsEta".format(category), "", 60, -6, 6)
 	hHiggsPhi = ROOT.TH1D("{}HiggsPhi".format(category), "", 40, -4, 4)
 	for campaign in campaignList:
@@ -67,18 +82,17 @@ def categoryHistFromTree(category: str, campaignList: List[str], kinematicList: 
 				elif dataset["campaign"] == "2016APVUL" or dataset["campaign"] == "2016APVReReco":
 					factor = dataset["factorMu17"]
 				else: factor = dataset["factorIsoMu20"]
-
 			if kinematic == "mass":
-				hZMass += plotHistFromRDF(d, "z_mass", factor)
+				hZMass += plotHistFromRDF(d, "z_mass", factor, sfFlag)
 				hHiggsMass += plotHistFromRDF(d, "higgs_mass", factor) 
 			if kinematic == "pt":
-				hZPt += plotHistFromRDF(d, "z_pt", factor) 
+				hZPt += plotHistFromRDF(d, "z_pt", factor, sfFlag) 
 				hHiggsPt += plotHistFromRDF(d, "higgs_pt", factor) 
 			if kinematic == "eta":
-				hZEta += plotHistFromRDF(d, "z_eta", factor) 
+				hZEta += plotHistFromRDF(d, "z_eta", factor, sfFlag) 
 				hHiggsEta += plotHistFromRDF(d, "higgs_eta", factor) 
 			if kinematic == "phi":
-				hZPhi += plotHistFromRDF(d, "z_phi", factor) 
+				hZPhi += plotHistFromRDF(d, "z_phi", factor, sfFlag) 
 				hHiggsPhi += plotHistFromRDF(d, "higgs_phi", factor) 
 	histDict = {"hZMass": hZMass, "hZPt": hZPt, "hZEta": hZEta, "hZPhi": hZPhi, "hHiggsMass": hHiggsMass, "hHiggsPt": hHiggsPt, "hHiggsEta": hHiggsEta, "hHiggsPhi": hHiggsPhi}
 	fOut = ROOT.TFile("{}/{}.root".format(outputPath, category), "recreate")

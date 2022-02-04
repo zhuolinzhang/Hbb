@@ -28,8 +28,8 @@ masserr = np.array([], 'd')
 
 # make the loop
 xsFile = uproot.open('./smXS/HiggsXS.root')
-massTotal = xsFile['recoHiggsXS'].axis().centers()
-xsList = xsFile['recoHiggsXS'].values()
+massTotal = xsFile['genHiggsXS'].axis().centers()
+xsList = xsFile['genHiggsXS'].values()
 
 label = 'p_{T}^{Dijet}'
 rootFileList = glob.glob("./{}/*.root".format(args.f))
@@ -153,7 +153,7 @@ cmsTag = ROOT.TLatex(0.13, 0.917, "#scale[1.1]{CMS}")
 cmsTag.SetNDC()
 cmsTag.SetTextAlign(11)
 cmsTag.Draw()
-cmsTag2 = ROOT.TLatex(0.215, 0.917, "#scale[0.825]{#bf{#it{Work In Progress}}}")
+cmsTag2 = ROOT.TLatex(0.215, 0.917, "#scale[0.825]{#bf{#it{Work in progress}}}")
 cmsTag2.SetNDC()
 cmsTag2.SetTextAlign(11)
 #cmsTag.SetTextFont(61)
@@ -195,7 +195,7 @@ c2.SetBottomMargin(.15)
 
 #sumExpectedUpperLimits = signalStrengthLimitExpected + signalStrengthLimitExpected95up + signalStrengthLimitExpected68up
 #upperRangeInYaxis = np.amax(sumExpectedUpperLimits) * 1.5
-mgSignalStrength.GetYaxis().SetRangeUser(0, 50)
+mgSignalStrength.GetYaxis().SetRangeUser(0, 15) # Set range of Y axis in the signal strength distribution
 mgSignalStrength.GetYaxis().SetTitle("95% CL Limit on Signal Strength")
 mgSignalStrength.GetYaxis().SetTitleSize(0.05)
 mgSignalStrength.GetXaxis().SetTitle("{}[GeV]".format(label))
@@ -207,8 +207,9 @@ cmsTag.Draw()
 cmsTag2.Draw()
 cmsTag3.Draw()
 
-leg2 = ROOT.TLegend(0.15, 0.65, 0.38, 0.85)  
-#leg2 = ROOT.TLegend(0.65, 0.65, 0.88, 0.85)  
+#leg2 = ROOT.TLegend(0.15, 0.65, 0.38, 0.85) 
+#leg2 = ROOT.TLegend(0.65, 0.65, 0.88, 0.85) # legend of signal strength distribution  
+leg2 = ROOT.TLegend(0.45, 0.65, 0.65, 0.85) # legend of signal strength distribution  
 leg2.SetBorderSize(0)
 leg2.SetFillStyle(1001)
 leg2.SetFillColor(ROOT.kWhite) 
