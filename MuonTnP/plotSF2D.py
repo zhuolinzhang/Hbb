@@ -67,4 +67,4 @@ def makeSFTH2(path: str) -> None:
 	c.SaveAs("./ratio_th2_{}_{}.pdf".format(numName, denName))
 
 makeSFTH2("./result_ID.json")
-#makeSFTH2("./result_Iso.json")
+makeSFTH2("./result_Iso.json")
