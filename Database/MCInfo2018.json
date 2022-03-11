@@ -180,16 +180,6 @@
         "factorIsoMu20": 0.0005433102946665385
     },
     {
-        "primaryName": "TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8",
-        "dasName": "/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM",
-        "campaign": "2018UL",
-        "category": "tt",
-        "nEvents": 146058000,
-        "xs": 687.1,
-        "factor": 0.28145800298511553,
-        "factorIsoMu20": 0.0012768227144264609
-    },
-    {
         "primaryName": "ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8",
         "dasName": "/ST_t-channel_top_4f_InclusiveDecays_TuneCP5_13TeV-powheg-madspin-pythia8/RunIISummer19UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM",
         "campaign": "2018UL",
