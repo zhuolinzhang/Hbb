@@ -26,11 +26,11 @@ jetID = {"2018UL": "jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 &&
 		"2018ReReco": "jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.6 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0",
 		"2017UL": "jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.6 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0",
 		"2017ReReco": "(jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0))",
-		"2016UL": "(jetNEMF[i] < 0.99 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0 && jetNumConst[i] > 1 && jetMUF[i] < 0.8))",
-		"2016APVUL": "(jetNEMF[i] < 0.9 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0 && jetNumConst[i] > 1 && jetMUF[i] < 0.8))",
-		"2016ReReco": "(jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.9 && jetCHM[i] > 0 && jetCHF[i] > 0))",
-		"2016APVReReco": "(jetNumConst[i] > 1 && jetNEMF[i] < 0.9 && jetMUF[i] < 0.8 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.9 && jetCHM[i] > 0 && jetCHF[i] > 0))"}
-
+		"2016UL": "(jetNEMF[i] < 0.99 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0 && jetNumConst[i] > 1 && jetMUF[i] < 0.8 && jetNEMF[i] < 0.9))",
+		"2016APVUL": "(jetNEMF[i] < 0.99 && jetNHF[i] < 0.9 && fabs(jetEta[i]) <= 2.7) && (fabs(jetEta[i]) > 2.4 || (fabs(jetEta[i]) <= 2.4 && jetCEMF[i] < 0.8 && jetCHM[i] > 0 && jetCHF[i] > 0 && jetNumConst[i] > 1 && jetMUF[i] < 0.8 && jetNEMF[i] < 0.9))",
+		"2016ReReco": "(jetNHF[i] < 0.90 && jetNEMF[i] < 0.90 && jetNumConst[i] > 1 && jetMUF[i] < 0.8) && ((fabs(jetEta[i]) <= 2.4 && jetCHF[i] > 0 && jetCHM[i] > 0 && jetCEMF[i] < 0.90) || fabs(jetEta[i]) > 2.4) && fabs(jetEta[i]) <= 2.7",
+		"2016APVReReco": "(jetNHF[i] < 0.90 && jetNEMF[i] < 0.90 && jetNumConst[i] > 1 && jetMUF[i] < 0.8) && ((fabs(jetEta[i]) <= 2.4 && jetCHF[i] > 0 && jetCHM[i] > 0 && jetCEMF[i] < 0.90) || fabs(jetEta[i]) > 2.4) && fabs(jetEta[i]) <= 2.7"}
+		
 makeJetId = '''
 using bool_T = ROOT::RVec<bool>;
 using floats = const ROOT::RVec<float>&;
