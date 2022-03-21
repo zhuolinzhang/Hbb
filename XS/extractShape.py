@@ -14,18 +14,18 @@ def plotHistInEdge(dataframe, branchName: str, scaleFactor: float, binLow: float
 		elif histType == "data":
 			hist = dataframe.Filter("higgs_pt >= {} && higgs_pt < {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName)
 		elif histType == "up":
-			hist = dataframe.Define("z_sf_up", "z_sf + z_sf_err").Filter("higgs_pt >= {} && higgs_pt < {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName, "z_sf_up")
+			hist = dataframe.Filter("higgs_pt >= {} && higgs_pt < {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName, "z_sf_up")
 		elif histType == "down":
-			hist = dataframe.Define("z_sf_down", "z_sf - z_sf_err").Filter("higgs_pt >= {} && higgs_pt < {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName, "z_sf_down")
+			hist = dataframe.Filter("higgs_pt >= {} && higgs_pt < {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName, "z_sf_down")
 	else:
 		if histType == "nominal":
 			hist = dataframe.Filter("higgs_pt >= {} && higgs_pt <= {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName, "z_sf")
 		elif histType == "data":
 			hist = dataframe.Filter("higgs_pt >= {} && higgs_pt < {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName)
 		elif histType == "up":
-			hist = dataframe.Define("z_sf_up", "z_sf + z_sf_err").Filter("higgs_pt >= {} && higgs_pt <= {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName, "z_sf_up")
+			hist = dataframe.Filter("higgs_pt >= {} && higgs_pt <= {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName, "z_sf_up")
 		elif histType == "down":
-			hist = dataframe.Define("z_sf_down", "z_sf - z_sf_err").Filter("higgs_pt >= {} && higgs_pt <= {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName, "z_sf_down")
+			hist = dataframe.Filter("higgs_pt >= {} && higgs_pt <= {}".format(binLow, binUp)).Histo1D(ROOT.RDF.TH1DModel("hHiggsMass", "", 75, 50, 200), branchName, "z_sf_down")
 	hist.Scale(scaleFactor)
 	hist.Print()
 	return hist.Clone()

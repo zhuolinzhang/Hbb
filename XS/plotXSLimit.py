@@ -25,13 +25,15 @@ signalStrengthLimitExpected68down = np.array([], 'd')
 signalStrengthLimitObserved = np.array([], 'd')
 mass = np.array([], 'd')
 masserr = np.array([], 'd')
+expectedYErr = np.array([], 'd') # a np.zero array
 
 # make the loop
 xsFile = uproot.open('./smXS/HiggsXS.root')
 massTotal = xsFile['genHiggsXS'].axis().centers()
+massErrTotal = xsFile['genHiggsXS'].axis().widths()
 xsList = xsFile['genHiggsXS'].values()
 
-label = 'p_{T}^{Dijet}'
+label = 'p_{T}(H)'
 rootFileList = glob.glob("./{}/*.root".format(args.f))
 fileList = []
 for i in rootFileList:
@@ -72,8 +74,9 @@ for i in fileList:
 	tree.GetEntry(5)
 	xsLimitObserved = np.append(xsLimitObserved, tree.limit * xsList[fileList.index(i)])
 		
-	mass = np.append(mass, m)
-	masserr = np.append(masserr, 0.)
+	mass = np.append(mass, m) # use this to avoid TGraph definition error
+	masserr = np.append(masserr, massErrTotal[fileList.index(i)])
+	expectedYErr = np.append(expectedYErr, 0.)
 	
 c1=ROOT.TCanvas("c1", "c1", 800, 600)
 c1.SetBottomMargin(.15)
@@ -82,14 +85,13 @@ c1.SetLeftMargin(.15)
 c1.SetLogy()
 #c1.SetLogx()
 
+masserr = masserr / 2
 mgXS = ROOT.TMultiGraph()
 mgSignalStrength = ROOT.TMultiGraph()
-mgeps = ROOT.TMultiGraph()
-
-graphXSLimitExpected = ROOT.TGraph(len(mass), mass, xsLimitExpected)
-graphXSLimitExpected.SetMarkerSize(1)
-graphXSLimitExpected.SetMarkerStyle(20)
-graphXSLimitExpected.SetMarkerColor(ROOT.kBlack)
+graphXSLimitExpected = ROOT.TGraphErrors(len(mass), mass, xsLimitExpected, masserr, expectedYErr)
+#graphXSLimitExpected.SetMarkerSize(1)
+#graphXSLimitExpected.SetMarkerStyle(20)
+graphXSLimitExpected.SetMarkerColor(ROOT.kGreen + 1)
 graphXSLimitExpected.SetLineWidth(2)
 graphXSLimitExpected.SetLineStyle(7)
 
@@ -107,10 +109,10 @@ graphXSLimit68up.SetTitle("graph_limit68up")
 graphXSLimit68up.SetFillColor(ROOT.kGreen + 1)
 
 
-graphSignalStrengthLimitExpected = ROOT.TGraph(len(mass), mass, signalStrengthLimitExpected)
-graphSignalStrengthLimitExpected.SetMarkerSize(1)
-graphSignalStrengthLimitExpected.SetMarkerStyle(20)
-graphSignalStrengthLimitExpected.SetMarkerColor(ROOT.kBlack)
+graphSignalStrengthLimitExpected = ROOT.TGraphErrors(len(mass), mass, signalStrengthLimitExpected, masserr, expectedYErr)
+#graphSignalStrengthLimitExpected.SetMarkerSize(0)
+#graphSignalStrengthLimitExpected.SetMarkerStyle(20)
+#graphSignalStrengthLimitExpected.SetMarkerColor(ROOT.kGreen + 1)
 graphSignalStrengthLimitExpected.SetLineWidth(2)
 graphSignalStrengthLimitExpected.SetLineStyle(7)
 
@@ -127,25 +129,21 @@ graphSignalStrengthLimit68up = ROOT.TGraphAsymmErrors(len( mass), mass, signalSt
 graphSignalStrengthLimit68up.SetTitle("graph_limit68up")
 graphSignalStrengthLimit68up.SetFillColor(ROOT.kGreen + 1)
 
-mgXS.Add(graphXSLimit95up, "3")
-mgXS.Add(graphXSLimit68up, "3")
-mgXS.Add(graphXSLimitExpected, "pl")
+mgXS.Add(graphXSLimit95up, "2")
+mgXS.Add(graphXSLimit68up, "2")
+mgXS.Add(graphXSLimitExpected, "Z")
 #mgXS.Add(graph_limitObserved, "pl")
 
-mgSignalStrength.Add(graphSignalStrengthLimit95up, "3")
-mgSignalStrength.Add(graphSignalStrengthLimit68up, "3")
-mgSignalStrength.Add(graphSignalStrengthLimitExpected, "pl")
-
-mgXS.Draw("APC")
+mgXS.Draw("A")
 
 #mgXS.GetYaxis().SetTitle(
 #	"#sigma(pp#rightarrow ZH)#times BR(Z#rightarrow #mu#mu)#times BR(H#rightarrow b#bar{b}). [pb]")
-mgXS.GetYaxis().SetTitle("95% CL Limit on d#sigma(ZH)#timesBR(Z#rightarrowl^{+}l^{-}) / dp_{T} [fb/ N GeV]")
+mgXS.GetYaxis().SetTitle("95% CL Limit on d#sigma(ZH)#timesBR(H#rightarrowb#bar{b} / dp_{T} [fb/ N GeV]")
 mgXS.GetYaxis().SetTitleSize(0.04)
-mgXS.GetXaxis().SetTitle("{}[GeV]".format(label))
+mgXS.GetXaxis().SetTitle("{} [GeV]".format(label))
 mgXS.GetXaxis().SetTitleSize(0.05)
 mgXS.GetYaxis().SetTitleOffset(1.0)
-mgXS.GetXaxis().SetRangeUser(mass[0] - 1, mass[-1] + .1)
+mgXS.GetXaxis().SetRangeUser(mass[0] - masserr[0], mass[-1] + masserr[-1])
 
 c1.Update()
 legend = ROOT.TLegend(0.5, 0.6, 0.8, 0.9)
@@ -193,16 +191,20 @@ c1.SaveAs("xs_pt_{}.pdf".format(args.y))
 c2 = ROOT.TCanvas("c2", "c2", 800, 600)
 c2.SetBottomMargin(.15)
 
-#sumExpectedUpperLimits = signalStrengthLimitExpected + signalStrengthLimitExpected95up + signalStrengthLimitExpected68up
-#upperRangeInYaxis = np.amax(sumExpectedUpperLimits) * 1.5
-mgSignalStrength.GetYaxis().SetRangeUser(0, 15) # Set range of Y axis in the signal strength distribution
+mgSignalStrength.Add(graphSignalStrengthLimit95up, "2")
+mgSignalStrength.Add(graphSignalStrengthLimit68up, "2")
+mgSignalStrength.Add(graphSignalStrengthLimitExpected, "Z")
+
+sumExpectedUpperLimits = signalStrengthLimitExpected + signalStrengthLimitExpected95up + signalStrengthLimitExpected68up
+upperRangeInYaxis = np.amax(sumExpectedUpperLimits) * 1.2
+mgSignalStrength.GetYaxis().SetRangeUser(0, upperRangeInYaxis) # Set range of Y axis in the signal strength distribution
 mgSignalStrength.GetYaxis().SetTitle("95% CL Limit on Signal Strength")
 mgSignalStrength.GetYaxis().SetTitleSize(0.05)
-mgSignalStrength.GetXaxis().SetTitle("{}[GeV]".format(label))
+mgSignalStrength.GetXaxis().SetTitle("{} [GeV]".format(label))
 mgSignalStrength.GetXaxis().SetTitleSize(0.05)
 mgSignalStrength.GetYaxis().SetTitleOffset(1.0)
-mgSignalStrength.GetXaxis().SetRangeUser(mass[0] - 1, mass[-1] + .1)
-mgSignalStrength.Draw("APC")
+mgSignalStrength.GetXaxis().SetRangeUser(mass[0] - masserr[0], mass[-1] + masserr[-1])
+mgSignalStrength.Draw("A")
 cmsTag.Draw()
 cmsTag2.Draw()
 cmsTag3.Draw()
@@ -213,7 +215,7 @@ leg2 = ROOT.TLegend(0.45, 0.65, 0.65, 0.85) # legend of signal strength distribu
 leg2.SetBorderSize(0)
 leg2.SetFillStyle(1001)
 leg2.SetFillColor(ROOT.kWhite) 
-leg2.AddEntry(graphSignalStrengthLimitExpected, "Expected",  "PL")
+leg2.AddEntry(graphSignalStrengthLimitExpected, "Expected",  "L")
 leg2.AddEntry(graphSignalStrengthLimit68up, "68% Expected",  "F")
 leg2.AddEntry(graphSignalStrengthLimit95up, "95% Expected",  "F")
 leg2.Draw("same")

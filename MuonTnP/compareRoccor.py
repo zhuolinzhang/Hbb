@@ -1,4 +1,3 @@
-from turtle import st
 import ROOT
 import glob
 
