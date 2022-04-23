@@ -41,7 +41,7 @@ filesDict = {"ID": "tpTree/looseID/fit_eff", "Iso": "tpTree/TightIso_LooseID/fit
 numDict = {"ID": "LooseID", "Iso": "TightRelIso"}
 demDict = {"ID": "TrackerMuons", "Iso": "LooseID"}
 #filesDict = {"ID": "tpTree/looseID/fit_eff"}
-fileYAxis = {"ID": "Loose ID/Trk.", "Iso": "Tight PFIso/Loose ID", "Trigger": "Trigger/PFIso"}
+fileYAxis = {"ID": "Loose ID/Trk.", "Iso": "Loose PFIso/Loose ID", "Trigger": "Trigger/PFIso"}
 ptEdgeArray = np.array([15, 20, 25, 30, 40, 50, 60, 120], 'd')
 ptNBins = np.size(ptEdgeArray) - 1
 etaEdge = [0, 0.9, 1.2, 2.1, 2.4]
@@ -106,9 +106,10 @@ for effType, pathName in filesDict.items():
 		effMultiGraph.Add(mcGraph)
 		effMultiGraph.Add(dataGraph)
 		effMultiGraph.GetXaxis().SetTitle("Probe Muon p_{T} [GeV]")
-		effMultiGraph.GetYaxis().SetTitle("Efficiency {}".format(fileYAxis[effType]))
-		effMultiGraph.GetYaxis().SetTitleSize(0.045)
-		effMultiGraph.GetYaxis().SetLabelSize(0.045)
+		effMultiGraph.GetYaxis().SetTitle("Eff. {}".format(fileYAxis[effType]))
+		effMultiGraph.GetYaxis().SetTitleSize(0.065)
+		effMultiGraph.GetYaxis().SetTitleOffset(0.74)
+		effMultiGraph.GetYaxis().SetLabelSize(0.06)
 		effMultiGraph.GetYaxis().SetRangeUser(0.7, 1.2)
 		effMultiGraph.GetXaxis().SetLimits(ptEdgeArray[0], ptEdgeArray[-1])
 		effMultiGraph.SetTitle("")
@@ -121,8 +122,8 @@ for effType, pathName in filesDict.items():
 		ratioGraph = ROOT.TGraphErrors(ptNBins, binCenterArray, ratioEffArray, binWidth, ratioErrors)
 		ratioGraph.SetTitle("")
 		ratioGraph.GetXaxis().SetLimits(ptEdgeArray[0], ptEdgeArray[-1])
-		ratioGraph.GetXaxis().SetLabelSize(0.14)
-		ratioGraph.GetXaxis().SetTitleSize(0.14)
+		ratioGraph.GetXaxis().SetLabelSize(0.15)
+		ratioGraph.GetXaxis().SetTitleSize(0.15)
 		ratioGraph.GetXaxis().SetTitle("Probe Muon p_{T} [GeV]")
 		ratioGraph.GetYaxis().SetRangeUser(0.8, 1.2)
 		ratioGraph.GetYaxis().SetTitle("Data/MC")
@@ -131,8 +132,8 @@ for effType, pathName in filesDict.items():
 		ratioGraph.GetYaxis().SetTitleOffset(0.4)
 		ratioGraph.GetYaxis().SetNdivisions(505)
 		ratioGraph.SetMarkerStyle(20)
-		leg = ROOT.TLegend(0.64, 0.7, 0.9, 0.9)
-		leg.SetTextSize(0.05)
+		leg = ROOT.TLegend(0.55, 0.7, 0.9, 0.9)
+		leg.SetTextSize(0.07)
 		#leg.AddEntry(mcGraph, "DYJetsToLL 2018", "PL")
 		#leg.AddEntry(dataGraph, "Data 2018", "PL")
 		makeLegend(leg, mc=mcGraph, data=dataGraph)
@@ -145,7 +146,8 @@ for effType, pathName in filesDict.items():
 		upperPad.SetBottomMargin(0.)
 		upperPad.cd() # active uppper pad
 		effMultiGraph.Draw("ap")
-		absEtaBinLatex.DrawLatexNDC(0.13, 0.73, "#scale[0.8]{{{}}}".format(absEtaTLatex[absEtaIndex]))
+		absEtaBinLatex.SetTextSize(0.07)
+		absEtaBinLatex.DrawLatexNDC(0.13, 0.72, "#scale[0.8]{{{}}}".format(absEtaTLatex[absEtaIndex]))
 		cmsTag.DrawLatexNDC(0.13, 0.83, "#scale[1.2]{CMS}")
 		statusTag.DrawLatexNDC(0.13, 0.78, "#font[52]{Work in Progress}")
 		leg.Draw("same")

@@ -138,7 +138,7 @@ mgXS.Draw("A")
 
 #mgXS.GetYaxis().SetTitle(
 #	"#sigma(pp#rightarrow ZH)#times BR(Z#rightarrow #mu#mu)#times BR(H#rightarrow b#bar{b}). [pb]")
-mgXS.GetYaxis().SetTitle("95% CL Limit on d#sigma(ZH)#timesBR(H#rightarrowb#bar{b} / dp_{T} [fb/ N GeV]")
+mgXS.GetYaxis().SetTitle("95% CL Limit on d#sigma(ZH)#timesBR(H#rightarrowb#bar{b}) / dp_{T} [fb/ N GeV]")
 mgXS.GetYaxis().SetTitleSize(0.04)
 mgXS.GetXaxis().SetTitle("{} [GeV]".format(label))
 mgXS.GetXaxis().SetTitleSize(0.05)
@@ -159,7 +159,7 @@ cmsTag2.Draw()
 
 #labelDict = {"run2": "#scale[0.9]{#bf{137.64 fb^{-1} (13 TeV, Run 2)}}", "2018": "#scale[0.9]{#bf{59.83 fb^{-1} (13 TeV, 2018)}}", "2017": "#scale[0.9]{#bf{41.48 fb^{-1} (13 TeV, 2017)}}", "2016": "#scale[0.9]{#bf{16.81 fb^{-1} (13 TeV, 2016)}}", "2016APV": "#scale[0.9]{#bf{19.52 fb^{-1} (13 TeV, 2016APV)}}"}
 labelDict = {"run2": "#scale[0.9]{#bf{137.64 fb^{-1} (13 TeV, Run 2)}}", "2018": "#scale[0.9]{#bf{59.83 fb^{-1} (13 TeV, 2018)}}",
-        "2017": "#scale[0.9]{#bf{41.48 fb^{-1} (13 TeV, 2017)}}", "2016": "#scale[0.9]{#bf{36.33 fb^{-1} (13 TeV, 2016)}}", "2016APV": "#scale[0.9]{#bf{19.52 fb^{-1} (13 TeV, 2016APV)}}"}
+        "2017": "#scale[0.9]{#bf{41.48 fb^{-1} (13 TeV, 2017)}}", "2016": "#scale[0.9]{#bf{16.81 fb^{-1} (13 TeV, 2016)}}", "2016APV": "#scale[0.9]{#bf{19.52 fb^{-1} (13 TeV, 2016APV)}}"}
 cmsTag3 = ROOT.TLatex(0.90, 0.917, "{}".format(labelDict[args.y]))
 cmsTag3.SetNDC()
 cmsTag3.SetTextAlign(31)
@@ -186,7 +186,7 @@ leg1.AddEntry(graphXSLimit68up, "68% Expected",  "F")
 leg1.AddEntry(graphXSLimit95up, "95% Expected",  "F")
 leg1.Draw("same")
 
-c1.SaveAs("xs_pt_{}.pdf".format(args.y))
+c1.SaveAs("chap8_xs_pt_{}.pdf".format(args.y))
 
 c2 = ROOT.TCanvas("c2", "c2", 800, 600)
 c2.SetBottomMargin(.15)
@@ -228,6 +228,6 @@ signalStrengthLine50to100.SetLineWidth(2)
 #signalStrengthLine10to20.Draw()
 #signalStrengthLine20to50.Draw()
 #signalStrengthLine50to100.Draw()
-c2.SaveAs("signal_strength_pt_{}.pdf".format(args.y))
+c2.SaveAs("chap8_signal_strength_pt_{}.pdf".format(args.y))
 # Calculate the total distribution
-print("The total XS is {}".format(np.sum(xsLimitExpected)))
+print("The total XS is {}".format(np.sum(xsLimitExpected * massErrTotal)))

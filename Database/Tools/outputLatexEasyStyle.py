@@ -16,17 +16,20 @@ for datasetDict in inputList:
     rowList = []
     primaryName = datasetDict["primaryName"].replace("_", "\_").strip("\\")
     if "ReReco" in datasetDict["campaign"]:
-        primaryName = "\\textcolor{{red}}{{ {} }}".format(primaryName)
+        primaryName = "\\textcolor{{red}}{{{}}}".format(primaryName)
     #rowList.append("{:.2f}".format(datasetDict["nEvents"] * datasetDict["factorMu17"]))
     rowList.append(primaryName)
     rowList.append(datasetDict["nEvents"])
     rowList.append(datasetDict["xs"])
+    rowList.append("{:.3e}".format(datasetDict["factor"]))
+    '''
     if "factorIsoMu20" in datasetDict:
         rowList.append("{:.3e}".format(datasetDict["factorIsoMu20"]))
     elif "factorMu17Mu8" in datasetDict:
         rowList.append("{:.3e}".format(datasetDict["factorMu17Mu8"]))
     elif "factorMu17" in datasetDict:
         rowList.append("{:.3e}".format(datasetDict["factorMu17"]))
+    '''
     outPutDict[datasetDict["primaryName"]] = rowList
     
 with open(args.o, 'w') as fout:
