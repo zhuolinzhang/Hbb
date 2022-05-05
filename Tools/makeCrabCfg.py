@@ -34,6 +34,9 @@ def readJsonList(path: str) -> List[Dict[str, str]]:
     return jsonPathList
 
 def modifySkeleton(skeletonPath: str, taskDate: str) -> List[str]:
+    '''
+        Add date infomation to the skeleton
+    '''
     newSkeleton = []
     with open(skeletonPath, 'r') as cfgTemp:
         fileLines = cfgTemp.readlines()
@@ -71,6 +74,7 @@ def readNameAndDate(crabCfg: dict) -> Tuple[str, str]:
 def produceCrabBlockByCategoryAndCampaign(crabCfg: dict, datasetList: list) -> None:
     taskName, taskDate = readNameAndDate(crabCfg)
     skeletonList = modifySkeleton(args.temp, taskDate)
+    skeletonLen = len(skeletonList)
     skeletonDict = {}
     for category, campaignPsetCfg in crabCfg["config"].items():
         if category == "type": continue
@@ -96,10 +100,12 @@ def produceCrabBlockByCategoryAndCampaign(crabCfg: dict, datasetList: list) -> N
                             datasetBlock = generateDatasetCrabLines(taskName, dataset["primaryName"], dataset["dasName"], psetCfgPair["pset"], campaign=dataset["campaign"])
                         else: raise SystemError("The type in config is wrong!")
                         skeletonDict["{}_{}".format(category, campaign)] += datasetBlock
-    for categoryAndCampaign, cfgList in skeletonDict.items():
-        writeCRABCfg(args.o, cfgList, taskName, taskDate, categoryCampaign=categoryAndCampaign)
+    for categoryAndCampaign, crabBlocks in skeletonDict.items():
+        if (len(skeletonDict[categoryAndCampaign]) > skeletonLen): # Avoid generate empty CRAB scripts
+            print("Generate CRAB script in {}".format(categoryAndCampaign))
+            writeCrabCfg(args.o, crabBlocks, taskName, taskDate, categoryCampaign=categoryAndCampaign)
 
-def readCRABCfgJson(path: str, databaseList: list) -> None:
+def readCrabCfgJson(path: str, databaseList: list) -> None:
     cfgDict = {}
     with open(path, 'r') as f:
         cfgDict = json.load(f)
@@ -108,12 +114,12 @@ def readCRABCfgJson(path: str, databaseList: list) -> None:
     if args.tar:
        tarFiles(cfgDict["name"], cfgDict["date"], args.o) 
 
-def writeCRABCfg(outputFolder: str, cfgList: List[str], name: str, date: str, **kwargs) -> None:
+def writeCrabCfg(outputFolder: str, crabItems: List[str], name: str, date: str, **kwargs) -> None:
     fileName = "crabConfig_{}_{}.py".format(name.rstrip("%year"), date)
     if "categoryCampaign" in kwargs:
         fileName = "crabConfig_{}_{}_{}.py".format(name.rstrip("%year"), date, kwargs["categoryCampaign"])
     with open("{}/{}".format(outputFolder, fileName), 'w') as fOut:
-        fOut.writelines(cfgList)
+        fOut.writelines(crabItems)
 
 # if output path is not existed, create the path
 if os.path.exists(args.o): pass
@@ -127,4 +133,4 @@ lumiMaskDict = {"2018UL": "/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/C
                 "2016UL": "/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/Legacy_2016/Cert_271036-284044_13TeV_Legacy2016_Collisions16_JSON.txt"}
 
 sampleList = readJsonList(args.input)
-readCRABCfgJson(args.inputConfig, sampleList)
+readCrabCfgJson(args.inputConfig, sampleList)
