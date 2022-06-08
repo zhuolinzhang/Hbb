@@ -1,3 +1,5 @@
+# The repo will not update any more.
+
 # An Introduction to The Hbb Repository
 
 This repository is about my ZH(bb) analysis framework.
@@ -21,9 +23,3 @@ Some macros are included in `Tools`, which help me work more efficiently. There 
 - `xsCalc` branch is the developing branch for the calculation of the upper limit of the differential cross section of ZH process. It has been merged to `dev` now. If all work is finished, this branch will be discarded.
 
   All new macros will be uploaded to the specific branch first, then the branch will be merged to `master` when it is stable.
-
-## To-do List
-
-- Update the TTree Selector from `TTreeReader` to `RDataFrame`
-- Add more MC samples and Data to the analysis
-- Add corrections (e.g. muon scale factors) to the framework

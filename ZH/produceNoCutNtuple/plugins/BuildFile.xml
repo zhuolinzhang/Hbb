@@ -18,6 +18,6 @@
 <use name="DataFormats/WrappedStdDictionaries"/>
 <use name="CLHEP"/>
 <use name="root"/>
-<library file="ZHAnalysis.cc" name="ZHTest">
+<library file="ZHAnalysis.cc" name="ZHTree">
   <flags EDM_PLUGIN="1"/>
 </library>

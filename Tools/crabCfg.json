@@ -1,6 +1,6 @@
 {
-	"name": "ZH%year",
-	"date": "210102",
+	"name": "DY%year",
+	"date": "220506",
 	"type": "categoryAndCampaign",
 	"config":
 		{
@@ -8,7 +8,9 @@
 			"data":
 			{
 				"2018UL": {"pset": "../test/ZHAnalysis_cfg.py", "pyCfg": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2018UL.txt"]},
-				"2017UL": {"pset": "../test/ZHAnalysis_cfg.py", "pyCfg": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2017UL.txt"]}
+				"2017UL": {"pset": "../test/ZHAnalysis_cfg.py", "pyCfg": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_IsoMu20_v*", "roccorPath=ZH/Tree/data/RoccoR2017UL.txt"]},
+                "2016UL": {"pset": "../test/ZHAnalysis_cfg.py", "pyCfg": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_Mu17_Mu8_v*", "roccorPath=ZH/Tree/data/RoccoR2016bUL.txt"]},
+                "2016APVUL": {"pset": "../test/ZHAnalysis_cfg.py", "pyCfg": ["globalTag=106X_dataRun2_v35", "isData=1", "hltPath=HLT_Mu17_v*", "roccorPath=ZH/Tree/data/RoccoR2016aUL.txt"]}
 			},
 			"mc":
 			{
